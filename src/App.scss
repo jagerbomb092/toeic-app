@@ -1,0 +1,13 @@
+.HomePage {
+  width: 100%;
+  height: auto;
+  display: flex;
+  &__header {
+    background-color: pink;
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
