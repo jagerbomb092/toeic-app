@@ -1,65 +1,72 @@
-
-import {
-  BaseComponent,
-} from "@nextgo/common";
 import { Empty, Skeleton } from "antd";
 import * as _ from "lodash";
 import * as React from "react";
 import styles from "./NewEmployees.module.scss";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { INewEmployeesWebPartProps } from "../NewEmployeesWebPart"
-interface NewEmployeesProps extends INewEmployeesWebPartProps { }
+
+import { BaseComponent } from "../../00.common/00.components/BaseComponent";
+import { upCommingBirthdayService } from "../../00.common/02.service/upcommingBirthdayService";
+
+interface NewEmployeesProps {}
 interface NewEmployeesStates {
   firstindex?: number;
   lastIndex: number;
   loading: boolean;
+  dataSource: any[];
 }
 
 export default class NewEmployees extends BaseComponent<
   NewEmployeesProps,
   NewEmployeesStates
-  > {
+> {
   public constructor(props: NewEmployeesProps) {
     super(props);
     this.state = {
       loading: true,
       firstindex: 0,
       lastIndex: 4,
+      dataSource: [],
     };
     this.onMount(async () => {
+      await this.getData();
       this.setState({
         loading: false,
       });
     });
   }
 
+  async getData() {
+    const dataSource = await upCommingBirthdayService.getAll("MemberDirectory");
+    this.setState({
+      dataSource,
+    });
+  }
+
   public renderAllItem() {
-    let imgUser: string = require("../images/Icon.png");
-    if (this.props.dataSource.length > 0) {
-      const elements = this.props.dataSource.map((item, index) => {
+    let imgUser: string = require("./images/Icon.png");
+    if (this.state.dataSource.length > 0) {
+      const elements = this.state.dataSource.map((item, index) => {
         return (
           <div className={styles.newEmployeesSlider__slider__item}>
             {header}
             <div
               className={styles.newEmployeesSlider__slider__item__ContentInfor}
             >
-              {item.Photo ? (
+              {item.Avatar ? (
                 <img
                   className={
                     styles.newEmployeesSlider__slider__item__ContentInfor__Avartar
                   }
-                  src={`${item.Photo}?width=64&height=64`}
+                  src={`${item.Avatar}?width=64&height=64`}
                 />
               ) : (
-                  <img
-                    src={imgUser}
-                    className={
-                      styles.newEmployeesSlider__slider__item__ContentInfor__Avartar
-                    }
-                  />
-                )}
+                <img
+                  src={imgUser}
+                  className={
+                    styles.newEmployeesSlider__slider__item__ContentInfor__Avartar
+                  }
+                />
+              )}
               <div
                 className={
                   styles.newEmployeesSlider__slider__item__ContentInfor__employeeName
@@ -72,25 +79,25 @@ export default class NewEmployees extends BaseComponent<
                   styles.newEmployeesSlider__slider__item__ContentInfor__jobtitleEmployee
                 }
               >
-                {this.props.mapJobLevelCode.get(item.JobLevelCode)}
+                Học Sinh
               </div>
               <div
                 className={
                   styles.newEmployeesSlider__slider__item__ContentInfor__empMail
                 }
               >
-                {this.props.mapDept.get(item.DepartmentCode)}
+                Sinh viên năm cuối
               </div>
               <div
                 className={
                   styles.newEmployeesSlider__slider__item__ContentInfor__empPhone
                 }
               >
-                {item.DateOfBirth ? item.DateOfBirth.format("DD/MM/YYYY") : ""}
+                15/12/2021
               </div>
               <div
                 onClick={() => {
-                  window.location.href = `MSTeams:/l/chat/0/0?users=${item?.LoginName}`;
+                  window.location.href = `MSTeams:/l/chat/0/0?users=${item?.FullName}`;
                 }}
                 className={
                   styles.newEmployeesSlider__slider__item__ContentInfor__msTeam
@@ -116,19 +123,19 @@ export default class NewEmployees extends BaseComponent<
       autoplaySpeed: 2500,
       autoplay: false,
       nextArrow:
-        this.state.lastIndex == this.props.dataSource.length ? (
+        this.state.lastIndex == this.state.dataSource.length ? (
           <SampleNextArrow />
         ) : (
-            <SampleNextArrowHighLight />
-          ),
+          <SampleNextArrowHighLight />
+        ),
       prevArrow:
         this.state.firstindex == 0 ? (
           <SamplePrevArrow />
         ) : (
-            <SamplePrevArrowHighLight />
-          ),
+          <SamplePrevArrowHighLight />
+        ),
       swipe: false,
-      afterChange: (index) => {
+      afterChange: (index: number) => {
         this.setState({
           firstindex: index,
           lastIndex: index + 4,
@@ -171,7 +178,7 @@ export default class NewEmployees extends BaseComponent<
             autoplay: false,
           },
         },
-      ]
+      ],
     };
     if (lengthList >= 4) {
       for (let i = 0; i < settings.responsive.length; i++) {
@@ -184,13 +191,14 @@ export default class NewEmployees extends BaseComponent<
         settings.responsive[i].settings.autoplay = true;
         settings.responsive[i].settings.infinite = true;
       }
-      return settings
+      return settings;
     }
-
   }
 
   public render(): React.ReactElement<NewEmployeesProps> {
-    const settings = this.getResponsiveSlider(this.props.dataSource.length)
+    const settings = this.getResponsiveSlider(
+      this.state.dataSource.length
+    ) as any;
 
     return (
       <div className={styles.newEmployeesSlider}>
@@ -198,23 +206,24 @@ export default class NewEmployees extends BaseComponent<
           Chào đón nhân viên mới
         </div>
         <Skeleton paragraph={{ rows: 5 }} loading={this.state.loading}>
-          {this.props.dataSource && this.props.dataSource.length > 0 ? (
+          {this.state.dataSource && this.state.dataSource.length > 0 ? (
             <Slider {...settings} className={styles.newEmployeesSlider__slider}>
               {this.renderAllItem()}
             </Slider>
           ) : (
-              <Empty
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-                description={"Chưa có dữ liệu "}
-              />
-            )}</Skeleton>
+            <Empty
+              style={{
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+              description={"Chưa có dữ liệu "}
+            />
+          )}
+        </Skeleton>
       </div>
     );
   }
@@ -479,7 +488,7 @@ const header = (
   </svg>
 );
 
-function SampleNextArrowHighLight(props) {
+function SampleNextArrowHighLight(props: any) {
   const { className, style, onClick, index } = props;
   return (
     <svg
@@ -508,7 +517,7 @@ function SampleNextArrowHighLight(props) {
   );
 }
 
-function SamplePrevArrowHighLight(props) {
+function SamplePrevArrowHighLight(props: any) {
   const { className, style, onClick } = props;
   return (
     <svg
@@ -536,7 +545,7 @@ function SamplePrevArrowHighLight(props) {
     </svg>
   );
 }
-function SampleNextArrow(props) {
+function SampleNextArrow(props: any) {
   const { className, onClick } = props;
   return (
     <svg
@@ -565,7 +574,7 @@ function SampleNextArrow(props) {
   );
 }
 
-function SamplePrevArrow(props) {
+function SamplePrevArrow(props: any) {
   const { className, onClick } = props;
   return (
     <svg

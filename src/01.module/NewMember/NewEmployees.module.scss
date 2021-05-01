@@ -1,7 +1,7 @@
-@import "~office-ui-fabric-react/dist/sass/References.scss";
 .newEmployeesSlider {
   width: 100%;
   height: 400px;
+  margin-top: 30px;
   &__header {
     width: 100%;
     margin-bottom: 32px;
@@ -112,7 +112,7 @@
   }
   .slick-next {
     top: -53px !important;
-    margin-right: 32px!important;
+    margin-right: 32px !important;
     height: 24px !important;
     width: 24px !important;
   }

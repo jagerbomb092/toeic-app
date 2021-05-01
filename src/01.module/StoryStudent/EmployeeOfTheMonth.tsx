@@ -3,8 +3,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import styles from "./StoryStudent.module.scss";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+
 
 
 import { orderBy } from "lodash";
@@ -142,7 +141,7 @@ export default class StoryStudent extends BaseComponent<
             <div
               className={styles.StoryStudent__contentRight__ViewContent__title}
             >
-              Người FECON
+           Chuyện học hành
             </div>
             <div
               onClick={() => {
@@ -204,7 +203,7 @@ export default class StoryStudent extends BaseComponent<
     return (
       <Skeleton loading={false} paragraph={{ rows: 7 }} avatar>
         {this.state.allData.length > 0 ? (
-          <div style={{ width: "100%" }}>
+          <div style={{ width: "100%", marginTop:-80 }}>
             <Slider {...settings}>{this.renderItem()}</Slider>
           </div>
         ) : (

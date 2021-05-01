@@ -1,15 +1,15 @@
-
 import { Empty, Skeleton } from "antd";
 import * as _ from "lodash";
 import * as moment from "moment";
 import * as React from "react";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
+
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
-import styles from "./FeconUpcomingBirthday.module.scss";
- 
-interface UpcomingBirthdaysProps  { }
+import { upCommingBirthdayService } from "../../00.common/02.service/upcommingBirthdayService";
+
+import styles from "./UpcomingBirthday.module.scss";
+
+interface UpcomingBirthdaysProps {}
 interface UpcomingBirthdaysStates {
   color?: string;
   enable?: boolean;
@@ -18,16 +18,13 @@ interface UpcomingBirthdaysStates {
   firstindex?: number;
   lastIndex: number;
   loading: boolean;
-  dataSource:any[
-
-  ]
+  dataSource: any[];
 }
 
 export default class UpcomingBirthdays extends BaseComponent<
   UpcomingBirthdaysProps,
   UpcomingBirthdaysStates
-  > {
-
+> {
   public constructor(props: UpcomingBirthdaysProps) {
     super(props);
     this.state = {
@@ -35,11 +32,12 @@ export default class UpcomingBirthdays extends BaseComponent<
       firstindex: 0,
       lastIndex: 3,
       loading: true,
-      dataSource:[]
+      dataSource: [],
     };
     this.onMount(async () => {
+      await this.getData();
       this.setState({
-        loading: false
+        loading: false,
       });
     });
   }
@@ -51,6 +49,13 @@ export default class UpcomingBirthdays extends BaseComponent<
   protected mouseLeave = (index?: number) => {
     this.setState({ isHover: false, key: undefined });
   };
+
+  async getData() {
+    const dataSource = await upCommingBirthdayService.getAll("MemberDirectory");
+    this.setState({
+      dataSource,
+    });
+  }
 
   public renderAllItem(): React.ReactNode {
     if (this.state.dataSource.length > 0) {
@@ -70,9 +75,9 @@ export default class UpcomingBirthdays extends BaseComponent<
               <div
                 className={styles.upcomingBirthdaysSlider__slider__itemHover}
               >
-                {item.Photo ? (
+                {item.Avatar ? (
                   <img
-                    src={`${item.Photo}?width=48&height=48`}
+                    src={`${item.Avatar}?width=48&height=48`}
                     className={
                       styles.upcomingBirthdaysSlider__slider__itemHover__avartar
                     }
@@ -85,13 +90,13 @@ export default class UpcomingBirthdays extends BaseComponent<
                     src={imgUser}
                   />
                 ) : (
-                      <img
-                        className={
-                          styles.upcomingBirthdaysSlider__slider__itemHover__avartar
-                        }
-                        src={imgUser}
-                      />
-                    )}
+                  <img
+                    className={
+                      styles.upcomingBirthdaysSlider__slider__itemHover__avartar
+                    }
+                    src={imgUser}
+                  />
+                )}
                 <div
                   className={
                     styles.upcomingBirthdaysSlider__slider__itemHover__name
@@ -111,7 +116,7 @@ export default class UpcomingBirthdays extends BaseComponent<
                     styles.upcomingBirthdaysSlider__slider__itemHover__email
                   }
                 >
-                  {item.WorkEmail}
+                  {item.Email}
                 </div>
                 <div
                   className={
@@ -122,7 +127,7 @@ export default class UpcomingBirthdays extends BaseComponent<
                 </div>
                 <div
                   onClick={() => {
-                    window.location.href = `MSTeams:/l/chat/0/0?users=${item?.LoginName}`;
+                    window.location.href = `MSTeams:/l/chat/0/0?users=${item?.FullName}`;
                   }}
                   className={
                     styles.upcomingBirthdaysSlider__slider__itemHover__msTeam
@@ -133,137 +138,137 @@ export default class UpcomingBirthdays extends BaseComponent<
                 </div>
               </div>
             ) : (
-                <div className={styles.upcomingBirthdaysSlider__slider__item}>
+              <div className={styles.upcomingBirthdaysSlider__slider__item}>
+                <div
+                  className={
+                    styles.upcomingBirthdaysSlider__slider__item__message
+                  }
+                >
+                  {_.get(item, "Wish")}
+                </div>
+                <div
+                  className={
+                    styles.upcomingBirthdaysSlider__slider__item__inforUser
+                  }
+                >
+                  {item.Avatar ? (
+                    <img
+                      src={item.Avatar}
+                      height="48px"
+                      width="48px"
+                      className={
+                        styles.upcomingBirthdaysSlider__slider__item__inforUser__avartar
+                      }
+                    />
+                  ) : item.Gender === "M" ? (
+                    <img
+                      height="48px"
+                      width="48px"
+                      className={
+                        styles.upcomingBirthdaysSlider__slider__item__inforUser__avartar
+                      }
+                      src={imgUser}
+                    />
+                  ) : (
+                    <img
+                      height="48px"
+                      width="48px"
+                      className={
+                        styles.upcomingBirthdaysSlider__slider__item__inforUser__avartar
+                      }
+                      src={imgUser}
+                    />
+                  )}
                   <div
                     className={
-                      styles.upcomingBirthdaysSlider__slider__item__message
+                      styles.upcomingBirthdaysSlider__slider__item__inforUser__title
                     }
                   >
-                    {_.get(item, "Wish")}
-                  </div>
-                  <div
-                    className={
-                      styles.upcomingBirthdaysSlider__slider__item__inforUser
-                    }
-                  >
-                    {item.Photo ? (
-                      <img
-                        src={item.Photo}
-                        height="48px"
-                        width="48px"
-                        className={
-                          styles.upcomingBirthdaysSlider__slider__item__inforUser__avartar
-                        }
-                      />
-                    ) : item.Gender === "M" ? (
-                      <img
-                        height="48px"
-                        width="48px"
-                        className={
-                          styles.upcomingBirthdaysSlider__slider__item__inforUser__avartar
-                        }
-                        src={imgUser}
-                      />
-                    ) : (
-                          <img
-                            height="48px"
-                            width="48px"
-                            className={
-                              styles.upcomingBirthdaysSlider__slider__item__inforUser__avartar
-                            }
-                            src={imgUser}
-                          />
-                        )}
                     <div
                       className={
-                        styles.upcomingBirthdaysSlider__slider__item__inforUser__title
+                        styles.upcomingBirthdaysSlider__slider__item__inforUser__title__content1
                       }
                     >
-                      <div
-                        className={
-                          styles.upcomingBirthdaysSlider__slider__item__inforUser__title__content1
-                        }
-                      >
-                        {item.FullName}
-                      </div>
-                      <div
-                        className={
-                          styles.upcomingBirthdaysSlider__slider__item__inforUser__title__content2
-                        }
-                      >
-                        {this.props.mapJobLevelCode.get(item.JobLevelCode)}
-                      </div>
+                      {item.FullName}
+                    </div>
+                    <div
+                      className={
+                        styles.upcomingBirthdaysSlider__slider__item__inforUser__title__content2
+                      }
+                    >
+                      Sinh viên
+                    </div>
 
-                      <div
-                        className={
-                          styles.upcomingBirthdaysSlider__slider__item__inforUser__title__content2
-                        }
-                      >
-                        {this.props.mapDept.get(item.DepartmentCode)}
-                      </div>
+                    <div
+                      className={
+                        styles.upcomingBirthdaysSlider__slider__item__inforUser__title__content2
+                      }
+                    >
+                      Nhân viên văn phòng
                     </div>
                   </div>
-                  <div
-                    className={
-                      styles.upcomingBirthdaysSlider__slider__item__footer
-                    }
-                  >
-                    {iconFooter}
-                  </div>
-
-                  <div
-                    className={
-                      styles.upcomingBirthdaysSlider__slider__item__dateOfBirth
-                    }
-                  >
-                    <span
-                      className={
-                        styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__day
-                      }
-                    >
-                      {item.DayOfDOB}
-                    </span>
-                    <span
-                      className={
-                        styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__dotted
-                      }
-                    >
-                      .
-                  </span>
-                    <span
-                      className={
-                        styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__month
-                      }
-                    >
-                      {item.MonthOfDOB}
-                    </span>
-                    {item.DateOfBirth && (
-                      <span>
-                        <span
-                          className={
-                            styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__dotted
-                          }
-                        >
-                          .
-                      </span>
-                        <span
-                          className={
-                            styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__day
-                          }
-                        >
-                          {item.DateOfBirth.year()}
-                        </span>
-                      </span>
-                    )}
-                  </div>
-
-                  <div
-                    className={styles.upcomingBirthdaysSlider__slider__item__elip}
-                  >
-                    {iconElip}
-                  </div>
                 </div>
-              )}
+                <div
+                  className={
+                    styles.upcomingBirthdaysSlider__slider__item__footer
+                  }
+                >
+                  {iconFooter}
+                </div>
+
+                <div
+                  className={
+                    styles.upcomingBirthdaysSlider__slider__item__dateOfBirth
+                  }
+                >
+                  <span
+                    className={
+                      styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__day
+                    }
+                  >
+                    12
+                  </span>
+                  <span
+                    className={
+                      styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__dotted
+                    }
+                  >
+                    .
+                  </span>
+                  <span
+                    className={
+                      styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__month
+                    }
+                  >
+                    13
+                  </span>
+                  {item.DateOfBirth && (
+                    <span>
+                      <span
+                        className={
+                          styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__dotted
+                        }
+                      >
+                        .
+                      </span>
+                      <span
+                        className={
+                          styles.upcomingBirthdaysSlider__slider__item__dateOfBirth__day
+                        }
+                      >
+                        2021
+                      </span>
+                    </span>
+                  )}
+                </div>
+
+                <div
+                  className={styles.upcomingBirthdaysSlider__slider__item__elip}
+                >
+                  {iconElip}
+                </div>
+              </div>
+            )}
           </div>
         );
       });
@@ -286,19 +291,19 @@ export default class UpcomingBirthdays extends BaseComponent<
       autoplaySpeed: 2500,
       autoplay: false,
       nextArrow:
-        this.state.lastIndex == this.props.dataSource.length ? (
+        this.state.lastIndex == this.state.dataSource.length ? (
           <SampleNextArrow />
         ) : (
-            <SampleNextArrowHighLight />
-          ),
+          <SampleNextArrowHighLight />
+        ),
       prevArrow:
         this.state.firstindex == 0 ? (
           <SamplePrevArrow />
         ) : (
-            <SamplePrevArrowHighLight />
-          ),
+          <SamplePrevArrowHighLight />
+        ),
       swipe: false,
-      afterChange: (index) => {
+      afterChange: (index: number) => {
         this.setState({
           firstindex: index,
           lastIndex: index + 3,
@@ -338,7 +343,7 @@ export default class UpcomingBirthdays extends BaseComponent<
             autoplay: false,
           },
         },
-      ]
+      ],
     };
     if (lengthList >= 3) {
       for (let i = 0; i < settings.responsive.length; i++) {
@@ -351,13 +356,12 @@ export default class UpcomingBirthdays extends BaseComponent<
         settings.responsive[i].settings.autoplay = true;
         settings.responsive[i].settings.infinite = true;
       }
-      return settings
+      return settings;
     }
-
   }
 
   public render(): React.ReactElement<UpcomingBirthdaysProps> {
-    const settings = this.getResponsiveSlider(this.props.dataSource.length)
+    const settings = this.getResponsiveSlider(this.state.dataSource.length);
 
     return (
       <div className={styles.upcomingBirthdaysSlider}>
@@ -365,7 +369,7 @@ export default class UpcomingBirthdays extends BaseComponent<
           Sinh nhật trong tháng
         </div>
         <Skeleton paragraph={{ rows: 5 }} loading={this.state.loading}>
-          {this.props.dataSource && this.props.dataSource.length > 0 ? (
+          {this.state.dataSource && this.state.dataSource.length > 0 ? (
             <Slider
               {...settings}
               className={styles.upcomingBirthdaysSlider__slider}
@@ -373,18 +377,18 @@ export default class UpcomingBirthdays extends BaseComponent<
               {this.renderAllItem()}
             </Slider>
           ) : (
-              <Empty
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-                description={"Chưa có dữ liệu "}
-              />
-            )}
+            <Empty
+              style={{
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+              description={"Chưa có dữ liệu "}
+            />
+          )}
         </Skeleton>
       </div>
     );
@@ -534,7 +538,7 @@ const iconElip = (
     </defs>
   </svg>
 );
-function SampleNextArrowHighLight(props) {
+function SampleNextArrowHighLight(props: any) {
   const { className, style, onClick, index } = props;
   return (
     <svg
@@ -563,7 +567,7 @@ function SampleNextArrowHighLight(props) {
   );
 }
 
-function SamplePrevArrowHighLight(props) {
+function SamplePrevArrowHighLight(props: any) {
   const { className, style, onClick } = props;
   return (
     <svg
@@ -591,7 +595,7 @@ function SamplePrevArrowHighLight(props) {
     </svg>
   );
 }
-function SampleNextArrow(props) {
+function SampleNextArrow(props: any) {
   const { className, onClick } = props;
   return (
     <svg
@@ -620,7 +624,7 @@ function SampleNextArrow(props) {
   );
 }
 
-function SamplePrevArrow(props) {
+function SamplePrevArrow(props: any) {
   const { className, onClick } = props;
   return (
     <svg

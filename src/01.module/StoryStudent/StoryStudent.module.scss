@@ -1,8 +1,9 @@
-
 .StoryStudent {
   display: flex !important;
+  margin-top: -80px;
   height: 522px;
   width: 100%;
+  margin-top: 30px;
   &__contentLeft {
     width: 50%;
     height: 100%;
@@ -162,7 +163,6 @@
       }
     }
   }
-
 }
 
 @media only screen and (max-width: 1680px) {

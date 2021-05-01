@@ -3,6 +3,9 @@
   height: auto;
   &__header {
     height: 75px;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
     background: #33abe5;
     display: flex;
     justify-content: space-between;
@@ -22,6 +25,23 @@
         font-weight: 400;
         font-size: 25px;
         color: white;
+      }
+      &__topMenu {
+        margin-left: 20px;
+        display: flex;
+        &__item {
+          cursor: pointer;
+          background-color: #00baff;
+          width: fit-content;
+          padding: 5px;
+          text-underline-position: inherit;
+          color: white;
+          margin-right: 15px;
+          border-radius: 15px;
+          &:hover {
+            background-color: #33abe5;
+          }
+        }
       }
     }
     &__right {
@@ -46,6 +66,7 @@
     }
   }
   &__block1 {
+    margin-top: 77px;
     max-height: 700px;
     width: 100%;
     position: relative;
