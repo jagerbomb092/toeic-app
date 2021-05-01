@@ -4,7 +4,7 @@ import { orderBy } from "lodash";
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
 import { quickLinkService } from "../../00.common/02.service/quickLinkService";
 import { storage } from "../../firebase.config";
-import StoryStudent from "./StoryStudent/EmployeeOfTheMonth";
+
 interface staeHomepage {
   logo: string;
   img1: string;
@@ -15,7 +15,7 @@ interface staeHomepage {
 
 interface propsHomePage {}
 
-export class HomePageAppp extends BaseComponent<propsHomePage, staeHomepage> {
+export class QuickLink extends BaseComponent<propsHomePage, staeHomepage> {
   constructor(props: propsHomePage) {
     super(props);
     this.state = {
@@ -177,7 +177,6 @@ export class HomePageAppp extends BaseComponent<propsHomePage, staeHomepage> {
             ))}
           </div>
         </div>
-        <StoryStudent />
       </div>
     );
   }

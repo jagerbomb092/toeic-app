@@ -1,13 +1,16 @@
 import "./App.scss";
 import "antd/dist/antd.css";
 import React from "react";
-import { HomePageAppp } from "./01.module/HomePage/HomePageApp";
+import { QuickLink } from "./01.module/QuickLink/QuickLink";
+import StoryStudent from "./01.module/StoryStudent/EmployeeOfTheMonth";
+
 
 
 function App() {
   return (
     <div className="HomePage">
-      <HomePageAppp />
+    <QuickLink/>
+    <StoryStudent/>
     </div>
   );
 }

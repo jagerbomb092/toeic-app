@@ -5,9 +5,11 @@ import styles from "./StoryStudent.module.scss";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
-import { storyStudentService } from "../../../00.common/02.service/storyStudentService";
+
+
 import { orderBy } from "lodash";
+import { BaseComponent } from "../../00.common/00.components/BaseComponent";
+import { storyStudentService } from "../../00.common/02.service/storyStudentService";
 interface StoryStudentProps {}
 interface StoryStudentStates {
   allData: any[];

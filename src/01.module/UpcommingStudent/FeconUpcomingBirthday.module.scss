@@ -1,0 +1,551 @@
+@import "~office-ui-fabric-react/dist/sass/References.scss";
+// @import "../../../styles/fonts";
+.upcomingBirthdaysSlider {
+  width: 100%;
+  height: 376px;
+  padding-top: 20px;
+  &__header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 38px;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 46px;
+    text-align: center;
+    color: #3f5661;
+    font-family: "SFProDisplay Bold";
+    margin-bottom: 32px;
+  }
+  &__slider {
+    height: 100%;
+    width: 100%;
+    &__item {
+      margin: auto;
+      width: 95%;
+      position: relative;
+      height: 282px;
+      background: #ffffff;
+      border-top: 1px solid #c4c4c4;
+      border-left: 1px solid #c4c4c4;
+      border-right: 1px solid #c4c4c4;
+      border-bottom: 4px solid #fa541c;
+      &__message {
+        margin: 20px 15px 0px 20px;
+        font-family: "SFProDisplay";
+        font-style: normal;
+        font-weight: 600;
+        font-size: 19px;
+        color: #3f5661;
+        line-height: 28px;
+        width: fit-content;
+        height: 135px;
+      }
+      &__inforUser {
+        display: flex;
+        margin-left: 20px;
+        &__avartar {
+          margin-right: 16px;
+          border-radius: 50%;
+        }
+        &__title {
+          display: flex;
+          justify-content: space-between;
+          flex-direction: column;
+          z-index: 1;
+          &__content1 {
+            font-family: "SFProDisplay";
+            font-size: 17.5px;
+            line-height: 24px;
+            color: #000000;
+            width: fit-content;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 15px;
+          }
+          &__content2 {
+            font-family: "SFProDisplay Regular";
+            font-size: 14.5px;
+            color: #595959;
+            width: fit-content;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 15px;
+          }
+        }
+      }
+      &__dateOfBirth {
+        position: absolute;
+        bottom: 5px;
+        right: 15px;
+        z-index: 1;
+        &__day {
+          font-family: "SFProDisplay Bold";
+          font-size: 30px;
+          color: #ff7a45;
+        }
+        &__dotted {
+          font-style: normal;
+          font-weight: 800;
+          font-size: 30px;
+          line-height: 64px;
+          font-family: "SFProDisplay Bold";
+          color: #aeb8c2;
+        }
+        &__month {
+          font-family: "SFProDisplay Thin";
+          font-size: 30px;
+          color: #aeb8c2;
+        }
+      }
+      &__footer {
+        position: absolute;
+        bottom: 0px;
+        z-index: 1;
+      }
+      &__footerIcon {
+        width: 100%;
+      }
+
+      &__elip {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+      }
+      &__styleElipIcon {
+        height: 144px;
+        width: 172px;
+      }
+    }
+    &__itemHover {
+      margin: auto;
+      height: 282px;
+      width: 95%;
+      background: #ffffff;
+      border-top: 1px solid #c4c4c4;
+      border-left: 1px solid #c4c4c4;
+      border-right: 1px solid #c4c4c4;
+      border-bottom: 4px solid #3f5661;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &__avartar {
+        border-radius: 50%;
+        margin-top: 24px;
+        height: 64px;
+        width: 64px;
+      }
+      &__name {
+        margin-top: 16px;
+        font-family: "SFProDisplay";
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      &__jobTitle {
+        font-family: "SFProDisplay Regular";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        margin-top: 4px;
+        line-height: 22px;
+      }
+      &__email {
+        margin-top: 16px;
+        font-family: "SFProDisplay Regular";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 22px;
+        text-align: center;
+        color: #fa541c;
+      }
+      &__workPhone {
+        font-family: "SFProDisplay Regular";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 22px;
+        text-align: center;
+        color: #fa541c;
+        margin-top: 2px;
+      }
+      &__msTeam {
+        cursor: pointer;
+        margin: auto;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 32px;
+        width: 90%;
+        &__iconMSTeam {
+          margin-right: 13px;
+        }
+      }
+    }
+  }
+}
+:global {
+  .slick-prev {
+    right: 0px !important;
+    left: unset !important;
+    top: -53px !important;
+    margin-right: 39px !important;
+    height: 24px !important;
+    width: 24px !important;
+  }
+  .slick-next {
+    top: -53px !important;
+    margin-right: 32px !important;
+    height: 24px !important;
+    width: 24px !important;
+  }
+}
+@media only screen and (max-width: 1280px) {
+  .upcomingBirthdaysSlider {
+    &__slider {
+      &__item {
+        &__message {
+          margin: 20px 0 10px 15px;
+          height: 125px;
+        }
+        &__inforUser {
+          &__avartar {
+            margin-right: 10px;
+            height: 40px;
+            width: 40px;
+          }
+          margin-left: 15px;
+          &__title {
+
+            &__content2 {
+              font-size: 14px;
+            }
+          }
+        }
+        &__dateOfBirth {
+          &__day {
+            font-size: 30px;
+          }
+          &__dotted {
+            font-size: 30px;
+          }
+          &__month {
+            font-size: 30px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1152px) {
+  .upcomingBirthdaysSlider {
+    &__slider {
+      &__item {
+        &__message {
+          margin: 20px 15px 0 15px;
+          font-size: 18px;
+          height: 135px;
+        }
+        &__inforUser {
+          &__avartar {
+            margin-right: 10px;
+            height: 40px;
+            width: 40px;
+          }
+          margin-left: 15px;
+          &__title {
+            &__content2 {
+              font-size: 13px;
+            }
+          }
+        }
+        &__dateOfBirth {
+          &__day {
+            font-size: 28px;
+          }
+          &__dotted {
+            font-size: 28px;
+          }
+          &__month {
+            font-size: 28px;
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .upcomingBirthdaysSlider {
+    &__header {
+      font-size: 30px;
+    }
+    &__slider {
+      &__item {
+        &__message {
+          margin: 20px 0 0 15px;
+          font-size: 17px;
+          line-height: 25px;
+        }
+        &__inforUser {
+          margin-top: 5px;
+          &__avartar {
+            margin-right: 10px;
+            height: 40px;
+            width: 40px;
+          }
+          margin-left: 15px;
+          &__title {
+            &__content1 {
+              font-size: 15px;
+            }
+            &__content2 {
+              font-size: 12px;
+            }
+          }
+        }
+        &__dateOfBirth {
+          &__day {
+            font-size: 22px;
+            right: 5px;
+          }
+          &__dotted {
+            font-size: 22px;
+          }
+          &__month {
+            font-size: 22px;
+          }
+        }
+        &__styleElipIcon {
+          height: 130px;
+          width: 120px;
+        }
+      }
+    }
+  }
+  :global {
+    .slick-prev {
+      display: none;
+    }
+    .slick-next {
+      display: none;
+    }
+  }
+}
+@media only screen and (max-width: 850px) {
+  .upcomingBirthdaysSlider {
+    &__header {
+      font-size: 28px;
+    }
+    &__slider {
+      &__item {
+        &__message {
+          margin: 20px 15px 0 15px;
+          font-size: 19px;
+          height: 130px;
+        }
+        &__inforUser {
+          margin-top: 10px;
+          &__avartar {
+            margin-right: 10px;
+            height: 45px;
+            width: 45px;
+          }
+          margin-left: 15px;
+          &__title {
+            &__content1 {
+              font-size: 16px;
+              width: fit-content;
+            }
+            &__content2 {
+              font-size: 14px;
+              width: fit-content;
+            }
+          }
+        }
+        &__dateOfBirth {
+          &__day {
+            font-size: 25px;
+            right: 5px;
+          }
+          &__dotted {
+            font-size: 25px;
+          }
+          &__month {
+            font-size: 25px;
+          }
+        }
+        &__styleElipIcon {
+          height: 150px;
+          width: 130px;
+        }
+      }
+    }
+  }
+  :global {
+    .slick-prev {
+      display: none !important;
+    }
+    .slick-next {
+      display: none !important;
+    }
+  }
+}
+@media only screen and (max-width: 768px) {
+  .upcomingBirthdaysSlider {
+    &__header {
+      font-size: 28px;
+    }
+    &__slider {
+      &__item {
+        &__message {
+          margin: 20px 0 0 15px;
+          font-size: 17px;
+        }
+        &__inforUser {
+          &__avartar {
+            margin-right: 10px;
+            height: 40px;
+            width: 40px;
+          }
+          margin-left: 15px;
+          &__title {
+            margin-top: 5px;
+            &__content1 {
+              font-size: 15px;
+            }
+            &__content2 {
+              font-size: 13px;
+            }
+          }
+        }
+        &__dateOfBirth {
+          &__day {
+            font-size: 22px;
+            right: 5px;
+          }
+          &__dotted {
+            font-size: 22px;
+          }
+          &__month {
+            font-size: 22px;
+          }
+        }
+        &__styleElipIcon {
+          height: 130px;
+          width: 120px;
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 600px) {
+  .upcomingBirthdaysSlider {
+    &__header {
+      font-size: 28px;
+    }
+    &__slider {
+      &__item {
+        &__message {
+          margin: 20px 20px 0 15px;
+          font-size: 20px;
+        }
+        &__inforUser {
+          &__avartar {
+            margin-right: 10px;
+            height: 40px;
+            width: 40px;
+          }
+          margin-left: 15px;
+          &__title {
+            &__content1 {
+              font-size: 15px;
+              width: 100%;
+            }
+            &__content2 {
+              font-size: 13px;
+      
+            }
+          }
+        }
+        &__dateOfBirth {
+          right: 5px;
+          &__day {
+            font-size: 25px;
+            right: 5px;
+          }
+          &__dotted {
+            font-size: 25px;
+          }
+          &__month {
+            font-size: 25px;
+          }
+        }
+        &__styleElipIcon {
+          height: 130px;
+          width: 120px;
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 415px) {
+  .upcomingBirthdaysSlider {
+    &__header {
+      font-size: 28px;
+    }
+    &__slider {
+      &__item {
+        &__message {
+          margin: 20px 20px 0 15px;
+          font-size: 17px;
+        }
+        &__inforUser {
+          margin-top: 10px;
+          &__avartar {
+            margin-right: 10px;
+            height: 40px;
+            width: 40px;
+          }
+          margin-left: 15px;
+          &__title {
+            &__content1 {
+              font-size: 14px;
+            }
+            &__content2 {
+              font-size: 13px;
+            }
+          }
+        }
+        &__dateOfBirth {
+          right: 5px;
+          &__day {
+            font-size: 25px;
+            right: 5px;
+          }
+          &__dotted {
+            font-size: 25px;
+          }
+          &__month {
+            font-size: 25px;
+          }
+        }
+        &__styleElipIcon {
+          height: 130px;
+          width: 120px;
+        }
+      }
+    }
+  }
+}
