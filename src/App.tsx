@@ -12,6 +12,8 @@ import { BaseComponent } from "./00.common/00.components/BaseComponent";
 import { quickLinkService } from "./00.common/02.service/quickLinkService";
 import { orderBy } from "lodash";
 import { storage } from "./firebase.config";
+import React from "react";
+import Words600Com from "./01.module/600WordsToeic/WordsToeics600";
 interface propsApp {}
 interface stateApp {
   allTopMenu: any[];
@@ -117,9 +119,12 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                     <div>Mẹo thi</div>
                   </Route>
                   <Route path="/600-tu-toeic">
-                    <div>Mẹo thi</div>
+                    <Words600Com />
                   </Route>
                   <Route path="/de-thi">
+                    <div>Mẹo thi</div>
+                  </Route>
+                  <Route path="/theme-detail">
                     <div>Mẹo thi</div>
                   </Route>
                 </Switch>
