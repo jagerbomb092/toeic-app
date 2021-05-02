@@ -1,4 +1,5 @@
 //deploy app follow comand
 
 yarn build
-yarn deploy
+firebase login
+firebase deploy
