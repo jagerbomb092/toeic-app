@@ -27,7 +27,7 @@ export default class Words600Com extends BaseComponent<
   async loadAllData() {
     let allData = await words600Service.getAll("600WordsToeic");
     this.setState({
-      allData,
+      allData: allData,
     });
   }
   render() {

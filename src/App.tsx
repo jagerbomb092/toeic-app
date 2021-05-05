@@ -14,6 +14,7 @@ import { orderBy } from "lodash";
 import { storage } from "./firebase.config";
 import React from "react";
 import Words600Com from "./01.module/600WordsToeic/WordsToeics600";
+import GrammarCom from "./01.module/Grammar/Grammar";
 import MainPage from "./admin/MainPage";
 interface propsApp {}
 interface stateApp {
@@ -117,7 +118,7 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                     <NewEmployees />
                   </Route>
                   <Route path="/ngu-phap">
-                    <div>Ngữ pháp</div>
+                    <GrammarCom />
                   </Route>
                   <Route path="/huong-dan">
                     <div>Hướng dẫn</div>

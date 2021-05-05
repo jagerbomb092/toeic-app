@@ -1,0 +1,19 @@
+.grammar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: red;
+  &__header {
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #cfcfcf;
+    &__title {
+      width: 100%;
+      text-align: center;
+      font-weight: 700;
+    }
+    &__select {
+      font-weight: normal;
+    }
+  }
+}

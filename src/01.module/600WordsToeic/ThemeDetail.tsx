@@ -99,7 +99,7 @@ export default class ThemeDetailModalCom extends BaseComponent<
               </div>
             ))}
         </div>
-        {/* <div dangerouslySetInnerHTML={{__html: ''}}></div> */}
+     
       </Modal>
     );
   }
