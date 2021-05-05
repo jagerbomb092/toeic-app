@@ -58,58 +58,69 @@ export default class App extends BaseComponent<propsApp, stateApp> {
         {this.state.allTopMenu && this.state.allTopMenu.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Router>
-              <div className={styles.HomePageApp}>
-                <div className={styles.HomePageApp__header}>
-                  <div className={styles.HomePageApp__header__left}>
-                    <img
-                      onClick={() => {
-                        window.open("https://feed.hust.edu.vn/");
-                      }}
-                      className={styles.HomePageApp__header__left__img}
-                      src={this.state.logo}
-                    />
-                    <div></div>
-                    <Link
-                      className={styles.HomePageApp__header__left__title}
-                      style={{ color: "white" }}
-                      to={`/`}
-                    >
-                      TOEIC SINH VIÊN HUST
-                    </Link>
-                    <div className={styles.HomePageApp__header__left__topMenu}>
-                      {this.state.allTopMenu.map((item) => (
-                        <div
-                          className={
-                            styles.HomePageApp__header__left__topMenu__item
-                          }
-                        >
-                          <Link style={{ color: "white" }} to={`/${item.Code}`}>
-                            {item.Title}
-                          </Link>
-                        </div>
-                      ))}
+              {!window.location.href.includes("admin") && (
+                <div className={styles.HomePageApp}>
+                  <div className={styles.HomePageApp__header}>
+                    <div className={styles.HomePageApp__header__left}>
+                      <img
+                        onClick={() => {
+                          window.open("https://feed.hust.edu.vn/");
+                        }}
+                        className={styles.HomePageApp__header__left__img}
+                        src={this.state.logo}
+                      />
+                      <div></div>
+                      <Link
+                        className={styles.HomePageApp__header__left__title}
+                        style={{ color: "white" }}
+                        to={`/`}
+                      >
+                        TOEIC SINH VIÊN HUST
+                      </Link>
+                      <div
+                        className={styles.HomePageApp__header__left__topMenu}
+                      >
+                        {this.state.allTopMenu.map((item) => (
+                          <div
+                            className={
+                              styles.HomePageApp__header__left__topMenu__item
+                            }
+                          >
+                            <Link
+                              style={{ color: "white" }}
+                              to={`/${item.Code}`}
+                            >
+                              {item.Title}
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className={styles.HomePageApp__header__right}>
-                    <div
-                      className={styles.HomePageApp__header__right__divider}
-                    />
-                    <div className={styles.HomePageApp__header__right__text}>
-                      Đăng kí
+                    <div className={styles.HomePageApp__header__right}>
+                      <div
+                        className={styles.HomePageApp__header__right__divider}
+                      />
+                      <div className={styles.HomePageApp__header__right__text}>
+                        Đăng kí
+                      </div>
+                      <div className={styles.HomePageApp__header__right__text}>
+                        Đăng nhập
+                      </div>
+                      <Link
+                        className={styles.HomePageApp__header__right__text}
+                        to={"/admin"}
+                      >
+                        Quản trị
+                      </Link>
                     </div>
-                    <div className={styles.HomePageApp__header__right__text}>
-                      Đăng nhập
-                    </div>
-                    <Link
-                      className={styles.HomePageApp__header__right__text}
-                      to={"/admin"}
-                    >
-                      Quản trị
-                    </Link>
                   </div>
                 </div>
-              </div>
-              <div style={{ marginTop: 77 }}>
+              )}
+              <div
+                style={{
+                  marginTop: !window.location.href.includes("admin") ? 77 : 0,
+                }}
+              >
                 <Switch>
                   <Route exact path="/">
                     <QuickLink />
@@ -136,7 +147,7 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                     <div>Mẹo thi</div>
                   </Route>
                   <Route path="/admin">
-                    <MainPage/>
+                    <MainPage />
                   </Route>
                 </Switch>
               </div>

@@ -1,10 +1,12 @@
 import { BaseComponent } from "../00.common/00.components/BaseComponent";
 import { Layout, Menu, Breadcrumb } from "antd";
 import {
-  UserOutlined,
+  BookOutlined,
   LaptopOutlined,
   NotificationOutlined,
 } from "@ant-design/icons";
+import React from "react";
+import List600WordsToeic from "./600WordToeic/List600WordToeic";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -22,15 +24,19 @@ export default class MainPage extends BaseComponent<
   render() {
     return (
       <Layout>
-        <Header className="header">
-          <div style={{
-              float:"right",
-              
-          }}/>
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
+        <Header className="header" style={{ backgroundColor: "#33ABE5" }}>
+          <div
+            style={{
+              float: "right",
+            }}
+          />
+          <Menu
+            style={{ backgroundColor: "#33ABE5" }}
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={["2"]}
+          >
             <Menu.Item key="1">nav 1</Menu.Item>
-            <Menu.Item key="2">nav 2</Menu.Item>
-            <Menu.Item key="3">nav 3</Menu.Item>
           </Menu>
         </Header>
         <Layout>
@@ -41,11 +47,8 @@ export default class MainPage extends BaseComponent<
               defaultOpenKeys={["sub1"]}
               style={{ height: "100%", borderRight: 0 }}
             >
-              <SubMenu key="sub1" icon={<UserOutlined />} title="subnav 1">
-                <Menu.Item key="1">option1</Menu.Item>
-                <Menu.Item key="2">option2</Menu.Item>
-                <Menu.Item key="3">option3</Menu.Item>
-                <Menu.Item key="4">option4</Menu.Item>
+              <SubMenu key="sub1" icon={<BookOutlined />} title="600 từ toeic ">
+                <Menu.Item key="1">Danh sách</Menu.Item>
               </SubMenu>
               <SubMenu key="sub2" icon={<LaptopOutlined />} title="subnav 2">
                 <Menu.Item key="5">option5</Menu.Item>
@@ -77,10 +80,10 @@ export default class MainPage extends BaseComponent<
                 padding: 24,
                 margin: 0,
                 minHeight: 280,
-                backgroundColor:"#fff"
+                backgroundColor: "#fff",
               }}
             >
-              Content
+              <List600WordsToeic />
             </Content>
           </Layout>
         </Layout>
