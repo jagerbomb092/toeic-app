@@ -14,6 +14,7 @@ import { orderBy } from "lodash";
 import { storage } from "./firebase.config";
 import React from "react";
 import Words600Com from "./01.module/600WordsToeic/WordsToeics600";
+import MainPage from "./admin/MainPage";
 interface propsApp {}
 interface stateApp {
   allTopMenu: any[];
@@ -98,6 +99,12 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                     <div className={styles.HomePageApp__header__right__text}>
                       Đăng nhập
                     </div>
+                    <Link
+                      className={styles.HomePageApp__header__right__text}
+                      to={"/admin"}
+                    >
+                      Quản trị
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -126,6 +133,9 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                   </Route>
                   <Route path="/theme-detail">
                     <div>Mẹo thi</div>
+                  </Route>
+                  <Route path="/admin">
+                    <MainPage/>
                   </Route>
                 </Switch>
               </div>
