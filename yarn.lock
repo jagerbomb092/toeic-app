@@ -10401,6 +10401,13 @@ react-error-overlay@^6.0.9:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
+react-firebase-file-uploader@^2.4.4:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/react-firebase-file-uploader/-/react-firebase-file-uploader-2.4.4.tgz#5758300b4a57bbe87886f4e932729155af9c923e"
+  integrity sha512-kNDJEP4K8jQwg81Tmr8vmPobVS4g26ycSHq7dFuvCv28sITU0M8ljlm6Pebd6YHEbcTFJGaofGocq3AB0U+Ucg==
+  dependencies:
+    uuid "^3.2.1"
+
 react-firebaseui@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/react-firebaseui/-/react-firebaseui-4.1.0.tgz#fbd8381432b53b58ce56ee86df81e2a6e40af7b6"
@@ -12487,7 +12494,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^3.3.2, uuid@^3.4.0:
+uuid@^3.2.1, uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
