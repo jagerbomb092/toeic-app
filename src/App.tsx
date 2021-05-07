@@ -16,6 +16,7 @@ import React from "react";
 import Words600Com from "./01.module/600WordsToeic/WordsToeics600";
 import GrammarCom from "./01.module/Grammar/Grammar";
 import MainPage from "./admin/MainPage";
+import { UploadFile } from "./00.common/00.components/UploadFile";
 interface propsApp {}
 interface stateApp {
   allTopMenu: any[];
@@ -135,7 +136,21 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                     <div>Hướng dẫn</div>
                   </Route>
                   <Route path="/meo-thi">
-                    <div>Mẹo thi</div>
+                    <div
+                      style={{
+                        height: 800,
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <UploadFile
+                        type={"audio"}
+                        refDocLib={"hihihi"}
+                        result={(value) => {}}
+                      />
+                    </div>
                   </Route>
                   <Route path="/600-tu-toeic">
                     <Words600Com />
