@@ -73,6 +73,7 @@ export class UploadFile extends BaseComponent<
             padding: 10,
             borderRadius: 4,
             marginBottom: 10,
+            width: "100%",
           }}
         >
           Choose {this.props.type == "img" ? "Image" : "Audio"}{" "}
@@ -94,6 +95,7 @@ export class UploadFile extends BaseComponent<
                 this.state.downloadURLs.map((downloadURL, i) => {
                   return (
                     <ReactAudioPlayer
+                    
                       key={i}
                       src={downloadURL}
                       autoPlay={false}

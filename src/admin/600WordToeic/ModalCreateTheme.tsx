@@ -1,7 +1,16 @@
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
 import ReactAudioPlayer from "react-audio-player";
 import styles from "./ModalWordToeic.module.scss";
-import { Modal, FormInstance, Form, Row, Col, Input, message } from "antd";
+import {
+  Modal,
+  FormInstance,
+  Form,
+  Row,
+  Col,
+  Input,
+  message,
+  InputNumber,
+} from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
 import React from "react";
@@ -13,49 +22,43 @@ import { database, firestore } from "../../firebase.config";
 import { words600Service } from "../../00.common/02.service/words600Service";
 import { WordToeic } from "../../00.common/01.model/WordToeic";
 
-interface ModalWordToeiclModalProps {
+interface ModalThemeProps {
   onSave: () => void;
 }
 
-interface ModalWordToeiclModalState {
+interface ModalThemeState {
   visible: boolean;
-  selectedTheme?: { Title: string; value: string };
-  item: any;
+  item?: any;
   blocking: boolean;
-  imgUrl?: string;
-  audioUrl?: string;
+  imgBannerUrl?: string;
+  idDoc?: string;
 }
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
 };
 
-export default class ModalWordToeic extends BaseComponent<
-  ModalWordToeiclModalProps,
-  ModalWordToeiclModalState
+export default class ModalTheme extends BaseComponent<
+  ModalThemeProps,
+  ModalThemeState
 > {
   private initialState = {
     visible: false,
-    selectedTheme: "",
-    item: {} as any,
     blocking: false,
-    imgUrl: undefined,
-    audioUrl: undefined,
+    item: undefined,
+    imgBannerUrl: "",
   };
   private formRef = React.createRef<FormInstance>();
-  constructor(props: ModalWordToeiclModalProps) {
+  constructor(props: ModalThemeProps) {
     super(props);
     this.state = {
       visible: false,
-      selectedTheme: undefined,
-      item: {} as any,
       blocking: false,
     };
   }
 
-  async openModal(selectedTheme: { Title: string; value: string }, item?: any) {
+  async openModal(item?: any) {
     await this.setState({
-      selectedTheme: selectedTheme,
       visible: true,
       item,
     });
@@ -71,24 +74,21 @@ export default class ModalWordToeic extends BaseComponent<
       });
       //lấy ra dư liệu từ form
       const value = this.formRef.current!.getFieldsValue();
-      value.LinkAudio = this.state.audioUrl;
-      value.ImgItem = this.state.imgUrl;
-      await words600Service.updateContent(
+      value.ImgBanner = this.state.imgBannerUrl;
+      value.Content = [];
+      await words600Service.saveDocWithId(
         "600WordsToeic",
-        this.state.selectedTheme?.value as string,
+        this.state.idDoc as string,
         value as any
       );
-      // upfile len docLib
-      try {
-      } catch (error) {
-        message.error("save item fail!");
-      }
+      this.setState(this.initialState as any);
+
       this.formRef.current!.resetFields();
       await this.setState(this.initialState as any);
       this.formRef.current!.resetFields();
       this.props.onSave();
     } catch (error) {
-      console.log("lỗi nha");
+      console.log("lỗi nha" + error);
     }
   }
 
@@ -97,7 +97,7 @@ export default class ModalWordToeic extends BaseComponent<
     return (
       <Modal
         width={900}
-        title={`Thêm mới từ vựng với chủ đề ${this.state.selectedTheme?.Title}`}
+        title={`Thêm mới chủ đề `}
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
@@ -121,7 +121,7 @@ export default class ModalWordToeic extends BaseComponent<
             <Col span={12}>
               <Form.Item
                 labelCol={{ span: 6 }}
-                label="Tên "
+                label="Tên chủ đề "
                 name="Title"
                 rules={[{ required: true, message: "Please input title!" }]}
               >
@@ -131,96 +131,49 @@ export default class ModalWordToeic extends BaseComponent<
             <Col span={12}>
               <Form.Item
                 labelCol={{ span: 6 }}
-                label="Phiên âm"
-                name="Spelling"
-                rules={[{ required: true, message: "Please input title!" }]}
+                label="Thứ tự"
+                name="OrderBy"
+                rules={[{ required: true, message: "Please input orderBy!" }]}
               >
-                <Input style={{ width: 242 }} />
+                <InputNumber style={{ width: 242 }} />
               </Form.Item>
             </Col>
           </Row>
+
           <Row>
             <Col span={24}>
               <Form.Item
                 labelCol={{ span: 3 }}
-                label="Giải thích"
-                name="Explain"
+                label="Id Document"
                 rules={[{ required: true, message: "Please input title!" }]}
               >
-                <Input.TextArea rows={2} />
+                <Input
+                  onChange={(e) => {
+                    this.setState({
+                      idDoc: e.target.value,
+                    });
+                  }}
+                />
               </Form.Item>
             </Col>
           </Row>
-          <Row>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3 }}
-                label="Thể loại"
-                name="Category"
-                rules={[{ required: true, message: "Please input title!" }]}
-              >
-                <Input.TextArea rows={2} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3 }}
-                label="Ví dụ"
-                name="Example"
-                rules={[{ required: true, message: "Please input title!" }]}
-              >
-                <Input.TextArea rows={2} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={24}>
-              <Form.Item
-                labelCol={{ span: 3 }}
-                label="Dịch nghĩa"
-                name="Translate"
-                rules={[{ required: true, message: "Please input title!" }]}
-              >
-                <Input.TextArea rows={2} />
-              </Form.Item>
-            </Col>
-          </Row>
+
           <Row gutter={16} style={{ marginTop: 15 }}>
             <Col span={10}>
               <Form.Item
                 labelCol={{ span: 8 }}
                 label=" Ảnh biểu tượng"
-                name="ImgItem"
+                name="ImgBanner"
                 rules={[{ message: "Please input title!" }]}
               >
                 <UploadFile
                   type={"img"}
                   result={async (values) => {
                     await this.setState({
-                      imgUrl: values[0],
+                      imgBannerUrl: values[0],
                     });
                   }}
-                  refDocLib={`600wordsToeics/Content/${this.state.selectedTheme?.value}`}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={14}>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                label="Phát âm"
-                name="LinkAudio"
-                rules={[{ message: "Please input title!" }]}
-              >
-                <UploadFile
-                  type={"audio"}
-                  result={async (values) => {
-                    await this.setState({
-                      audioUrl: values[0],
-                    });
-                  }}
-                  refDocLib={`600wordsToeics/Content/${this.state.selectedTheme?.value}/Audio`}
+                  refDocLib={`600wordsToeics/Content/${this.state.idDoc}`}
                 />
               </Form.Item>
             </Col>

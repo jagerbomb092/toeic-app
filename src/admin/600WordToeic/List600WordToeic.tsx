@@ -1,24 +1,34 @@
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
-import { Table, Input, Button, Space } from "antd";
+import {} from "antd";
+import { Table, Input, Button, Space, Select, Popover } from "antd";
 import Highlighter from "react-highlight-words";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { words600Service } from "../../00.common/02.service/words600Service";
 import ReactAudioPlayer from "react-audio-player";
 import React from "react";
-import ModalWordToeicl from "./ModalToeicWord";
+
 import ModalWordToeic from "./ModalToeicWord";
+
+import _ from "lodash";
+import ModalTheme from "./ModalCreateTheme";
+
 interface List600WordProps {}
 
 interface List600WordState {
   searchText: string;
   searchedColumn: string;
   allData: any[];
+  allCategories: { Title: string; value: string }[];
+  selectedCa?: { Title: string; value: string };
+  dataSource: any[];
+  visibleCreateButton: boolean;
 }
-
+const { Option } = Select;
 export default class List600WordsToeic extends BaseComponent<
   List600WordProps,
   List600WordState
 > {
+  private refModalTheme = React.createRef<ModalTheme>();
   private refModalWordToeic = React.createRef<ModalWordToeic>();
   constructor(props: List600WordProps) {
     super(props);
@@ -26,6 +36,9 @@ export default class List600WordsToeic extends BaseComponent<
       searchText: "",
       searchedColumn: "",
       allData: [],
+      allCategories: [],
+      dataSource: [],
+      visibleCreateButton: false,
     };
     this.onMount(async () => {
       await Promise.all([this.loadAllData()]);
@@ -33,9 +46,28 @@ export default class List600WordsToeic extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await words600Service.getAll("600WordsToeic");
+    let allData = _.orderBy(
+      await words600Service.getAll("600WordsToeic"),
+      "OrderBy",
+      "asc"
+    );
+
+    let allCategories: { Title: string; value: string }[] = allData.map(
+      (item) => {
+        return {
+          Title: item.Title,
+          value: item.KeyDoc,
+        };
+      }
+    );
+
+    let selectedCa = allCategories[0];
+
     this.setState({
       allData: allData,
+      allCategories,
+      selectedCa,
+      dataSource: allData[0].Content,
     });
   }
 
@@ -174,14 +206,116 @@ export default class List600WordsToeic extends BaseComponent<
     ];
     return (
       <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row-reverse",
+            justifyContent: "space-between",
+            marginBottom: 20,
+          }}
+        >
+          <Select
+            key={this.state.selectedCa?.value}
+            value={this.state.selectedCa?.value}
+            showSearch
+            onSelect={async (value) => {
+              let dataSelect = this.state.allData.find((item) => {
+                return item.KeyDoc == value;
+              });
+              await this.setState({
+                dataSource:
+                  dataSelect.Content && dataSelect.Content.length > 0
+                    ? dataSelect.Content
+                    : [],
+                selectedCa: { Title: dataSelect.Title, value: value },
+              });
+            }}
+            style={{ width: 200 }}
+            placeholder="Search to Select theme"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option!.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              optionA.children
+                .toLowerCase()
+                .localeCompare(optionB.children.toLowerCase())
+            }
+          >
+            {this.state.allCategories.map((item, index) => (
+              <Option key={index} value={item.value}>
+                {item.Title}
+              </Option>
+            ))}
+          </Select>
+          <Popover
+            content={
+              <div style={{ width: 150 }}>
+                <Button
+                  type="primary"
+                  style={{ width: "100%", marginBottom: 5 }}
+                  onClick={() => {
+                    this.setState({
+                      visibleCreateButton: !this.state.visibleCreateButton,
+                    });
+                    this.refModalWordToeic.current!.openModal(
+                      this.state.selectedCa as { Title: string; value: string }
+                    );
+                  }}
+                >
+                  Tạo mới từ vựng
+                </Button>
+                <Button
+                  onClick={() => {
+                    this.setState({
+                      visibleCreateButton: !this.state.visibleCreateButton,
+                    });
+                    this.refModalTheme.current!.openModal();
+                  }}
+                  type="primary"
+                  style={{ width: "100%" }}
+                >
+                  Tạo mới chủ đề
+                </Button>
+              </div>
+            }
+            title="Tùy chọn"
+            trigger="click"
+            visible={this.state.visibleCreateButton}
+            onVisibleChange={() => {
+              this.setState({
+                visibleCreateButton: !this.state.visibleCreateButton,
+              });
+            }}
+          >
+            <Button type="primary" icon={<PlusCircleOutlined />}>
+              Tạo mới
+            </Button>
+          </Popover>
+        </div>
+
         <Table
+          bordered={true}
           pagination={{ pageSize: 8 }}
           columns={columns as any}
           dataSource={
-            this.state.allData.length > 0 ? this.state.allData[1].Content : []
+            this.state.dataSource && this.state.dataSource.length > 0
+              ? this.state.dataSource
+              : []
           }
         />
-        <ModalWordToeic ref={this.refModalWordToeic} />
+        <ModalTheme
+          onSave={async () => {
+            this.loadAllData();
+          }}
+          ref={this.refModalTheme}
+        />
+        <ModalWordToeic
+          onSave={async () => {
+            this.loadAllData();
+          }}
+          ref={this.refModalWordToeic}
+        />
       </div>
     );
   }
