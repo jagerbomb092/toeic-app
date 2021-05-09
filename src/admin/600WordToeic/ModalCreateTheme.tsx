@@ -125,7 +125,7 @@ export default class ModalTheme extends BaseComponent<
                 name="Title"
                 rules={[{ required: true, message: "Please input title!" }]}
               >
-                <Input style={{ width: 242 }} />
+                <Input style={{ width: "100%" }} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -135,17 +135,29 @@ export default class ModalTheme extends BaseComponent<
                 name="OrderBy"
                 rules={[{ required: true, message: "Please input orderBy!" }]}
               >
-                <InputNumber style={{ width: 242 }} />
+                <Input style={{ width: "100%" }} />
               </Form.Item>
             </Col>
           </Row>
 
-          <Row>
-            <Col span={24}>
+          <Row gutter={16}>
+            <Col span={12}>
               <Form.Item
-                labelCol={{ span: 3 }}
+                labelCol={{ span: 6 }}
+                label="Dịch nghĩa"
+                name="Title_VN"
+                rules={[{ required: true, message: "Please input content!" }]}
+              >
+                <Input style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                labelCol={{ span: 6 }}
                 label="Id Document"
-                rules={[{ required: true, message: "Please input title!" }]}
+                rules={[
+                  { required: true, message: "Please input id document!" },
+                ]}
               >
                 <Input
                   onChange={(e) => {

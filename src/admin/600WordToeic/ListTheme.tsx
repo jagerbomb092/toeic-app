@@ -12,31 +12,29 @@ import ModalWordToeic from "./ModalToeicWord";
 import _ from "lodash";
 import ModalTheme from "./ModalCreateTheme";
 
-interface List600WordProps {}
+interface ListThemeProps {}
 
-interface List600WordState {
+interface ListThemeState {
   searchText: string;
   searchedColumn: string;
   allData: any[];
   allCategories: { Title: string; value: string }[];
   selectedCa?: { Title: string; value: string };
-  dataSource: any[];
 }
 const { Option } = Select;
-export default class List600WordsToeic extends BaseComponent<
-  List600WordProps,
-  List600WordState
+export default class ListTheme extends BaseComponent<
+  ListThemeProps,
+  ListThemeState
 > {
   private refModalTheme = React.createRef<ModalTheme>();
-  private refModalWordToeic = React.createRef<ModalWordToeic>();
-  constructor(props: List600WordProps) {
+
+  constructor(props: ListThemeProps) {
     super(props);
     this.state = {
       searchText: "",
       searchedColumn: "",
       allData: [],
       allCategories: [],
-      dataSource: [],
     };
     this.onMount(async () => {
       await Promise.all([this.loadAllData()]);
@@ -65,7 +63,6 @@ export default class List600WordsToeic extends BaseComponent<
       allData: allData,
       allCategories,
       selectedCa,
-      dataSource: allData[0].Content,
     });
   }
 
@@ -161,15 +158,27 @@ export default class List600WordsToeic extends BaseComponent<
         render: (Title: any) => <a style={{ color: "red" }}>{Title}</a>,
       },
       {
-        title: "Phiên âm",
-        dataIndex: "Spelling",
-        key: "Spelling",
-        width: "10%",
-        ...this.getColumnSearchProps("Spelling"),
+        title: "Dịch nghĩa",
+        dataIndex: "Title_VN",
+        key: "Title_VN",
+        width: "15%",
+        ...this.getColumnSearchProps("Title_VN"),
+        render: (Title_VN: any) => (
+          <a style={{ color: "#007ACC" }}>{Title_VN}</a>
+        ),
+      },
+      {
+        title: "Thứ tự",
+        dataIndex: "OrderBy",
+        key: "OrderBy",
+        width: "5%",
+
+        ...this.getColumnSearchProps("OrderBy"),
         render: (Spelling: any, record: any) => (
           <a
+            style={{ textAlign: "center" }}
             onClick={() => {
-              this.refModalWordToeic.current!.openModal(record);
+              this.refModalTheme.current!.openModal(record);
             }}
           >
             {Spelling}
@@ -177,29 +186,14 @@ export default class List600WordsToeic extends BaseComponent<
         ),
       },
       {
-        title: "Phiên âm",
-        dataIndex: "LinkAudio",
-        key: "LinkAudio",
-        width: "10%",
+        title: "Hình nền",
+        dataIndex: "ImgBanner",
+        key: "ImgBanner",
+        width: "40%",
 
-        render: (LinkAudio: any) => (
-          <ReactAudioPlayer src={LinkAudio} autoPlay={false} controls />
+        render: (ImgBanner: any) => (
+          <img src={ImgBanner} height={173} width={259} />
         ),
-      },
-
-      {
-        title: "Thể loại",
-        dataIndex: "Category",
-        width: "40%",
-        key: "Category",
-        ...this.getColumnSearchProps("Category"),
-      },
-      {
-        title: "Giải thích",
-        dataIndex: "Explain",
-        width: "40%",
-        key: "Explain",
-        ...this.getColumnSearchProps("Explain"),
       },
     ];
     return (
@@ -212,46 +206,9 @@ export default class List600WordsToeic extends BaseComponent<
             marginBottom: 20,
           }}
         >
-          <Select
-            key={this.state.selectedCa?.value}
-            value={this.state.selectedCa?.value}
-            showSearch
-            onSelect={async (value) => {
-              let dataSelect = this.state.allData.find((item) => {
-                return item.KeyDoc == value;
-              });
-              await this.setState({
-                dataSource:
-                  dataSelect.Content && dataSelect.Content.length > 0
-                    ? dataSelect.Content
-                    : [],
-                selectedCa: { Title: dataSelect.Title, value: value },
-              });
-            }}
-            style={{ width: 200 }}
-            placeholder="Search to Select theme"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option!.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            filterSort={(optionA, optionB) =>
-              optionA.children
-                .toLowerCase()
-                .localeCompare(optionB.children.toLowerCase())
-            }
-          >
-            {this.state.allCategories.map((item, index) => (
-              <Option key={index} value={item.value}>
-                {item.Title}
-              </Option>
-            ))}
-          </Select>
-
           <Button
             onClick={() => {
-              this.refModalWordToeic.current!.openModal(
-                this.state.selectedCa as { Title: string; value: string }
-              );
+              this.refModalTheme.current!.openModal();
             }}
             type="primary"
             icon={<PlusCircleOutlined />}
@@ -261,12 +218,11 @@ export default class List600WordsToeic extends BaseComponent<
         </div>
 
         <Table
-          bordered={true}
           pagination={{ pageSize: 8 }}
           columns={columns as any}
           dataSource={
-            this.state.dataSource && this.state.dataSource.length > 0
-              ? this.state.dataSource
+            this.state.allData && this.state.allData.length > 0
+              ? this.state.allData
               : []
           }
         />
@@ -275,12 +231,6 @@ export default class List600WordsToeic extends BaseComponent<
             this.loadAllData();
           }}
           ref={this.refModalTheme}
-        />
-        <ModalWordToeic
-          onSave={async () => {
-            this.loadAllData();
-          }}
-          ref={this.refModalWordToeic}
         />
       </div>
     );

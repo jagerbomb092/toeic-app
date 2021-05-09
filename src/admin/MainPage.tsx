@@ -7,11 +7,16 @@ import {
 } from "@ant-design/icons";
 import React from "react";
 import List600WordsToeic from "./600WordToeic/List600WordToeic";
+import ListTheme from "./600WordToeic/ListTheme";
+import { LIST_COMPONET_ADMIN } from "../00.common/const";
+import { isThisTypeNode } from "typescript";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 interface MainPageProps {}
-interface MainPageState {}
+interface MainPageState {
+  element: JSX.Element;
+}
 
 export default class MainPage extends BaseComponent<
   MainPageProps,
@@ -19,7 +24,21 @@ export default class MainPage extends BaseComponent<
 > {
   constructor(props: MainPageProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      element: <List600WordsToeic />,
+    };
+  }
+
+  renderContent(keyContent: string) {
+    let element: JSX.Element = <div></div>;
+    if (keyContent == LIST_COMPONET_ADMIN.LIST_THEME_6000WORDS) {
+      element = <ListTheme />;
+    } else if (keyContent == LIST_COMPONET_ADMIN.LIST_600WORDS) {
+      element = <List600WordsToeic />;
+    }
+    this.setState({
+      element,
+    });
   }
   render() {
     return (
@@ -42,13 +61,21 @@ export default class MainPage extends BaseComponent<
         <Layout>
           <Sider width={200} className="site-layout-background">
             <Menu
+              onClick={(e) => {
+                this.renderContent(e.key as string);
+              }}
               mode="inline"
               defaultSelectedKeys={["1"]}
               defaultOpenKeys={["sub1"]}
               style={{ height: "100%", borderRight: 0 }}
             >
               <SubMenu key="sub1" icon={<BookOutlined />} title="600 từ toeic ">
-                <Menu.Item key="1">Danh sách</Menu.Item>
+                <Menu.Item key={LIST_COMPONET_ADMIN.LIST_600WORDS}>
+                  Danh sách
+                </Menu.Item>
+                <Menu.Item key={LIST_COMPONET_ADMIN.LIST_THEME_6000WORDS}>
+                  Chủ đề
+                </Menu.Item>
               </SubMenu>
               <SubMenu key="sub2" icon={<LaptopOutlined />} title="subnav 2">
                 <Menu.Item key="5">option5</Menu.Item>
@@ -83,7 +110,7 @@ export default class MainPage extends BaseComponent<
                 backgroundColor: "#fff",
               }}
             >
-              <List600WordsToeic />
+              {this.state.element}
             </Content>
           </Layout>
         </Layout>
