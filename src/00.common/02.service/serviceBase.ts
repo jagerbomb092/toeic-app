@@ -14,7 +14,11 @@ export default class ServiceBase {
   }
 
   public async save<T>(collection: string, docId: string, value: T) {
-    firestore.collection(collection).doc(docId).set(value);
+    if (docId !== "") {
+      firestore.collection(collection).doc(docId).set(value);
+    } else {
+      firestore.collection(collection).add(value);
+    }
   }
 
   public async update<T>(collection: string, docId: string, value: T) {
@@ -23,11 +27,7 @@ export default class ServiceBase {
   public async delete(collection: string, docId: string) {
     firestore.collection(collection).doc(docId).delete();
   }
-  public async saveDocWithId(
-    collection: string,
-    idCustom: string,
-    value: any
-  ) {
+  public async saveDocWithId(collection: string, idCustom: string, value: any) {
     firestore.collection(collection).doc(idCustom).set(value);
   }
 }
