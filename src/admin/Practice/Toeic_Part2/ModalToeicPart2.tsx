@@ -18,13 +18,13 @@ import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 import { UploadFile } from "../../../00.common/00.components/UploadFile";
 import { toeicPart1Service } from "../../../00.common/02.service/toeicPart1Service";
-import { ANSWER_PART1 } from "../../../00.common/const";
+import { ANSWER_PART2 } from "../../../00.common/const";
 
-interface ModalToeicPart1Props {
+interface ModalToeicPart2Props {
   onSave: () => void;
 }
 
-interface ModalToeicPart1State {
+interface ModalToeicPart2State {
   visible: boolean;
   item?: any;
   blocking: boolean;
@@ -36,9 +36,9 @@ const layout = {
   wrapperCol: { span: 20 },
 };
 const { Option } = Select;
-export default class ModalToeicPart1 extends BaseComponent<
-  ModalToeicPart1Props,
-  ModalToeicPart1State
+export default class ModalToeicPart2 extends BaseComponent<
+  ModalToeicPart2Props,
+  ModalToeicPart2State
 > {
   private initialState = {
     visible: false,
@@ -48,7 +48,7 @@ export default class ModalToeicPart1 extends BaseComponent<
     AudioUrl: "",
   };
   private formRef = React.createRef<FormInstance>();
-  constructor(props: ModalToeicPart1Props) {
+  constructor(props: ModalToeicPart2Props) {
     super(props);
     this.state = {
       visible: false,
@@ -79,7 +79,7 @@ export default class ModalToeicPart1 extends BaseComponent<
       value.AudioUrl = this.state.AudioUrl;
       value.Content = [];
 
-      await toeicPart1Service.save("ToeicPart1", "", value);
+      await toeicPart1Service.save("ToeicPart2", "", value);
       this.setState(this.initialState as any);
 
       await this.setState(this.initialState as any);
@@ -95,7 +95,7 @@ export default class ModalToeicPart1 extends BaseComponent<
     return (
       <Modal
         width={900}
-        title={`Thêm mới câu hỏi part 1`}
+        title={`Thêm mới câu hỏi part 2`}
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
@@ -144,38 +144,22 @@ export default class ModalToeicPart1 extends BaseComponent<
                 rules={[{ required: true, message: "Please input Answer!" }]}
               >
                 <Select defaultValue={0} style={{ width: 120 }}>
-                  <Option value={ANSWER_PART1.A.value}>
+                  <Option value={ANSWER_PART2.A.value}>
                     <a>Đáp án A</a>
                   </Option>
-                  <Option value={ANSWER_PART1.B.value}>
+                  <Option value={ANSWER_PART2.B.value}>
                     <a>Đáp án B</a>
                   </Option>
-                  <Option value={ANSWER_PART1.C.value}>
+                  <Option value={ANSWER_PART2.C.value}>
                     <a>Đáp án C</a>
-                  </Option>
-                  <Option value={ANSWER_PART1.D.value}>
-                    <a>Đáp án D</a>
                   </Option>
                 </Select>
               </Form.Item>
             </Col>
           </Row>
 
-          <Row gutter={16} style={{ marginTop: 15 }}>
-            <Col span={10}>
-              <Form.Item labelCol={{ span: 8 }} label=" Ảnh câu hỏi">
-                <UploadFile
-                  type={"img"}
-                  result={async (values) => {
-                    await this.setState({
-                      ImgUrl: values[0],
-                    });
-                  }}
-                  refDocLib={`Pactice/ToeicPart1/Img`}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={14}>
+          <Row  style={{ marginTop: 15 }}>
+            <Col span={12}>
               <Form.Item
                 labelCol={{ span: 6 }}
                 label="Câu hỏi"
@@ -188,7 +172,7 @@ export default class ModalToeicPart1 extends BaseComponent<
                       AudioUrl: values[0],
                     });
                   }}
-                  refDocLib={`Pactice/ToeicPart1/Audio`}
+                  refDocLib={`Pactice/ToeicPart2/Audio`}
                 />
               </Form.Item>
             </Col>

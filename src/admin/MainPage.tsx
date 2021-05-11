@@ -10,8 +10,7 @@ import List600WordsToeic from "./600WordToeic/List600WordToeic";
 import ListTheme from "./600WordToeic/ListTheme";
 import { LIST_COMPONET_ADMIN } from "../00.common/const";
 import ListToeicPart1 from "./Practice/Toeic_Part1/ListItemPart1";
-
-
+import ListToeicPart2 from "./Practice/Toeic_Part2/ListItemPart2";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -37,8 +36,10 @@ export default class MainPage extends BaseComponent<
       element = <ListTheme />;
     } else if (keyContent == LIST_COMPONET_ADMIN.LIST_600WORDS) {
       element = <List600WordsToeic />;
-    }else if(keyContent==LIST_COMPONET_ADMIN.PART_1){
+    } else if (keyContent == LIST_COMPONET_ADMIN.PART_1) {
       element = <ListToeicPart1 />;
+    } else if (keyContent == LIST_COMPONET_ADMIN.PART_2) {
+      element = <ListToeicPart2 />;
     }
     this.setState({
       element,
@@ -73,7 +74,11 @@ export default class MainPage extends BaseComponent<
               defaultOpenKeys={["sub1"]}
               style={{ height: "100%", borderRight: 0 }}
             >
-              <SubMenu key={LIST_COMPONET_ADMIN.LIST_600WORDS} icon={<BookOutlined />} title="600 từ toeic ">
+              <SubMenu
+                key={LIST_COMPONET_ADMIN.LIST_600WORDS}
+                icon={<BookOutlined />}
+                title="600 từ toeic "
+              >
                 <Menu.Item key={LIST_COMPONET_ADMIN.LIST_600WORDS}>
                   Danh sách
                 </Menu.Item>
@@ -81,7 +86,11 @@ export default class MainPage extends BaseComponent<
                   Chủ đề
                 </Menu.Item>
               </SubMenu>
-              <SubMenu key={LIST_COMPONET_ADMIN.PART_1} icon={<LaptopOutlined />} title="Luyện tập">
+              <SubMenu
+                key={LIST_COMPONET_ADMIN.PART_1}
+                icon={<LaptopOutlined />}
+                title="Luyện tập"
+              >
                 <Menu.Item key={LIST_COMPONET_ADMIN.PART_1}>
                   Toeic Part 1
                 </Menu.Item>

@@ -9,24 +9,24 @@ import React from "react";
 import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 import { toeicPart1Service } from "../../../00.common/02.service/toeicPart1Service";
-import ModalToeicPart1 from "./ModalToeicPart1";
-import { ANSWER_PART1 } from "../../../00.common/const";
+import ModalToeicPart2 from "./ModalToeicPart2";
+import { ANSWER_PART2 } from "../../../00.common/const";
 
-interface ToeicPart1Props {}
+interface ToeicPart2Props {}
 
-interface ToeicPart1State {
+interface ToeicPart2State {
   searchText: string;
   searchedColumn: string;
   allData: any[];
   dataSource: any[];
 }
 const { Option } = Select;
-export default class ListToeicPart1 extends BaseComponent<
-  ToeicPart1Props,
-  ToeicPart1State
+export default class ListToeicPart2 extends BaseComponent<
+  ToeicPart2Props,
+  ToeicPart2State
 > {
-  private refModalToeicPart1 = React.createRef<ModalToeicPart1>();
-  constructor(props: ToeicPart1Props) {
+  private refModalToeicPart2 = React.createRef<ModalToeicPart2>();
+  constructor(props: ToeicPart2Props) {
     super(props);
     this.state = {
       searchText: "",
@@ -40,7 +40,7 @@ export default class ListToeicPart1 extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await toeicPart1Service.getAll("ToeicPart1");
+    let allData = await toeicPart1Service.getAll("ToeicPart2");
 
     this.setState({
       allData: allData,
@@ -150,14 +150,12 @@ export default class ListToeicPart1 extends BaseComponent<
   }
 
   handleAnswer(answer: string) {
-    if (answer == ANSWER_PART1.A.value) {
+    if (answer == ANSWER_PART2.A.value) {
       return "Đáp án A";
-    } else if (answer == ANSWER_PART1.B.value) {
+    } else if (answer == ANSWER_PART2.B.value) {
       return "Đáp án B";
-    } else if (answer == ANSWER_PART1.C.value) {
+    } else if (answer == ANSWER_PART2.C.value) {
       return "Đáp án C";
-    } else {
-      return "Đáp án D";
     }
   }
   render() {
@@ -185,13 +183,6 @@ export default class ListToeicPart1 extends BaseComponent<
         ),
       },
       {
-        title: "Ảnh trong câu hỏi",
-        dataIndex: "ImgUrl",
-        key: "ImgUrl",
-
-        render: (ImgUrl: any) => <img src={ImgUrl} height={173} width={259} />,
-      },
-      {
         title: "Câu trả lời đúng",
         dataIndex: "Answer",
         key: "Answer",
@@ -212,7 +203,7 @@ export default class ListToeicPart1 extends BaseComponent<
         >
           <Button
             onClick={() => {
-              this.refModalToeicPart1.current!.openModal();
+              this.refModalToeicPart2.current!.openModal();
             }}
             type="primary"
             icon={<PlusCircleOutlined />}
@@ -258,8 +249,8 @@ export default class ListToeicPart1 extends BaseComponent<
               : []
           }
         />
-        <ModalToeicPart1
-          ref={this.refModalToeicPart1}
+        <ModalToeicPart2
+          ref={this.refModalToeicPart2}
           onSave={async () => {
             this.loadAllData();
           }}
