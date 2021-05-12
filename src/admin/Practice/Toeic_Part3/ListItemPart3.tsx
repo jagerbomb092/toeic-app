@@ -1,7 +1,10 @@
-import {} from "antd";
 import { Table, Input, Button, Space, Select, Popover, Radio } from "antd";
 import Highlighter from "react-highlight-words";
-import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  PlusCircleOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons";
 
 import ReactAudioPlayer from "react-audio-player";
 import React from "react";
@@ -21,6 +24,8 @@ interface ToeicPart3State {
   allData: any[];
   dataSource: any[];
   visiblePopover: boolean;
+  index?: number;
+  selectQuestion?: string;
 }
 const { Option } = Select;
 export default class ListToeicPart3 extends BaseComponent<
@@ -152,10 +157,122 @@ export default class ListToeicPart3 extends BaseComponent<
     }
   }
 
-  handleVisibleChange = (visiblePopover) => {
-    this.setState({ visiblePopover });
-  };
+  checkCorrect(Select: any, answer: string, selectText: string) {
+    return (
+      <>
+        {Select.Value == answer ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: 260,
+            }}
+          >
+            <div style={{ display: "flex" }}>
+              <div
+                style={{
+                  height: 30,
+                  width: 30,
+                  border: "1px solid",
+                  borderRadius: "50%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderColor: "#37F026",
+                  fontWeight: 500,
+                  marginRight: 5,
+                  color: "#37F026",
+                }}
+              >
+                {selectText}
+              </div>
+              <div style={{ color: "#37F026", maxWidth:200 }}>
+                {Select.Title}{" "}
+              </div>
+            </div>
+            <div>
+              <CheckCircleOutlined style={{ fontSize: 25, color: "#37F026" }} />{" "}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: "flex" }}>
+            <div
+              style={{
+                height: 30,
+                width: 30,
+                border: "1px solid",
+                borderRadius: "50%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderColor: "grey",
+                fontWeight: 500,
+                marginRight: 5,
+              }}
+            >
+              {selectText}
+            </div>
+            <div >{Select.Title} </div>
+          </div>
+        )}
+      </>
+    );
+  }
+  renderPopover(Question: any, index?: number) {
+    return (
+      <Popover
+        content={
+          <div>
+            <Space direction="vertical" style={{ width: 300 }}>
+              {this.checkCorrect(
+                Question.SelectA,
+                Question.Answer as string,
+                "A"
+              )}
 
+              {this.checkCorrect(
+                Question.SelectB,
+                Question.Answer as string,
+                "B"
+              )}
+
+              <div>
+                {this.checkCorrect(
+                  Question.SelectC,
+                  Question.Answer as string,
+                  "C"
+                )}
+              </div>
+
+              {this.checkCorrect(
+                Question.SelectD,
+                Question.Answer as string,
+                "D"
+              )}
+            </Space>
+          </div>
+        }
+        title={Question.Question}
+        trigger="click"
+        visible={
+          this.state.visiblePopover &&
+          this.state.index == index &&
+          (this.state.selectQuestion as string) === Question.Question
+        }
+        onVisibleChange={(visible) => {
+          // push câu hỏi vào 1 mảng
+
+          this.setState({
+            index,
+            visiblePopover: visible,
+            selectQuestion: Question.Question,
+          });
+        }}
+      >
+        <a style={{ textAlign: "center" }}>{Question.Question}</a>
+      </Popover>
+    );
+  }
   handleAnswer(answer: string) {
     if (answer == ANSWER_PART3.A.value) {
       return "Đáp án A";
@@ -197,139 +314,25 @@ export default class ListToeicPart3 extends BaseComponent<
         key: "Question1",
         width: "20%",
 
-        render: (Question1: any) => (
-          <Popover
-            content={
-              <div>
-                <Space direction="vertical" style={{ width: 300 }}>
-                  <Radio value={1} checked={true}>
-                    {Question1.SelectA.Title}
-                  </Radio>
-                  <Radio value={2} checked={true}>
-                    {Question1.SelectB.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectC.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectD.Title}
-                  </Radio>
-                </Space>
-              </div>
-            }
-            title="Câu hỏi 1"
-            trigger="click"
-            visible={this.state.visiblePopover}
-            onVisibleChange={this.handleVisibleChange}
-          >
-            <a style={{ textAlign: "center" }}>{Question1.Question}</a>
-          </Popover>
-        ),
+        render: (Question1: any, record, index) =>
+          this.renderPopover(Question1, index),
       },
       {
-        title: "Câu 1",
-        dataIndex: "Question1",
-        key: "Question1",
+        title: "Câu 2",
+        dataIndex: "Question2",
+        key: "Question2",
         width: "20%",
 
-        render: (Question1: any) => (
-          <Popover
-            content={
-              <div>
-                <Space direction="vertical" style={{ width: 300 }}>
-                  <Radio value={1} checked={true}>
-                    {Question1.SelectA.Title}
-                  </Radio>
-                  <Radio value={2} checked={true}>
-                    {Question1.SelectB.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectC.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectD.Title}
-                  </Radio>
-                </Space>
-              </div>
-            }
-            title="Câu hỏi 1"
-            trigger="click"
-            visible={this.state.visiblePopover}
-            onVisibleChange={this.handleVisibleChange}
-          >
-            <a style={{ textAlign: "center" }}>{Question1.Question}</a>
-          </Popover>
-        ),
+        render: (Question1: any, index) => this.renderPopover(Question1, index),
       },
       {
-        title: "Câu 1",
-        dataIndex: "Question1",
-        key: "Question1",
+        title: "Câu 3",
+        dataIndex: "Question3",
+        key: "Question3",
         width: "20%",
 
-        render: (Question1: any) => (
-          <Popover
-            content={
-              <div>
-                <Space direction="vertical" style={{ width: 300 }}>
-                  <Radio value={1} checked={true}>
-                    {Question1.SelectA.Title}
-                  </Radio>
-                  <Radio value={2} checked={true}>
-                    {Question1.SelectB.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectC.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectD.Title}
-                  </Radio>
-                </Space>
-              </div>
-            }
-            title="Câu hỏi 1"
-            trigger="click"
-            visible={this.state.visiblePopover}
-            onVisibleChange={this.handleVisibleChange}
-          >
-            <a style={{ textAlign: "center" }}>{Question1.Question}</a>
-          </Popover>
-        ),
-      },
-      {
-        title: "Câu 1",
-        dataIndex: "Question1",
-        key: "Question1",
-        width: "20%",
-
-        render: (Question1: any) => (
-          <Popover
-            content={
-              <div>
-                <Space direction="vertical" style={{ width: 300 }}>
-                  <Radio value={1} checked={true}>
-                    {Question1.SelectA.Title}
-                  </Radio>
-                  <Radio value={2} checked={true}>
-                    {Question1.SelectB.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectC.Title}
-                  </Radio>
-                  <Radio value={3} checked={true}>
-                    {Question1.SelectD.Title}
-                  </Radio>
-                </Space>
-              </div>
-            }
-            title="Câu hỏi 1"
-            trigger="click"
-            visible={this.state.visiblePopover}
-            onVisibleChange={this.handleVisibleChange}
-          >
-            <a style={{ textAlign: "center" }}>{Question1.Question}</a>
-          </Popover>
-        ),
+        render: (Question1: any, record, index) =>
+          this.renderPopover(Question1, index),
       },
     ];
     return (

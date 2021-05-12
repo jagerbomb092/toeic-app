@@ -2,7 +2,13 @@ import { BaseComponent } from "../../00.common/00.components/BaseComponent";
 import {} from "antd";
 import { Table, Input, Button, Space, Select, Popover } from "antd";
 import Highlighter from "react-highlight-words";
-import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
+
+import {
+  SearchOutlined,
+  PlusCircleOutlined,
+  TableOutlined,
+  IdcardOutlined,
+} from "@ant-design/icons";
 import { words600Service } from "../../00.common/02.service/words600Service";
 import ReactAudioPlayer from "react-audio-player";
 import React from "react";
@@ -11,6 +17,7 @@ import ModalWordToeic from "./ModalToeicWord";
 
 import _ from "lodash";
 import ModalTheme from "./ModalCreateTheme";
+import { ListCustom } from "../../00.common/00.components/ListCustom";
 
 interface List600WordProps {}
 
@@ -21,6 +28,7 @@ interface List600WordState {
   allCategories: { Title: string; value: string }[];
   selectedCa?: { Title: string; value: string };
   dataSource: any[];
+  viewTable: boolean;
 }
 const { Option } = Select;
 export default class List600WordsToeic extends BaseComponent<
@@ -37,6 +45,7 @@ export default class List600WordsToeic extends BaseComponent<
       allData: [],
       allCategories: [],
       dataSource: [],
+      viewTable: false,
     };
     this.onMount(async () => {
       await Promise.all([this.loadAllData()]);
@@ -210,43 +219,70 @@ export default class List600WordsToeic extends BaseComponent<
             flexDirection: "row-reverse",
             justifyContent: "space-between",
             marginBottom: 20,
+            alignItems: "center",
           }}
         >
-          <Select
-            key={this.state.selectedCa?.value}
-            value={this.state.selectedCa?.value}
-            showSearch
-            onSelect={async (value) => {
-              let dataSelect = this.state.allData.find((item) => {
-                return item.KeyDoc == value;
-              });
-              await this.setState({
-                dataSource:
-                  dataSelect.Content && dataSelect.Content.length > 0
-                    ? dataSelect.Content
-                    : [],
-                selectedCa: { Title: dataSelect.Title, value: value },
-              });
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
             }}
-            style={{ width: 200 }}
-            placeholder="Search to Select theme"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option!.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            filterSort={(optionA, optionB) =>
-              optionA.children
-                .toLowerCase()
-                .localeCompare(optionB.children.toLowerCase())
-            }
           >
-            {this.state.allCategories.map((item, index) => (
-              <Option key={index} value={item.value}>
-                {item.Title}
-              </Option>
-            ))}
-          </Select>
-
+            <TableOutlined
+              onClick={() => {
+                this.setState({
+                  viewTable: true,
+                });
+              }}
+              style={{
+                fontSize: 25,
+                color: "#33ABE5",
+                marginRight: 10,
+              }}
+            />
+            <IdcardOutlined
+              onClick={() => {
+                this.setState({
+                  viewTable: false,
+                });
+              }}
+              style={{ fontSize: 25, color: "#33ABE5", marginRight: 10 }}
+            />
+            <Select
+              key={this.state.selectedCa?.value}
+              value={this.state.selectedCa?.value}
+              showSearch
+              onSelect={async (value) => {
+                let dataSelect = this.state.allData.find((item) => {
+                  return item.KeyDoc == value;
+                });
+                await this.setState({
+                  dataSource:
+                    dataSelect.Content && dataSelect.Content.length > 0
+                      ? dataSelect.Content
+                      : [],
+                  selectedCa: { Title: dataSelect.Title, value: value },
+                });
+              }}
+              style={{ width: 200 }}
+              placeholder="Search to Select theme"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option!.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              filterSort={(optionA, optionB) =>
+                optionA.children
+                  .toLowerCase()
+                  .localeCompare(optionB.children.toLowerCase())
+              }
+            >
+              {this.state.allCategories.map((item, index) => (
+                <Option key={index} value={item.value}>
+                  {item.Title}
+                </Option>
+              ))}
+            </Select>
+          </div>
           <Button
             onClick={() => {
               this.refModalWordToeic.current!.openModal(
@@ -259,17 +295,21 @@ export default class List600WordsToeic extends BaseComponent<
             Tạo mới
           </Button>
         </div>
+        {this.state.viewTable ? (
+          <Table
+            bordered={true}
+            pagination={{ pageSize: 8 }}
+            columns={columns as any}
+            dataSource={
+              this.state.dataSource && this.state.dataSource.length > 0
+                ? this.state.dataSource
+                : []
+            }
+          />
+        ) : (
+          <ListCustom allData={this.state.dataSource} />
+        )}
 
-        <Table
-          bordered={true}
-          pagination={{ pageSize: 8 }}
-          columns={columns as any}
-          dataSource={
-            this.state.dataSource && this.state.dataSource.length > 0
-              ? this.state.dataSource
-              : []
-          }
-        />
         <ModalTheme
           onSave={async () => {
             this.loadAllData();

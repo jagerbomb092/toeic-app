@@ -4,7 +4,10 @@ import {
   BookOutlined,
   LaptopOutlined,
   NotificationOutlined,
+  TableOutlined,
+  IdcardOutlined,
 } from "@ant-design/icons";
+
 import React from "react";
 import List600WordsToeic from "./600WordToeic/List600WordToeic";
 import ListTheme from "./600WordToeic/ListTheme";
@@ -41,7 +44,7 @@ export default class MainPage extends BaseComponent<
       element = <ListToeicPart1 />;
     } else if (keyContent == LIST_COMPONET_ADMIN.PART_2) {
       element = <ListToeicPart2 />;
-    }else if (keyContent == LIST_COMPONET_ADMIN.PART_3) {
+    } else if (keyContent == LIST_COMPONET_ADMIN.PART_3) {
       element = <ListToeicPart3 />;
     }
     this.setState({
@@ -123,11 +126,20 @@ export default class MainPage extends BaseComponent<
             </Menu>
           </Sider>
           <Layout style={{ padding: "0 24px 24px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>List</Breadcrumb.Item>
-              <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Breadcrumb style={{ margin: "16px 0" }}>
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>List</Breadcrumb.Item>
+                <Breadcrumb.Item>App</Breadcrumb.Item>
+              </Breadcrumb>
+            
+            </div>
             <Content
               className="site-layout-background"
               style={{
