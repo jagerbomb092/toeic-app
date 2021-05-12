@@ -11,6 +11,7 @@ import ListTheme from "./600WordToeic/ListTheme";
 import { LIST_COMPONET_ADMIN } from "../00.common/const";
 import ListToeicPart1 from "./Practice/Toeic_Part1/ListItemPart1";
 import ListToeicPart2 from "./Practice/Toeic_Part2/ListItemPart2";
+import ListToeicPart3 from "./Practice/Toeic_Part3/ListItemPart3";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -40,6 +41,8 @@ export default class MainPage extends BaseComponent<
       element = <ListToeicPart1 />;
     } else if (keyContent == LIST_COMPONET_ADMIN.PART_2) {
       element = <ListToeicPart2 />;
+    }else if (keyContent == LIST_COMPONET_ADMIN.PART_3) {
+      element = <ListToeicPart3 />;
     }
     this.setState({
       element,

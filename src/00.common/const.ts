@@ -44,3 +44,23 @@ export const ANSWER_PART2 = {
   },
  
 };
+
+
+export const ANSWER_PART3 = {
+  A: {
+    key: "A",
+    value: "1000",
+  },
+  B: {
+    key: "B",
+    value: "0100",
+  },
+  C: {
+    key: "C",
+    value: "0010",
+  },
+  D: {
+    key: "D",
+    value: "0001",
+  },
+};
