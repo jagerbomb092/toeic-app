@@ -17,14 +17,15 @@ import React from "react";
 import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 import { UploadFile } from "../../../00.common/00.components/UploadFile";
-import { toeicPart1Service } from "../../../00.common/02.service/toeicPart1Service";
-import { ANSWER_PART1 } from "../../../00.common/const";
 
-interface ModalToeicPart1Props {
+import { ANSWER_PART1 } from "../../../00.common/const";
+import { toeicPart3Service } from "../../../00.common/02.service/toeicPart3Service";
+const { TextArea } = Input;
+interface ModalToeicPart3Props {
   onSave: () => void;
 }
 
-interface ModalToeicPart1State {
+interface ModalToeicPart3State {
   visible: boolean;
   item?: any;
   blocking: boolean;
@@ -36,9 +37,9 @@ const layout = {
   wrapperCol: { span: 20 },
 };
 const { Option } = Select;
-export default class ModalToeicPart1 extends BaseComponent<
-  ModalToeicPart1Props,
-  ModalToeicPart1State
+export default class ModalToeicPart3 extends BaseComponent<
+  ModalToeicPart3Props,
+  ModalToeicPart3State
 > {
   private initialState = {
     visible: false,
@@ -48,7 +49,7 @@ export default class ModalToeicPart1 extends BaseComponent<
     AudioUrl: "",
   };
   private formRef = React.createRef<FormInstance>();
-  constructor(props: ModalToeicPart1Props) {
+  constructor(props: ModalToeicPart3Props) {
     super(props);
     this.state = {
       visible: false,
@@ -77,9 +78,72 @@ export default class ModalToeicPart1 extends BaseComponent<
       const value = this.formRef.current!.getFieldsValue();
       value.ImgUrl = this.state.ImgUrl;
       value.AudioUrl = this.state.AudioUrl;
-      value.Content = [];
 
-      await toeicPart1Service.save("ToeicPart1", "", value);
+      let itemSave = {
+        AudioUrl: this.state.AudioUrl,
+        Level: value.Level,
+        Question1: {
+          Answer: value.Answer1,
+          Question: value.Question1,
+          SelectA: {
+            Title: value.Select1A,
+            Value: "1000",
+          },
+          SelectB: {
+            Title: value.Select1B,
+            Value: "0100",
+          },
+          SelectC: {
+            Title: value.Select1C,
+            Value: "0010",
+          },
+          SelectD: {
+            Title: value.Select1D,
+            Value: "0001",
+          },
+        },
+        Question2: {
+          Answer: value.Answer2,
+          Question: value.Question2,
+          SelectA: {
+            Title: value.Select2A,
+            Value: "1000",
+          },
+          SelectB: {
+            Title: value.Select2B,
+            Value: "0100",
+          },
+          SelectC: {
+            Title: value.Select2C,
+            Value: "0010",
+          },
+          SelectD: {
+            Title: value.Select2D,
+            Value: "0001",
+          },
+        },
+        Question3: {
+          Answer: value.Answer3,
+          Question: value.Question3,
+          SelectA: {
+            Title: value.Select3A,
+            Value: "1000",
+          },
+          SelectB: {
+            Title: value.Select3B,
+            Value: "0100",
+          },
+          SelectC: {
+            Title: value.Select3C,
+            Value: "0010",
+          },
+          SelectD: {
+            Title: value.Select3D,
+            Value: "0001",
+          },
+        },
+      };
+      await toeicPart3Service.save("ToeicPart3", "", itemSave);
       this.setState(this.initialState as any);
 
       await this.setState(this.initialState as any);
@@ -95,7 +159,7 @@ export default class ModalToeicPart1 extends BaseComponent<
     return (
       <Modal
         width={900}
-        title={`Thêm mới câu hỏi part 1`}
+        title={`Thêm mới câu hỏi part 3`}
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
@@ -104,7 +168,7 @@ export default class ModalToeicPart1 extends BaseComponent<
           });
         }}
         onOk={async () => {
-          this.saveItem();
+          await this.saveItem();
         }}
       >
         <Form
@@ -139,45 +203,6 @@ export default class ModalToeicPart1 extends BaseComponent<
             <Col span={12}>
               <Form.Item
                 labelCol={{ span: 6 }}
-                label="Đáp án"
-                name="Answer"
-                rules={[{ required: true, message: "Please input Answer!" }]}
-              >
-                <Select defaultValue={0} style={{ width: 120 }}>
-                  <Option value={ANSWER_PART1.A.value}>
-                    <a>Đáp án A</a>
-                  </Option>
-                  <Option value={ANSWER_PART1.B.value}>
-                    <a>Đáp án B</a>
-                  </Option>
-                  <Option value={ANSWER_PART1.C.value}>
-                    <a>Đáp án C</a>
-                  </Option>
-                  <Option value={ANSWER_PART1.D.value}>
-                    <a>Đáp án D</a>
-                  </Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16} style={{ marginTop: 15 }}>
-            <Col span={10}>
-              <Form.Item labelCol={{ span: 8 }} label=" Ảnh câu hỏi">
-                <UploadFile
-                  type={"img"}
-                  result={async (values) => {
-                    await this.setState({
-                      ImgUrl: values[0],
-                    });
-                  }}
-                  refDocLib={`Pactice/ToeicPart1/Img`}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={14}>
-              <Form.Item
-                labelCol={{ span: 6 }}
                 label="Câu hỏi"
                 rules={[{ message: "Please input title!" }]}
               >
@@ -188,8 +213,252 @@ export default class ModalToeicPart1 extends BaseComponent<
                       AudioUrl: values[0],
                     });
                   }}
-                  refDocLib={`Pactice/ToeicPart1/Audio`}
+                  refDocLib={`Pactice/ToeicPart3/Audio`}
                 />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item labelCol={{ span: 24 }} label="Câu 1">
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Câu hỏi"
+                  name={"Question1"}
+                  rules={[{ required: true }]}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Đáp án A"
+                  name={"Select1A"}
+                  rules={[{ required: true }]}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Đáp án B"
+                  name={"Select1B"}
+                  rules={[{ required: true }]}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Đáp án C"
+                  name={"Select1C"}
+                  rules={[{ required: true }]}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Đáp án D"
+                  name={"Select1D"}
+                  rules={[{ required: true }]}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Câu trả lời"
+                  name={"Answer1"}
+                  rules={[{ required: true }]}
+                >
+                  <Select
+                    placeholder={"Chọn đáp án đúng"}
+                    style={{ width: "100%", marginLeft: 10 }}
+                  >
+                    <Option value={ANSWER_PART1.A.value}>
+                      <a>Đáp án A</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.B.value}>
+                      <a>Đáp án B</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.C.value}>
+                      <a>Đáp án C</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.D.value}>
+                      <a>Đáp án D</a>
+                    </Option>
+                  </Select>
+                </Form.Item>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                rules={[{ required: true }]}
+                labelCol={{ span: 24 }}
+                label="Câu 2"
+              >
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Câu hỏi"
+                  name={"Question2"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án A"
+                  name={"Select2A"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án B"
+                  name={"Select2B"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án C"
+                  name={"Select2C"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án D"
+                  name={"Select2D"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Câu trả lời"
+                  name={"Answer2"}
+                  rules={[{ required: true }]}
+                >
+                  <Select
+                    placeholder={"Chọn đáp án đúng"}
+                    style={{ width: "100%", marginLeft: 10 }}
+                  >
+                    <Option value={ANSWER_PART1.A.value}>
+                      <a>Đáp án A</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.B.value}>
+                      <a>Đáp án B</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.C.value}>
+                      <a>Đáp án C</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.D.value}>
+                      <a>Đáp án D</a>
+                    </Option>
+                  </Select>
+                </Form.Item>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item labelCol={{ span: 24 }} label="Câu 3">
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Câu hỏi"
+                  name={"Question3"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án A"
+                  name={"Select3A"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án B"
+                  name={"Select3B"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án C"
+                  name={"Select3C"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 6 }}
+                  label="Đáp án D"
+                  name={"Select3D"}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextArea style={{ marginLeft: 10 }} />
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Câu trả lời"
+                  name="Answer3"
+                  rules={[{ required: true }]}
+                >
+                  <Select
+                    placeholder={"Chọn đáp án đúng"}
+                    style={{ width: "100%", marginLeft: 10 }}
+                  >
+                    <Option value={ANSWER_PART1.A.value}>
+                      <a>Đáp án A</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.B.value}>
+                      <a>Đáp án B</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.C.value}>
+                      <a>Đáp án C</a>
+                    </Option>
+                    <Option value={ANSWER_PART1.D.value}>
+                      <a>Đáp án D</a>
+                    </Option>
+                  </Select>
+                </Form.Item>
               </Form.Item>
             </Col>
           </Row>

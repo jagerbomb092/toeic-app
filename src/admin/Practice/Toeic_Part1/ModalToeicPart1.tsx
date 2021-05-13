@@ -143,7 +143,7 @@ export default class ModalToeicPart1 extends BaseComponent<
                 name="Answer"
                 rules={[{ required: true, message: "Please input Answer!" }]}
               >
-                <Select defaultValue={0} style={{ width: 120 }}>
+                <Select defaultValue={ANSWER_PART1.A.value} style={{ width: 120 }}>
                   <Option value={ANSWER_PART1.A.value}>
                     <a>Đáp án A</a>
                   </Option>

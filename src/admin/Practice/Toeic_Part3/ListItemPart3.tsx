@@ -168,7 +168,7 @@ export default class ListToeicPart3 extends BaseComponent<
               width: 260,
             }}
           >
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex" ,   alignItems: "center",}}>
               <div
                 style={{
                   height: 30,
@@ -195,7 +195,7 @@ export default class ListToeicPart3 extends BaseComponent<
             </div>
           </div>
         ) : (
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex",   alignItems: "center", }}>
             <div
               style={{
                 height: 30,
