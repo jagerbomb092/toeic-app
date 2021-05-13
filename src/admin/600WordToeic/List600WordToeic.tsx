@@ -45,7 +45,7 @@ export default class List600WordsToeic extends BaseComponent<
       allData: [],
       allCategories: [],
       dataSource: [],
-      viewTable: false,
+      viewTable: true,
     };
     this.onMount(async () => {
       await Promise.all([this.loadAllData()]);
@@ -167,7 +167,16 @@ export default class List600WordsToeic extends BaseComponent<
         key: "Title",
         width: "10%",
         ...this.getColumnSearchProps("Title"),
-        render: (Title: any) => <a style={{ color: "red" }}>{Title}</a>,
+        render: (Title: any, record,index) => (
+          <a
+            onClick={() => {
+              this.refModalWordToeic.current!.openModal(this.state.selectedCa as any,record);
+            }}
+            style={{ color: "red" }}
+          >
+            {Title}
+          </a>
+        ),
       },
       {
         title: "Phiên âm",
@@ -175,10 +184,10 @@ export default class List600WordsToeic extends BaseComponent<
         key: "Spelling",
         width: "10%",
         ...this.getColumnSearchProps("Spelling"),
-        render: (Spelling: any, record: any) => (
+        render: (Spelling: any, record: any,index) => (
           <a
             onClick={() => {
-              this.refModalWordToeic.current!.openModal(record);
+              this.refModalWordToeic.current!.openModal(this.state.selectedCa as any,record);
             }}
           >
             {Spelling}

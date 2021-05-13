@@ -3,6 +3,7 @@ import ReactAudioPlayer from "react-audio-player";
 import CustomUploadButton from "react-firebase-file-uploader/lib/CustomUploadButton";
 import { BaseComponent } from "./BaseComponent";
 import { UploadOutlined } from "@ant-design/icons";
+import { storage } from "../../firebase.config";
 interface UploadFileState {
   filenames: any[];
   downloadURLs: any[];
@@ -12,6 +13,7 @@ interface UploadFileProps {
   type: "img" | "audio";
   refDocLib: string;
   result: (value: any[]) => void;
+  onLoading?: (loading: boolean) => void;
 }
 
 export class UploadFile extends BaseComponent<
@@ -26,11 +28,20 @@ export class UploadFile extends BaseComponent<
       isUploading: false,
     };
   }
+  // hàm này sẽ được gọi khi khi truyền value vào từ form bất kì
+  getSourceFromForm(url: string) {
+    this.setState({
+      downloadURLs: [url],
+    });
+  }
 
-  handleUploadStart = () =>
+  handleUploadStart = () => {
     this.setState({
       isUploading: true,
     });
+     this.props.onLoading!(true);
+   
+  };
 
   handleUploadError = (error) => {
     this.setState({
@@ -46,14 +57,17 @@ export class UploadFile extends BaseComponent<
       .ref(`CommonDoc/${this.props.refDocLib}`)
       .child(filename)
       .getDownloadURL();
-
+    if (this.state.downloadURLs && this.state.downloadURLs.length > 0) {
+      storage.refFromURL(this.state.downloadURLs[0]).delete();
+    }
     await this.setState((oldState) => ({
-      filenames: [...oldState.filenames, filename],
-      downloadURLs: [...oldState.downloadURLs, downloadURL],
+      filenames: [filename],
+      downloadURLs: [downloadURL],
       uploadProgress: 100,
       isUploading: false,
     }));
     this.props.result(this.state.downloadURLs);
+    this.props.onLoading!(false);
   };
 
   render() {
@@ -95,7 +109,6 @@ export class UploadFile extends BaseComponent<
                 this.state.downloadURLs.map((downloadURL, i) => {
                   return (
                     <ReactAudioPlayer
-                    
                       key={i}
                       src={downloadURL}
                       autoPlay={false}

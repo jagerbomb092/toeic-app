@@ -182,7 +182,7 @@ export default class ModalToeicPart3 extends BaseComponent<
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                labelCol={{ span: 6 }}
+                labelCol={{ span: 5 }}
                 label="Cấp độ "
                 name="Level"
                 rules={[{ required: true, message: "Please input Level!" }]}
@@ -202,7 +202,7 @@ export default class ModalToeicPart3 extends BaseComponent<
             </Col>
             <Col span={12}>
               <Form.Item
-                labelCol={{ span: 6 }}
+                labelCol={{ span: 5 }}
                 label="Câu hỏi"
                 rules={[{ message: "Please input title!" }]}
               >
@@ -460,6 +460,23 @@ export default class ModalToeicPart3 extends BaseComponent<
                   </Select>
                 </Form.Item>
               </Form.Item>
+            </Col>
+            <Col span={12}>
+              <div
+                style={{
+                  marginTop: 100,
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <img
+                  src={
+                    "https://firebasestorage.googleapis.com/v0/b/toeic-project.appspot.com/o/CommonDoc%2FPactice%2FToeicPart3%2FCommon%2Fadminpart3.jpg?alt=media&token=6f4fd7bf-256e-418b-8678-7a3f7d224c7a"
+                  }
+                />
+              </div>
             </Col>
           </Row>
         </Form>

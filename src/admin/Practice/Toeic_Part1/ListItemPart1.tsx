@@ -168,8 +168,13 @@ export default class ListToeicPart1 extends BaseComponent<
         key: "Level",
         width: "20%",
 
-        render: (Level: any) => (
-          <a style={{ color: this.handelLevelColor(Level).Color }}>
+        render: (Level: any, record: any) => (
+          <a
+            onClick={() => {
+              this.refModalToeicPart1.current?.openModal(record);
+            }}
+            style={{ color: this.handelLevelColor(Level).Color }}
+          >
             {this.handelLevelColor(Level).Title}
           </a>
         ),
