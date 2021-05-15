@@ -6,19 +6,18 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 
-import ReactAudioPlayer from "react-audio-player";
 import React from "react";
 
 import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 
-import ModalToeicPart3 from "./ModalToeicPart3";
 import { ANSWER_PART3_4_5 } from "../../../00.common/const";
-import { toeicPart3Service } from "../../../00.common/02.service/toeicPart3Service";
+import { toeicPart7Service } from "../../../00.common/02.service/toeicPart7Service";
+import ModalToeicPart7 from "./ModalToeicPart7";
 
-interface ToeicPart3Props {}
+interface ToeicPart7Props {}
 
-interface ToeicPart3State {
+interface ToeicPart7State {
   searchText: string;
   searchedColumn: string;
   allData: any[];
@@ -28,12 +27,12 @@ interface ToeicPart3State {
   selectQuestion?: string;
 }
 const { Option } = Select;
-export default class ListToeicPart3 extends BaseComponent<
-  ToeicPart3Props,
-  ToeicPart3State
+export default class ListToeicPart7 extends BaseComponent<
+  ToeicPart7Props,
+  ToeicPart7State
 > {
-  private refModalToeicPart3 = React.createRef<ModalToeicPart3>();
-  constructor(props: ToeicPart3Props) {
+  private refModalToeicPart7 = React.createRef<ModalToeicPart7>();
+  constructor(props: ToeicPart7Props) {
     super(props);
     this.state = {
       searchText: "",
@@ -48,7 +47,7 @@ export default class ListToeicPart3 extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await toeicPart3Service.getAll("ToeicPart3");
+    let allData = await toeicPart7Service.getAll("ToeicPart7");
 
     this.setState({
       allData: allData,
@@ -295,7 +294,7 @@ export default class ListToeicPart3 extends BaseComponent<
         render: (Level: any, record) => (
           <a
             onClick={() => {
-              this.refModalToeicPart3.current!.openModal(record);
+              this.refModalToeicPart7.current!.openModal(record);
             }}
             style={{ color: this.handelLevelColor(Level).Color }}
           >
@@ -305,12 +304,18 @@ export default class ListToeicPart3 extends BaseComponent<
       },
       {
         title: "Câu hỏi",
-        dataIndex: "AudioUrl",
-        key: "AudioUrl",
+        dataIndex: "Title",
+        key: "Title",
         width: "25%",
 
-        render: (AudioUrl: any) => (
-          <ReactAudioPlayer src={AudioUrl} autoPlay={false} controls />
+        render: (Title, record) => (
+          <a
+            onClick={() => {
+              this.refModalToeicPart7.current!.openModal(record);
+            }}
+          >
+            {Title.slice(0, 150)}...
+          </a>
         ),
       },
       {
@@ -331,6 +336,7 @@ export default class ListToeicPart3 extends BaseComponent<
         render: (Question1: any, index) => this.renderPopover(Question1, index),
       },
       {
+        // ...this.getColumnSearchProps("Question"),
         title: "Câu 3",
         dataIndex: "Question3",
         key: "Question3",
@@ -352,7 +358,7 @@ export default class ListToeicPart3 extends BaseComponent<
         >
           <Button
             onClick={() => {
-              this.refModalToeicPart3.current!.openModal();
+              this.refModalToeicPart7.current!.openModal();
             }}
             type="primary"
             icon={<PlusCircleOutlined />}
@@ -398,8 +404,8 @@ export default class ListToeicPart3 extends BaseComponent<
               : []
           }
         />
-        <ModalToeicPart3
-          ref={this.refModalToeicPart3}
+        <ModalToeicPart7
+          ref={this.refModalToeicPart7}
           onSave={async () => {
             this.loadAllData();
           }}

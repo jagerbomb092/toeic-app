@@ -147,6 +147,30 @@ export default class List600WordsToeic extends BaseComponent<
       ),
   });
 
+  async onSelect(value: any, isRefresh: boolean) {
+    let allData: any[] = [];
+    if (isRefresh) {
+      allData = _.orderBy(
+        await words600Service.getAll("600WordsToeic"),
+        "OrderBy",
+        "asc"
+      );
+    } else {
+      allData = this.state.allData;
+    }
+
+    let dataSelect = allData.find((item) => {
+      return item.KeyDoc == value;
+    });
+    await this.setState({
+      dataSource:
+        dataSelect.Content && dataSelect.Content.length > 0
+          ? dataSelect.Content
+          : [],
+      selectedCa: { Title: dataSelect.Title, value: value },
+    });
+  }
+
   handleSearch = (selectedKeys: any[], confirm: () => void, dataIndex: any) => {
     confirm();
     this.setState({
@@ -167,10 +191,13 @@ export default class List600WordsToeic extends BaseComponent<
         key: "Title",
         width: "10%",
         ...this.getColumnSearchProps("Title"),
-        render: (Title: any, record,index) => (
+        render: (Title: any, record, index) => (
           <a
             onClick={() => {
-              this.refModalWordToeic.current!.openModal(this.state.selectedCa as any,record);
+              this.refModalWordToeic.current!.openModal(
+                this.state.selectedCa as any,
+                record
+              );
             }}
             style={{ color: "red" }}
           >
@@ -184,10 +211,13 @@ export default class List600WordsToeic extends BaseComponent<
         key: "Spelling",
         width: "10%",
         ...this.getColumnSearchProps("Spelling"),
-        render: (Spelling: any, record: any,index) => (
+        render: (Spelling: any, record: any, index) => (
           <a
             onClick={() => {
-              this.refModalWordToeic.current!.openModal(this.state.selectedCa as any,record);
+              this.refModalWordToeic.current!.openModal(
+                this.state.selectedCa as any,
+                record
+              );
             }}
           >
             {Spelling}
@@ -220,6 +250,7 @@ export default class List600WordsToeic extends BaseComponent<
         ...this.getColumnSearchProps("Explain"),
       },
     ];
+
     return (
       <div>
         <div
@@ -262,16 +293,7 @@ export default class List600WordsToeic extends BaseComponent<
               value={this.state.selectedCa?.value}
               showSearch
               onSelect={async (value) => {
-                let dataSelect = this.state.allData.find((item) => {
-                  return item.KeyDoc == value;
-                });
-                await this.setState({
-                  dataSource:
-                    dataSelect.Content && dataSelect.Content.length > 0
-                      ? dataSelect.Content
-                      : [],
-                  selectedCa: { Title: dataSelect.Title, value: value },
-                });
+                await this.onSelect(value, false);
               }}
               style={{ width: 200 }}
               placeholder="Search to Select theme"
@@ -326,8 +348,8 @@ export default class List600WordsToeic extends BaseComponent<
           ref={this.refModalTheme}
         />
         <ModalWordToeic
-          onSave={async () => {
-            this.loadAllData();
+          onSave={async (value) => {
+            this.onSelect(value, true);
           }}
           ref={this.refModalWordToeic}
         />

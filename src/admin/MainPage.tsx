@@ -4,17 +4,18 @@ import {
   BookOutlined,
   LaptopOutlined,
   NotificationOutlined,
-  TableOutlined,
-  IdcardOutlined,
 } from "@ant-design/icons";
 
-import React from "react";
 import List600WordsToeic from "./600WordToeic/List600WordToeic";
 import ListTheme from "./600WordToeic/ListTheme";
 import { LIST_COMPONET_ADMIN } from "../00.common/const";
 import ListToeicPart1 from "./Practice/Toeic_Part1/ListItemPart1";
 import ListToeicPart2 from "./Practice/Toeic_Part2/ListItemPart2";
 import ListToeicPart3 from "./Practice/Toeic_Part3/ListItemPart3";
+import ListToeicPart4 from "./Practice/Toeic_Part4/ListItemPart4";
+import ListToeicPart5 from "./Practice/Toeic_Part5/ListItemPart5";
+import ListToeicPart6 from "./Practice/Toeic_Part6/ListItemPart6";
+import ListToeicPart7 from "./Practice/Toeic_Part7/ListItemPart7";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -46,6 +47,14 @@ export default class MainPage extends BaseComponent<
       element = <ListToeicPart2 />;
     } else if (keyContent == LIST_COMPONET_ADMIN.PART_3) {
       element = <ListToeicPart3 />;
+    } else if (keyContent == LIST_COMPONET_ADMIN.PART_4) {
+      element = <ListToeicPart4 />;
+    } else if (keyContent == LIST_COMPONET_ADMIN.PART_5) {
+      element = <ListToeicPart5 />;
+    } else if (keyContent == LIST_COMPONET_ADMIN.PART_6) {
+      element = <ListToeicPart6 />;
+    } else if (keyContent == LIST_COMPONET_ADMIN.PART_7) {
+      element = <ListToeicPart7 />;
     }
     this.setState({
       element,
@@ -112,6 +121,12 @@ export default class MainPage extends BaseComponent<
                 <Menu.Item key={LIST_COMPONET_ADMIN.PART_5}>
                   Toeic Part 5
                 </Menu.Item>
+                <Menu.Item key={LIST_COMPONET_ADMIN.PART_6}>
+                  Toeic Part 6
+                </Menu.Item>
+                <Menu.Item key={LIST_COMPONET_ADMIN.PART_7}>
+                  Toeic Part 7
+                </Menu.Item>
               </SubMenu>
               <SubMenu
                 key="sub3"
@@ -138,7 +153,6 @@ export default class MainPage extends BaseComponent<
                 <Breadcrumb.Item>List</Breadcrumb.Item>
                 <Breadcrumb.Item>App</Breadcrumb.Item>
               </Breadcrumb>
-            
             </div>
             <Content
               className="site-layout-background"

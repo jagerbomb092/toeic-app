@@ -1,26 +1,16 @@
+// eslint-disable-next-line
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
-import ReactAudioPlayer from "react-audio-player";
-import styles from "./ModalWordToeic.module.scss";
-import {
-  Modal,
-  FormInstance,
-  Form,
-  Row,
-  Col,
-  Input,
-  message,
-  InputNumber,
-} from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { Modal, FormInstance, Form, Row, Col, Input, Spin, Button } from "antd";
 
-import { UploadOutlined } from "@ant-design/icons";
 import React from "react";
-import { RcFile } from "antd/lib/upload";
+
 import { UploadFile } from "../../00.common/00.components/UploadFile";
-import { values } from "lodash";
-import _ from "lodash";
-import { database, firestore } from "../../firebase.config";
+
+import _, { pick } from "lodash";
+
 import { words600Service } from "../../00.common/02.service/words600Service";
-import { WordToeic } from "../../00.common/01.model/WordToeic";
+import { storage } from "../../firebase.config";
 
 interface ModalThemeProps {
   onSave: () => void;
@@ -29,7 +19,7 @@ interface ModalThemeProps {
 interface ModalThemeState {
   visible: boolean;
   item?: any;
-  blocking: boolean;
+  loading: boolean;
   imgBannerUrl?: string;
   idDoc?: string;
 }
@@ -44,24 +34,51 @@ export default class ModalTheme extends BaseComponent<
 > {
   private initialState = {
     visible: false,
-    blocking: false,
+    loading: false,
     item: undefined,
     imgBannerUrl: "",
   };
+  private refUploadImg = React.createRef<UploadFile>();
   private formRef = React.createRef<FormInstance>();
   constructor(props: ModalThemeProps) {
     super(props);
     this.state = {
       visible: false,
-      blocking: false,
+      loading: false,
+      item: undefined,
     };
   }
 
   async openModal(item?: any) {
     await this.setState({
       visible: true,
-      item,
+      loading: true,
     });
+    if (item) {
+      await this.setState({
+        item,
+        imgBannerUrl: item.ImgBanner,
+        idDoc: item.KeyDoc,
+      });
+      let formControlValues = pick(item, ["OrderBy", "Title", "Title_VN"]);
+      this.formRef.current!.setFieldsValue(formControlValues);
+      this.refUploadImg.current?.getSourceFromForm(item.ImgBanner);
+    }
+    await this.setState({
+      loading: false,
+    });
+  }
+
+  async delete(item) {
+    this.setState({
+      loading: true,
+    });
+
+    await words600Service.delete("600WordsToeic", item.KeyDoc);
+
+    storage.refFromURL(this.state.item.ImgBanner).delete();
+    this.props.onSave();
+    await this.setState(this.initialState as any);
   }
 
   async saveItem() {
@@ -70,17 +87,26 @@ export default class ModalTheme extends BaseComponent<
       await this.formRef.current!.validateFields();
 
       await this.setState({
-        blocking: true,
+        loading: true,
       });
       //lấy ra dư liệu từ form
       const value = this.formRef.current!.getFieldsValue();
       value.ImgBanner = this.state.imgBannerUrl;
       value.Content = [];
-      await words600Service.saveDocWithId(
-        "600WordsToeic",
-        this.state.idDoc as string,
-        value as any
-      );
+      if (this.state.item) {
+        await words600Service.update(
+          "600WordsToeic",
+          this.state.idDoc as string,
+          value as any
+        );
+      } else {
+        await words600Service.saveDocWithId(
+          "600WordsToeic",
+          this.state.idDoc as string,
+          value as any
+        );
+      }
+
       this.setState(this.initialState as any);
 
       this.formRef.current!.resetFields();
@@ -92,8 +118,53 @@ export default class ModalTheme extends BaseComponent<
     }
   }
 
+  confirm(item) {
+    Modal.confirm({
+      title: "Confirm",
+      icon: <ExclamationCircleOutlined />,
+      content: "Bạn có chắc xóa câu hỏi này không?",
+      okText: "Xác nhận",
+      cancelText: "Xóa",
+      onOk: () => {
+        this.delete(item);
+      },
+    });
+  }
   render() {
     let { item } = this.state;
+    let footer = [
+      <Button
+        onClick={() => {
+          this.setState(this.initialState as any);
+        }}
+        type={"default"}
+      >
+        Đóng
+      </Button>,
+      <Button
+        onClick={async () => {
+          await this.saveItem();
+        }}
+        type={"primary"}
+      >
+        Lưu
+      </Button>,
+    ];
+    if (this.state.item) {
+      footer.splice(
+        0,
+        0,
+        <Button
+          onClick={() => {
+            this.confirm(this.state.item);
+          }}
+          type="primary"
+          danger
+        >
+          Xóa
+        </Button>
+      );
+    }
     return (
       <Modal
         width={900}
@@ -101,96 +172,109 @@ export default class ModalTheme extends BaseComponent<
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
-          this.setState({
-            visible: false,
-          });
+          this.setState(this.initialState);
         }}
+        footer={footer}
         onOk={async () => {
           this.saveItem();
         }}
       >
-        <Form
-          ref={this.formRef}
-          {...layout}
-          name="basic"
-          initialValues={{ remember: true }}
-          onFinish={() => {}}
-          onFinishFailed={() => {}}
+        <Spin
+          spinning={this.state.loading}
+          tip={"Loading"}
+          style={{ height: "100%", width: "100%" }}
         >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                label="Tên chủ đề "
-                name="Title"
-                rules={[{ required: true, message: "Please input title!" }]}
-              >
-                <Input style={{ width: "100%" }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                label="Thứ tự"
-                name="OrderBy"
-                rules={[{ required: true, message: "Please input orderBy!" }]}
-              >
-                <Input style={{ width: "100%" }} />
-              </Form.Item>
-            </Col>
-          </Row>
+          <Form
+            ref={this.formRef}
+            {...layout}
+            name="basic"
+            initialValues={{ remember: true }}
+            onFinish={() => {}}
+            onFinishFailed={() => {}}
+          >
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Tên chủ đề "
+                  name="Title"
+                  rules={[{ required: true, message: "Please input title!" }]}
+                >
+                  <Input style={{ width: "100%" }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Thứ tự"
+                  name="OrderBy"
+                  rules={[{ required: true, message: "Please input orderBy!" }]}
+                >
+                  <Input style={{ width: "100%" }} />
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                label="Dịch nghĩa"
-                name="Title_VN"
-                rules={[{ required: true, message: "Please input content!" }]}
-              >
-                <Input style={{ width: "100%" }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                labelCol={{ span: 6 }}
-                label="Id Document"
-                rules={[
-                  { required: true, message: "Please input id document!" },
-                ]}
-              >
-                <Input
-                  onChange={(e) => {
-                    this.setState({
-                      idDoc: e.target.value,
-                    });
-                  }}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Dịch nghĩa"
+                  name="Title_VN"
+                  rules={[{ required: true, message: "Please input content!" }]}
+                >
+                  <Input style={{ width: "100%" }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  labelCol={{ span: 6 }}
+                  label="Id Document"
+                  rules={[
+                    { required: true, message: "Please input id document!" },
+                  ]}
+                >
+                  <Input
+                    disabled={this.state.item ? true : false}
+                    value={this.state.idDoc}
+                    onChange={(e) => {
+                      this.setState({
+                        idDoc: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Row gutter={16} style={{ marginTop: 15 }}>
-            <Col span={10}>
-              <Form.Item
-                labelCol={{ span: 8 }}
-                label=" Ảnh biểu tượng"
-                name="ImgBanner"
-                rules={[{ message: "Please input title!" }]}
-              >
-                <UploadFile
-                  type={"img"}
-                  result={async (values) => {
-                    await this.setState({
-                      imgBannerUrl: values[0],
-                    });
-                  }}
-                  refDocLib={`600wordsToeics/Content/${this.state.idDoc}`}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+            <Row gutter={16} style={{ marginTop: 15 }}>
+              <Col span={10}>
+                <Form.Item
+                  labelCol={{ span: 8 }}
+                  label=" Ảnh biểu tượng"
+                  name="ImgBanner"
+                  rules={[{ message: "Please input title!" }]}
+                >
+                  <UploadFile
+                    ref={this.refUploadImg}
+                    onLoading={(loading) => {
+                      this.setState({
+                        loading,
+                      });
+                    }}
+                    type={"img"}
+                    result={async (values) => {
+                      await this.setState({
+                        imgBannerUrl: values[0],
+                      });
+                    }}
+                    refDocLib={`600wordsToeics/Content/${this.state.idDoc}`}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Spin>
       </Modal>
     );
   }

@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import {
   Modal,
   FormInstance,
@@ -8,7 +9,7 @@ import {
   Button,
   Spin,
 } from "antd";
-import BlockUi from "react-block-ui";
+
 import React from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import _, { pick } from "lodash";
@@ -173,7 +174,7 @@ export default class ModalToeicPart1 extends BaseComponent<
     }
     return (
       <Modal
-        destroyOnClose
+        destroyOnClose={true}
         width={900}
         title={`Thêm mới câu hỏi part 1`}
         visible={this.state.visible}
@@ -188,7 +189,6 @@ export default class ModalToeicPart1 extends BaseComponent<
         }}
         footer={footer}
       >
-
         <Spin
           spinning={this.state.loading}
           tip={"Loading"}

@@ -9,55 +9,48 @@ import {
   Input,
   Select,
   Button,
-  message,
 } from "antd";
 
 import React from "react";
 
-import _, { pick } from "lodash";
+import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
-import { UploadFile } from "../../../00.common/00.components/UploadFile";
+
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { ANSWER_PART1 } from "../../../00.common/const";
-import { toeicPart3Service } from "../../../00.common/02.service/toeicPart3Service";
 import { storage } from "../../../firebase.config";
+import { toeicPart7Service } from "../../../00.common/02.service/toeicPart7Service";
 const { TextArea } = Input;
-interface ModalToeicPart3Props {
+interface ModalToeicPart7Props {
   onSave: () => void;
 }
 
-interface ModalToeicPart3State {
+interface ModalToeicPart7State {
   visible: boolean;
   item?: any;
   loading: boolean;
-
-  AudioUrl?: string;
 }
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
 };
 const { Option } = Select;
-export default class ModalToeicPart3 extends BaseComponent<
-  ModalToeicPart3Props,
-  ModalToeicPart3State
+export default class ModalToeicPart7 extends BaseComponent<
+  ModalToeicPart7Props,
+  ModalToeicPart7State
 > {
   private initialState = {
     visible: false,
     loading: false,
     item: undefined,
-
-    AudioUrl: "",
   };
-  private refUploadAudio = React.createRef<UploadFile>();
+
   private formRef = React.createRef<FormInstance>();
-  constructor(props: ModalToeicPart3Props) {
+  constructor(props: ModalToeicPart7Props) {
     super(props);
     this.state = {
       visible: false,
       loading: false,
-
-      AudioUrl: "",
     };
   }
   async delete(item) {
@@ -65,7 +58,7 @@ export default class ModalToeicPart3 extends BaseComponent<
       loading: true,
     });
 
-    await toeicPart3Service.delete("ToeicPart3", item.KeyDoc);
+    await toeicPart7Service.delete("ToeicPart7", item.KeyDoc);
     storage.refFromURL(this.state.item.AudioUrl).delete();
 
     this.setState(this.initialState as any);
@@ -79,10 +72,10 @@ export default class ModalToeicPart3 extends BaseComponent<
     if (item) {
       await this.setState({
         item,
-        AudioUrl: item.AudioUrl,
       });
 
       this.formRef.current!.setFieldsValue({
+        Title: item.Title,
         Level: item.Level,
         Answer1: item.Question1.Answer,
         Answer2: item.Question2.Answer,
@@ -107,8 +100,6 @@ export default class ModalToeicPart3 extends BaseComponent<
         Select3C: item.Question3.SelectC.Title,
         Select3D: item.Question3.SelectD.Title,
       });
-
-      this.refUploadAudio.current?.getSourceFromForm(item.AudioUrl);
     }
     await this.setState({
       loading: false,
@@ -116,11 +107,6 @@ export default class ModalToeicPart3 extends BaseComponent<
   }
 
   async saveItem() {
-    if (!this.state.AudioUrl) {
-      message.error("bạn chưa tải phát âm");
-      return;
-    }
-
     try {
       //check xem fom đã đủ thông tin cần thiết để lưu chưa
       await this.formRef.current!.validateFields();
@@ -131,9 +117,8 @@ export default class ModalToeicPart3 extends BaseComponent<
       //lấy ra dư liệu từ form
       const value = this.formRef.current!.getFieldsValue();
 
-      value.AudioUrl = this.state.AudioUrl;
       let itemSave = {
-        AudioUrl: this.state.AudioUrl,
+        Title: value.Title,
         Level: value.Level,
         Question1: {
           Answer: value.Answer1,
@@ -197,13 +182,13 @@ export default class ModalToeicPart3 extends BaseComponent<
         },
       };
       if (this.state.item) {
-        await toeicPart3Service.update(
-          "ToeicPart3",
+        await toeicPart7Service.update(
+          "ToeicPart7",
           this.state.item.KeyDoc,
           itemSave
         );
       } else {
-        await toeicPart3Service.save("ToeicPart3", "", itemSave);
+        await toeicPart7Service.save("ToeicPart7", "", itemSave);
       }
       this.setState(this.initialState as any);
 
@@ -267,7 +252,7 @@ export default class ModalToeicPart3 extends BaseComponent<
     return (
       <Modal
         width={900}
-        title={`Thêm mới câu hỏi part 3`}
+        title={`Thêm mới câu hỏi part 4`}
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
@@ -290,6 +275,16 @@ export default class ModalToeicPart3 extends BaseComponent<
         >
           <Row gutter={16}>
             <Col span={12}>
+              <Col span={24}>
+                <Form.Item
+                  labelCol={{ span: 24 }}
+                  label="Đề bài"
+                  name={"Title"}
+                  rules={[{ required: true }]}
+                >
+                  <TextArea style={{ marginLeft: 10 }} rows={10} />
+                </Form.Item>
+              </Col>
               <Form.Item
                 labelCol={{ span: 5 }}
                 label="Cấp độ "
@@ -307,29 +302,6 @@ export default class ModalToeicPart3 extends BaseComponent<
                     Khó
                   </Option>
                 </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                labelCol={{ span: 5 }}
-                label="Câu hỏi"
-                rules={[{ message: "Please input title!" }]}
-              >
-                <UploadFile
-                  ref={this.refUploadAudio}
-                  onLoading={(loading) => {
-                    this.setState({
-                      loading,
-                    });
-                  }}
-                  type={"audio"}
-                  result={async (values) => {
-                    await this.setState({
-                      AudioUrl: values[0],
-                    });
-                  }}
-                  refDocLib={`Pactice/ToeicPart3/Audio`}
-                />
               </Form.Item>
             </Col>
           </Row>
@@ -557,8 +529,9 @@ export default class ModalToeicPart3 extends BaseComponent<
                 }}
               >
                 <img
+                  style={{ width: "-webkit-fill-available" }}
                   src={
-                    "https://firebasestorage.googleapis.com/v0/b/toeic-project.appspot.com/o/CommonDoc%2FPactice%2FToeicPart3%2FCommon%2Fadminpart3.jpg?alt=media&token=6f4fd7bf-256e-418b-8678-7a3f7d224c7a"
+                    "https://firebasestorage.googleapis.com/v0/b/toeic-project.appspot.com/o/CommonDoc%2FPactice%2FToeicPart7%2Fpart7.jpg?alt=media&token=e244dd2b-e5f5-4d41-87cb-d6328a50d3c5"
                   }
                 />
               </div>

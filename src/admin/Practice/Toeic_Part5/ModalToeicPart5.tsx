@@ -8,54 +8,49 @@ import {
   Spin,
   Select,
   Button,
+  Input,
 } from "antd";
 
 import React from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import _, { pick } from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
-import { UploadFile } from "../../../00.common/00.components/UploadFile";
 
 import { ANSWER_PART3_4_5 } from "../../../00.common/const";
 import { storage } from "../../../firebase.config";
-import { toeicPart2Service } from "../../../00.common/02.service/toeicPart2Service";
+import { toeicPart5Service } from "../../../00.common/02.service/toeicPart5Service";
+import TextArea from "antd/lib/input/TextArea";
 
-interface ModalToeicPart2Props {
+interface ModalToeicPart5Props {
   onSave: () => void;
 }
 
-interface ModalToeicPart2State {
+interface ModalToeicPart5State {
   visible: boolean;
   item?: any;
   loading: boolean;
-  ImgUrl?: string;
-  AudioUrl?: string;
 }
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
 };
 const { Option } = Select;
-export default class ModalToeicPart2 extends BaseComponent<
-  ModalToeicPart2Props,
-  ModalToeicPart2State
+export default class ModalToeicPart5 extends BaseComponent<
+  ModalToeicPart5Props,
+  ModalToeicPart5State
 > {
   private initialState = {
     visible: false,
     loading: false,
     item: undefined,
-    ImgUrl: "",
-    AudioUrl: "",
   };
-  private refUploadAudio = React.createRef<UploadFile>();
+
   private formRef = React.createRef<FormInstance>();
-  constructor(props: ModalToeicPart2Props) {
+  constructor(props: ModalToeicPart5Props) {
     super(props);
     this.state = {
       visible: false,
       loading: false,
-      ImgUrl: "",
-      AudioUrl: "",
     };
   }
 
@@ -66,13 +61,9 @@ export default class ModalToeicPart2 extends BaseComponent<
     if (item) {
       await this.setState({
         item,
-        AudioUrl: item.AudioUrl,
-        ImgUrl: item.ImgUrl,
       });
       let formControlValues = pick(item, ["Level", "Answer"]);
       this.formRef.current!.setFieldsValue(formControlValues);
-
-      this.refUploadAudio.current?.getSourceFromForm(item.AudioUrl);
     }
     await this.setState({
       loading: false,
@@ -83,7 +74,7 @@ export default class ModalToeicPart2 extends BaseComponent<
       loading: true,
     });
 
-    await toeicPart2Service.delete("ToeicPart2", item.KeyDoc);
+    await toeicPart5Service.delete("ToeicPart5", item.KeyDoc);
     storage.refFromURL(this.state.item.AudioUrl).delete();
     await this.setState(this.initialState as any);
     this.props.onSave();
@@ -100,16 +91,37 @@ export default class ModalToeicPart2 extends BaseComponent<
       //lấy ra dư liệu từ form
       const value = this.formRef.current!.getFieldsValue();
 
-      value.AudioUrl = this.state.AudioUrl;
+      let itemSave = {
+        Level: value.Level,
+
+        Question: value.Question,
+        Answer: value.Answer,
+        SelectA: {
+          Title: value.SelectA,
+          Value: "1000",
+        },
+        SelectB: {
+          Title: value.SelectB,
+          Value: "0100",
+        },
+        SelectC: {
+          Title: value.SelectC,
+          Value: "0010",
+        },
+        SelectD: {
+          Title: value.SelectD,
+          Value: "0001",
+        },
+      };
 
       if (this.state.item) {
-        await toeicPart2Service.update(
-          "ToeicPart2",
+        await toeicPart5Service.update(
+          "ToeicPart5",
           this.state.item.KeyDoc,
-          value
+          itemSave
         );
       } else {
-        await toeicPart2Service.save("ToeicPart2", "", value);
+        await toeicPart5Service.save("ToeicPart5", "", itemSave);
       }
 
       await this.setState(this.initialState as any);
@@ -171,7 +183,7 @@ export default class ModalToeicPart2 extends BaseComponent<
     return (
       <Modal
         width={900}
-        title={`Thêm mới câu hỏi part 2`}
+        title={`Thêm mới câu hỏi part 5`}
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
@@ -201,7 +213,7 @@ export default class ModalToeicPart2 extends BaseComponent<
                   name="Level"
                   rules={[{ required: true, message: "Please input Level!" }]}
                 >
-                  <Select defaultValue={0} style={{ width: 120 }}>
+                  <Select style={{ width: 120 }}>
                     <Option value={1}>
                       <a style={{ color: "#007ACC" }}>Dễ</a>
                     </Option>
@@ -232,33 +244,61 @@ export default class ModalToeicPart2 extends BaseComponent<
                     <Option value={ANSWER_PART3_4_5.C.value}>
                       <a>Đáp án C</a>
                     </Option>
+                    <Option value={ANSWER_PART3_4_5.D.value}>
+                      <a>Đáp án D</a>
+                    </Option>
                   </Select>
                 </Form.Item>
               </Col>
             </Row>
+            <Row>
+              <Col span={24}>
+                <Form.Item labelCol={{ span: 24 }} label="Câu 3">
+                  <Col span={24} style={{ marginRight: 70 }}>
+                    <Form.Item
+                      rules={[{ required: true }]}
+                      labelCol={{ span: 3 }}
+                      label="Câu hỏi"
+                      name={"Question"}
+                    >
+                      <TextArea style={{ marginLeft: 10, width: "100%" }} />
+                    </Form.Item>
+                  </Col>
 
-            <Row style={{ marginTop: 15 }}>
-              <Col span={12}>
-                <Form.Item
-                  labelCol={{ span: 6 }}
-                  label="Câu hỏi"
-                  rules={[{ message: "Please input title!" }]}
-                >
-                  <UploadFile
-                    onLoading={(loading) => {
-                      this.setState({
-                        loading,
-                      });
-                    }}
-                    ref={this.refUploadAudio}
-                    type={"audio"}
-                    result={async (values) => {
-                      await this.setState({
-                        AudioUrl: values[0],
-                      });
-                    }}
-                    refDocLib={`Pactice/ToeicPart2/Audio`}
-                  />
+                  <Col span={12}>
+                    <Form.Item
+                      rules={[{ required: true }]}
+                      labelCol={{ span: 6 }}
+                      label="Đáp án A"
+                      name={"SelectA"}
+                    >
+                      <Input style={{ marginLeft: 10 }} />
+                    </Form.Item>
+                    <Form.Item
+                      rules={[{ required: true }]}
+                      labelCol={{ span: 6 }}
+                      label="Đáp án B"
+                      name={"SelectB"}
+                    >
+                      <Input style={{ marginLeft: 10 }} />
+                    </Form.Item>
+                    <Form.Item
+                      rules={[{ required: true }]}
+                      labelCol={{ span: 6 }}
+                      label="Đáp án C"
+                      name={"SelectC"}
+                    >
+                      <Input style={{ marginLeft: 10 }} />
+                    </Form.Item>
+                    <Form.Item
+                      rules={[{ required: true }]}
+                      labelCol={{ span: 6 }}
+                      label="Đáp án D"
+                      name={"SelectD"}
+                    >
+                      <Input style={{ marginLeft: 10 }} />
+                    </Form.Item>
+                  </Col>
                 </Form.Item>
               </Col>
             </Row>

@@ -10,7 +10,7 @@ import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 import { toeicPart1Service } from "../../../00.common/02.service/toeicPart1Service";
 import ModalToeicPart2 from "./ModalToeicPart2";
-import { ANSWER_PART2 } from "../../../00.common/const";
+import { ANSWER_PART3_4_5 } from "../../../00.common/const";
 
 interface ToeicPart2Props {}
 
@@ -150,11 +150,11 @@ export default class ListToeicPart2 extends BaseComponent<
   }
 
   handleAnswer(answer: string) {
-    if (answer == ANSWER_PART2.A.value) {
+    if (answer == ANSWER_PART3_4_5.A.value) {
       return "Đáp án A";
-    } else if (answer == ANSWER_PART2.B.value) {
+    } else if (answer == ANSWER_PART3_4_5.B.value) {
       return "Đáp án B";
-    } else if (answer == ANSWER_PART2.C.value) {
+    } else if (answer == ANSWER_PART3_4_5.C.value) {
       return "Đáp án C";
     }
   }
@@ -166,8 +166,13 @@ export default class ListToeicPart2 extends BaseComponent<
         key: "Level",
         width: "20%",
 
-        render: (Level: any) => (
-          <a style={{ color: this.handelLevelColor(Level).Color }}>
+        render: (Level: any, record) => (
+          <a
+            onClick={() => {
+              this.refModalToeicPart2.current!.openModal(record);
+            }}
+            style={{ color: this.handelLevelColor(Level).Color }}
+          >
             {this.handelLevelColor(Level).Title}
           </a>
         ),

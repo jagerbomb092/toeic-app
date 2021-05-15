@@ -4,11 +4,7 @@ import { Table, Input, Button, Space, Select, Popover } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { words600Service } from "../../00.common/02.service/words600Service";
-import ReactAudioPlayer from "react-audio-player";
 import React from "react";
-
-import ModalWordToeic from "./ModalToeicWord";
-
 import _ from "lodash";
 import ModalTheme from "./ModalCreateTheme";
 
@@ -155,7 +151,16 @@ export default class ListTheme extends BaseComponent<
         key: "Title",
         width: "10%",
         ...this.getColumnSearchProps("Title"),
-        render: (Title: any) => <a style={{ color: "red" }}>{Title}</a>,
+        render: (Title: any, record) => (
+          <a
+            onClick={() => {
+              this.refModalTheme.current!.openModal(record);
+            }}
+            style={{ color: "red" }}
+          >
+            {Title}
+          </a>
+        ),
       },
       {
         title: "Dịch nghĩa",
@@ -163,8 +168,15 @@ export default class ListTheme extends BaseComponent<
         key: "Title_VN",
         width: "15%",
         ...this.getColumnSearchProps("Title_VN"),
-        render: (Title_VN: any) => (
-          <a style={{ color: "#007ACC" }}>{Title_VN}</a>
+        render: (Title_VN: any, record) => (
+          <a
+            onClick={() => {
+              this.refModalTheme.current!.openModal(record);
+            }}
+            style={{ color: "#007ACC" }}
+          >
+            {Title_VN}
+          </a>
         ),
       },
       {
@@ -175,14 +187,7 @@ export default class ListTheme extends BaseComponent<
 
         ...this.getColumnSearchProps("OrderBy"),
         render: (Spelling: any, record: any) => (
-          <a
-            style={{ textAlign: "center" }}
-            onClick={() => {
-              this.refModalTheme.current!.openModal(record);
-            }}
-          >
-            {Spelling}
-          </a>
+          <a style={{ textAlign: "center" }}>{Spelling}</a>
         ),
       },
       {
@@ -215,7 +220,6 @@ export default class ListTheme extends BaseComponent<
           >
             Tạo mới
           </Button>
-     
         </div>
 
         <Table
@@ -229,7 +233,7 @@ export default class ListTheme extends BaseComponent<
         />
         <ModalTheme
           onSave={async () => {
-            this.loadAllData();
+            await this.loadAllData();
           }}
           ref={this.refModalTheme}
         />

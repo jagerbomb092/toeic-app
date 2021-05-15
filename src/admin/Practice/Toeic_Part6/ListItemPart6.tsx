@@ -6,34 +6,33 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 
-import ReactAudioPlayer from "react-audio-player";
 import React from "react";
 
 import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 
-import ModalToeicPart3 from "./ModalToeicPart3";
+import ModalToeicPart6 from "./ModalToeicPart6";
 import { ANSWER_PART3_4_5 } from "../../../00.common/const";
-import { toeicPart3Service } from "../../../00.common/02.service/toeicPart3Service";
+import { toeicPart6Service } from "../../../00.common/02.service/toeicPart6Service";
 
-interface ToeicPart3Props {}
+interface ToeicPart6Props {}
 
-interface ToeicPart3State {
+interface ToeicPart6State {
   searchText: string;
   searchedColumn: string;
   allData: any[];
   dataSource: any[];
   visiblePopover: boolean;
   index?: number;
-  selectQuestion?: string;
+  indexQuestion?: number;
 }
 const { Option } = Select;
-export default class ListToeicPart3 extends BaseComponent<
-  ToeicPart3Props,
-  ToeicPart3State
+export default class ListToeicPart6 extends BaseComponent<
+  ToeicPart6Props,
+  ToeicPart6State
 > {
-  private refModalToeicPart3 = React.createRef<ModalToeicPart3>();
-  constructor(props: ToeicPart3Props) {
+  private refModalToeicPart6 = React.createRef<ModalToeicPart6>();
+  constructor(props: ToeicPart6Props) {
     super(props);
     this.state = {
       searchText: "",
@@ -48,7 +47,7 @@ export default class ListToeicPart3 extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await toeicPart3Service.getAll("ToeicPart3");
+    let allData = await toeicPart6Service.getAll("ToeicPart6");
 
     this.setState({
       allData: allData,
@@ -252,12 +251,12 @@ export default class ListToeicPart3 extends BaseComponent<
             </Space>
           </div>
         }
-        title={Question.Question}
+        title={"Câu hỏi "}
         trigger="click"
         visible={
           this.state.visiblePopover &&
           this.state.index == index &&
-          (this.state.selectQuestion as string) === Question.Question
+          (this.state.indexQuestion as number) === Question.indexQuestion
         }
         onVisibleChange={(visible) => {
           // push câu hỏi vào 1 mảng
@@ -265,11 +264,13 @@ export default class ListToeicPart3 extends BaseComponent<
           this.setState({
             index,
             visiblePopover: visible,
-            selectQuestion: Question.Question,
+            indexQuestion: Question.indexQuestion,
           });
         }}
       >
-        <a style={{ textAlign: "center" }}>{Question.Question}</a>
+        <a style={{ textAlign: "center" }}>
+          Ô trống thứ {Question.indexQuestion}
+        </a>
       </Popover>
     );
   }
@@ -295,7 +296,7 @@ export default class ListToeicPart3 extends BaseComponent<
         render: (Level: any, record) => (
           <a
             onClick={() => {
-              this.refModalToeicPart3.current!.openModal(record);
+              this.refModalToeicPart6.current!.openModal(record);
             }}
             style={{ color: this.handelLevelColor(Level).Color }}
           >
@@ -305,16 +306,22 @@ export default class ListToeicPart3 extends BaseComponent<
       },
       {
         title: "Câu hỏi",
-        dataIndex: "AudioUrl",
-        key: "AudioUrl",
+        dataIndex: "Title",
+        key: "Title",
         width: "25%",
 
-        render: (AudioUrl: any) => (
-          <ReactAudioPlayer src={AudioUrl} autoPlay={false} controls />
+        render: (Title,record) => (
+          <a
+            onClick={() => {
+              this.refModalToeicPart6.current!.openModal(record);
+            }}
+          >
+            {Title.slice(0, 150)}...
+          </a>
         ),
       },
       {
-        title: "Câu 1",
+        title: "Chỗ trống 1",
         dataIndex: "Question1",
         key: "Question1",
         width: "20%",
@@ -323,7 +330,7 @@ export default class ListToeicPart3 extends BaseComponent<
           this.renderPopover(Question1, index),
       },
       {
-        title: "Câu 2",
+        title: "Chỗ trống 2",
         dataIndex: "Question2",
         key: "Question2",
         width: "20%",
@@ -331,7 +338,8 @@ export default class ListToeicPart3 extends BaseComponent<
         render: (Question1: any, index) => this.renderPopover(Question1, index),
       },
       {
-        title: "Câu 3",
+        // ...this.getColumnSearchProps("Question"),
+        title: "Chỗ trống 3",
         dataIndex: "Question3",
         key: "Question3",
         width: "20%",
@@ -352,7 +360,7 @@ export default class ListToeicPart3 extends BaseComponent<
         >
           <Button
             onClick={() => {
-              this.refModalToeicPart3.current!.openModal();
+              this.refModalToeicPart6.current!.openModal();
             }}
             type="primary"
             icon={<PlusCircleOutlined />}
@@ -398,8 +406,8 @@ export default class ListToeicPart3 extends BaseComponent<
               : []
           }
         />
-        <ModalToeicPart3
-          ref={this.refModalToeicPart3}
+        <ModalToeicPart6
+          ref={this.refModalToeicPart6}
           onSave={async () => {
             this.loadAllData();
           }}

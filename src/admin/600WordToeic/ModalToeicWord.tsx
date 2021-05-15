@@ -22,7 +22,7 @@ import { words600Service } from "../../00.common/02.service/words600Service";
 import { storage } from "../../firebase.config";
 
 interface ModalWordToeiclModalProps {
-  onSave: () => void;
+  onSave: (value) => void;
 }
 
 interface ModalWordToeiclModalState {
@@ -45,7 +45,7 @@ export default class ModalWordToeic extends BaseComponent<
   private initialState = {
     visible: false,
     selectedTheme: "",
-    item: {} as any,
+    item: undefined,
     loading: false,
     imgUrl: undefined,
     audioUrl: undefined,
@@ -58,7 +58,7 @@ export default class ModalWordToeic extends BaseComponent<
     this.state = {
       visible: false,
       selectedTheme: undefined,
-      item: {} as any,
+      item: undefined,
       loading: false,
     };
   }
@@ -67,8 +67,8 @@ export default class ModalWordToeic extends BaseComponent<
     await this.setState({
       selectedTheme: selectedTheme,
       visible: true,
-      item,
     });
+
     if (item) {
       await this.setState({
         item,
@@ -94,11 +94,14 @@ export default class ModalWordToeic extends BaseComponent<
       loading: true,
     });
 
-    // await words600Service.delete("ToeicPart1", item.KeyDoc);
-    storage.refFromURL(this.state.item.AudioUrl).delete();
-    storage.refFromURL(this.state.item.ImgUrl).delete();
+    await words600Service.deleteContentItem(
+      "600WordsToeic",
+      this.state.selectedTheme?.value as string,
+      this.state.item.Id
+    );
+    await this.props.onSave(this.state.selectedTheme?.value);
+    this.formRef.current!.resetFields();
     this.setState(this.initialState as any);
-    this.props.onSave();
   }
 
   confirm(item) {
@@ -107,7 +110,7 @@ export default class ModalWordToeic extends BaseComponent<
       icon: <ExclamationCircleOutlined />,
       content: "Bạn có chắc xóa câu hỏi này không?",
       okText: "Xác nhận",
-      cancelText: "Xóa",
+      cancelText: "Hủy",
       onOk: () => {
         this.delete(item);
       },
@@ -115,6 +118,14 @@ export default class ModalWordToeic extends BaseComponent<
   }
 
   async saveItem() {
+    if (!this.state.audioUrl) {
+      message.error("bạn chưa tải phát âm");
+      return;
+    }
+    if (!this.state.imgUrl) {
+      message.error("bạn chưa tải ảnh lên");
+      return;
+    }
     try {
       //check xem fom đã đủ thông tin cần thiết để lưu chưa
       await this.formRef.current!.validateFields();
@@ -126,20 +137,28 @@ export default class ModalWordToeic extends BaseComponent<
       const value = this.formRef.current!.getFieldsValue();
       value.LinkAudio = this.state.audioUrl;
       value.ImgItem = this.state.imgUrl;
-      await words600Service.updateContent(
-        "600WordsToeic",
-        this.state.selectedTheme?.value as string,
-        value as any
-      );
-      // upfile len docLib
+      if (this.state.item) {
+        await words600Service.updateContent(
+          "600WordsToeic",
+          this.state.selectedTheme?.value as string,
+          value as any,
+          this.state.item.Id
+        );
+      } else {
+        await words600Service.updateContent(
+          "600WordsToeic",
+          this.state.selectedTheme?.value as string,
+          value as any
+        );
+      }
+
       try {
       } catch (error) {
         message.error("save item fail!");
       }
+      await this.props.onSave(this.state.selectedTheme?.value);
       this.formRef.current!.resetFields();
       await this.setState(this.initialState as any);
-      this.formRef.current!.resetFields();
-      this.props.onSave();
     } catch (error) {
       console.log("lỗi nha");
     }
@@ -290,6 +309,11 @@ export default class ModalWordToeic extends BaseComponent<
                   rules={[{ message: "Please input title!" }]}
                 >
                   <UploadFile
+                    onLoading={(loading) => {
+                      this.setState({
+                        loading,
+                      });
+                    }}
                     ref={this.refUploadImg}
                     type={"img"}
                     result={async (values) => {
@@ -309,6 +333,11 @@ export default class ModalWordToeic extends BaseComponent<
                   rules={[{ message: "Please input title!" }]}
                 >
                   <UploadFile
+                    onLoading={(loading) => {
+                      this.setState({
+                        loading,
+                      });
+                    }}
                     ref={this.refUploadAudio}
                     type={"audio"}
                     result={async (values) => {

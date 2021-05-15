@@ -9,55 +9,48 @@ import {
   Input,
   Select,
   Button,
-  message,
+
 } from "antd";
 
 import React from "react";
 
 import _, { pick } from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
-import { UploadFile } from "../../../00.common/00.components/UploadFile";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { ANSWER_PART1 } from "../../../00.common/const";
-import { toeicPart3Service } from "../../../00.common/02.service/toeicPart3Service";
 import { storage } from "../../../firebase.config";
+import { toeicPart6Service } from "../../../00.common/02.service/toeicPart6Service";
 const { TextArea } = Input;
-interface ModalToeicPart3Props {
+interface ModalToeicPart6Props {
   onSave: () => void;
 }
 
-interface ModalToeicPart3State {
+interface ModalToeicPart6State {
   visible: boolean;
   item?: any;
   loading: boolean;
-
-  AudioUrl?: string;
 }
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
 };
 const { Option } = Select;
-export default class ModalToeicPart3 extends BaseComponent<
-  ModalToeicPart3Props,
-  ModalToeicPart3State
+export default class ModalToeicPart6 extends BaseComponent<
+  ModalToeicPart6Props,
+  ModalToeicPart6State
 > {
   private initialState = {
     visible: false,
     loading: false,
     item: undefined,
-
-    AudioUrl: "",
   };
-  private refUploadAudio = React.createRef<UploadFile>();
+
   private formRef = React.createRef<FormInstance>();
-  constructor(props: ModalToeicPart3Props) {
+  constructor(props: ModalToeicPart6Props) {
     super(props);
     this.state = {
       visible: false,
       loading: false,
-
-      AudioUrl: "",
     };
   }
   async delete(item) {
@@ -65,7 +58,7 @@ export default class ModalToeicPart3 extends BaseComponent<
       loading: true,
     });
 
-    await toeicPart3Service.delete("ToeicPart3", item.KeyDoc);
+    await toeicPart6Service.delete("ToeicPart6", item.KeyDoc);
     storage.refFromURL(this.state.item.AudioUrl).delete();
 
     this.setState(this.initialState as any);
@@ -79,18 +72,14 @@ export default class ModalToeicPart3 extends BaseComponent<
     if (item) {
       await this.setState({
         item,
-        AudioUrl: item.AudioUrl,
       });
 
       this.formRef.current!.setFieldsValue({
+        Title: item.Title,
         Level: item.Level,
         Answer1: item.Question1.Answer,
         Answer2: item.Question2.Answer,
         Answer3: item.Question3.Answer,
-
-        Question1: item.Question1.Question,
-        Question2: item.Question2.Question,
-        Question3: item.Question3.Question,
 
         Select1A: item.Question1.SelectA.Title,
         Select1B: item.Question1.SelectB.Title,
@@ -107,8 +96,6 @@ export default class ModalToeicPart3 extends BaseComponent<
         Select3C: item.Question3.SelectC.Title,
         Select3D: item.Question3.SelectD.Title,
       });
-
-      this.refUploadAudio.current?.getSourceFromForm(item.AudioUrl);
     }
     await this.setState({
       loading: false,
@@ -116,11 +103,6 @@ export default class ModalToeicPart3 extends BaseComponent<
   }
 
   async saveItem() {
-    if (!this.state.AudioUrl) {
-      message.error("bạn chưa tải phát âm");
-      return;
-    }
-
     try {
       //check xem fom đã đủ thông tin cần thiết để lưu chưa
       await this.formRef.current!.validateFields();
@@ -131,13 +113,12 @@ export default class ModalToeicPart3 extends BaseComponent<
       //lấy ra dư liệu từ form
       const value = this.formRef.current!.getFieldsValue();
 
-      value.AudioUrl = this.state.AudioUrl;
       let itemSave = {
-        AudioUrl: this.state.AudioUrl,
+        Title: value.Title,
         Level: value.Level,
         Question1: {
           Answer: value.Answer1,
-          Question: value.Question1,
+          indexQuestion: 1,
           SelectA: {
             Title: value.Select1A,
             Value: "1000",
@@ -157,7 +138,7 @@ export default class ModalToeicPart3 extends BaseComponent<
         },
         Question2: {
           Answer: value.Answer2,
-          Question: value.Question2,
+          indexQuestion: 2,
           SelectA: {
             Title: value.Select2A,
             Value: "1000",
@@ -177,7 +158,7 @@ export default class ModalToeicPart3 extends BaseComponent<
         },
         Question3: {
           Answer: value.Answer3,
-          Question: value.Question3,
+          indexQuestion: 3,
           SelectA: {
             Title: value.Select3A,
             Value: "1000",
@@ -197,13 +178,13 @@ export default class ModalToeicPart3 extends BaseComponent<
         },
       };
       if (this.state.item) {
-        await toeicPart3Service.update(
-          "ToeicPart3",
+        await toeicPart6Service.update(
+          "ToeicPart6",
           this.state.item.KeyDoc,
           itemSave
         );
       } else {
-        await toeicPart3Service.save("ToeicPart3", "", itemSave);
+        await toeicPart6Service.save("ToeicPart6", "", itemSave);
       }
       this.setState(this.initialState as any);
 
@@ -267,7 +248,7 @@ export default class ModalToeicPart3 extends BaseComponent<
     return (
       <Modal
         width={900}
-        title={`Thêm mới câu hỏi part 3`}
+        title={`Thêm mới câu hỏi part 4`}
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
@@ -289,6 +270,16 @@ export default class ModalToeicPart3 extends BaseComponent<
           onFinishFailed={() => {}}
         >
           <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item
+                labelCol={{ span: 24 }}
+                label="Đề bài"
+                name={"Title"}
+                rules={[{ required: true }]}
+              >
+                <TextArea style={{ marginLeft: 10 }} rows={10} />
+              </Form.Item>
+            </Col>
             <Col span={12}>
               <Form.Item
                 labelCol={{ span: 5 }}
@@ -309,42 +300,10 @@ export default class ModalToeicPart3 extends BaseComponent<
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                labelCol={{ span: 5 }}
-                label="Câu hỏi"
-                rules={[{ message: "Please input title!" }]}
-              >
-                <UploadFile
-                  ref={this.refUploadAudio}
-                  onLoading={(loading) => {
-                    this.setState({
-                      loading,
-                    });
-                  }}
-                  type={"audio"}
-                  result={async (values) => {
-                    await this.setState({
-                      AudioUrl: values[0],
-                    });
-                  }}
-                  refDocLib={`Pactice/ToeicPart3/Audio`}
-                />
-              </Form.Item>
-            </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item labelCol={{ span: 24 }} label="Câu 1">
-                <Form.Item
-                  labelCol={{ span: 6 }}
-                  label="Câu hỏi"
-                  name={"Question1"}
-                  rules={[{ required: true }]}
-                >
-                  <TextArea style={{ marginLeft: 10 }} />
-                </Form.Item>
-
                 <Form.Item
                   labelCol={{ span: 6 }}
                   label="Đáp án A"
@@ -410,14 +369,6 @@ export default class ModalToeicPart3 extends BaseComponent<
                 label="Câu 2"
               >
                 <Form.Item
-                  labelCol={{ span: 6 }}
-                  label="Câu hỏi"
-                  name={"Question2"}
-                >
-                  <TextArea style={{ marginLeft: 10 }} />
-                </Form.Item>
-
-                <Form.Item
                   rules={[{ required: true }]}
                   labelCol={{ span: 6 }}
                   label="Đáp án A"
@@ -479,15 +430,6 @@ export default class ModalToeicPart3 extends BaseComponent<
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item labelCol={{ span: 24 }} label="Câu 3">
-                <Form.Item
-                  rules={[{ required: true }]}
-                  labelCol={{ span: 6 }}
-                  label="Câu hỏi"
-                  name={"Question3"}
-                >
-                  <TextArea style={{ marginLeft: 10 }} />
-                </Form.Item>
-
                 <Form.Item
                   rules={[{ required: true }]}
                   labelCol={{ span: 6 }}
@@ -557,8 +499,9 @@ export default class ModalToeicPart3 extends BaseComponent<
                 }}
               >
                 <img
+                  style={{ width: "-webkit-fill-available" }}
                   src={
-                    "https://firebasestorage.googleapis.com/v0/b/toeic-project.appspot.com/o/CommonDoc%2FPactice%2FToeicPart3%2FCommon%2Fadminpart3.jpg?alt=media&token=6f4fd7bf-256e-418b-8678-7a3f7d224c7a"
+                    "https://firebasestorage.googleapis.com/v0/b/toeic-project.appspot.com/o/CommonDoc%2FPactice%2FToeicPart6%2Fpart6.jpg?alt=media&token=7ec69d82-34cf-40a5-990d-068f8b57ebf2"
                   }
                 />
               </div>

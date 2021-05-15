@@ -19,18 +19,17 @@ import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 import { UploadFile } from "../../../00.common/00.components/UploadFile";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { ANSWER_PART1 } from "../../../00.common/const";
-import { toeicPart3Service } from "../../../00.common/02.service/toeicPart3Service";
 import { storage } from "../../../firebase.config";
+import { toeicPart4Service } from "../../../00.common/02.service/toeicPart4Service";
 const { TextArea } = Input;
-interface ModalToeicPart3Props {
+interface ModalToeicPart4Props {
   onSave: () => void;
 }
 
-interface ModalToeicPart3State {
+interface ModalToeicPart4State {
   visible: boolean;
   item?: any;
   loading: boolean;
-
   AudioUrl?: string;
 }
 const layout = {
@@ -38,9 +37,9 @@ const layout = {
   wrapperCol: { span: 20 },
 };
 const { Option } = Select;
-export default class ModalToeicPart3 extends BaseComponent<
-  ModalToeicPart3Props,
-  ModalToeicPart3State
+export default class ModalToeicPart4 extends BaseComponent<
+  ModalToeicPart4Props,
+  ModalToeicPart4State
 > {
   private initialState = {
     visible: false,
@@ -51,7 +50,7 @@ export default class ModalToeicPart3 extends BaseComponent<
   };
   private refUploadAudio = React.createRef<UploadFile>();
   private formRef = React.createRef<FormInstance>();
-  constructor(props: ModalToeicPart3Props) {
+  constructor(props: ModalToeicPart4Props) {
     super(props);
     this.state = {
       visible: false,
@@ -65,7 +64,7 @@ export default class ModalToeicPart3 extends BaseComponent<
       loading: true,
     });
 
-    await toeicPart3Service.delete("ToeicPart3", item.KeyDoc);
+    await toeicPart4Service.delete("ToeicPart4", item.KeyDoc);
     storage.refFromURL(this.state.item.AudioUrl).delete();
 
     this.setState(this.initialState as any);
@@ -197,13 +196,13 @@ export default class ModalToeicPart3 extends BaseComponent<
         },
       };
       if (this.state.item) {
-        await toeicPart3Service.update(
-          "ToeicPart3",
+        await toeicPart4Service.update(
+          "ToeicPart4",
           this.state.item.KeyDoc,
           itemSave
         );
       } else {
-        await toeicPart3Service.save("ToeicPart3", "", itemSave);
+        await toeicPart4Service.save("ToeicPart4", "", itemSave);
       }
       this.setState(this.initialState as any);
 
@@ -267,7 +266,7 @@ export default class ModalToeicPart3 extends BaseComponent<
     return (
       <Modal
         width={900}
-        title={`Thêm mới câu hỏi part 3`}
+        title={`Thêm mới câu hỏi part 4`}
         visible={this.state.visible}
         closable={true}
         onCancel={() => {
@@ -328,7 +327,7 @@ export default class ModalToeicPart3 extends BaseComponent<
                       AudioUrl: values[0],
                     });
                   }}
-                  refDocLib={`Pactice/ToeicPart3/Audio`}
+                  refDocLib={`Pactice/ToeicPart4/Audio/`}
                 />
               </Form.Item>
             </Col>
@@ -557,8 +556,9 @@ export default class ModalToeicPart3 extends BaseComponent<
                 }}
               >
                 <img
+                  style={{ width: "-webkit-fill-available" }}
                   src={
-                    "https://firebasestorage.googleapis.com/v0/b/toeic-project.appspot.com/o/CommonDoc%2FPactice%2FToeicPart3%2FCommon%2Fadminpart3.jpg?alt=media&token=6f4fd7bf-256e-418b-8678-7a3f7d224c7a"
+                    "https://firebasestorage.googleapis.com/v0/b/toeic-project.appspot.com/o/CommonDoc%2FPactice%2FToeicPart4%2FCommon%2F14864.jpg?alt=media&token=dcf5fc1d-9ef9-4686-a373-724fbac7a619"
                   }
                 />
               </div>

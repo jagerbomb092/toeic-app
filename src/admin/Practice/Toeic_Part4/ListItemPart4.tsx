@@ -12,13 +12,13 @@ import React from "react";
 import _ from "lodash";
 import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 
-import ModalToeicPart3 from "./ModalToeicPart3";
+import ModalToeicPart4 from "./ModalToeicPart4";
 import { ANSWER_PART3_4_5 } from "../../../00.common/const";
-import { toeicPart3Service } from "../../../00.common/02.service/toeicPart3Service";
+import { toeicPart4Service } from "../../../00.common/02.service/toeicPart4Service";
 
-interface ToeicPart3Props {}
+interface ToeicPart4Props {}
 
-interface ToeicPart3State {
+interface ToeicPart4State {
   searchText: string;
   searchedColumn: string;
   allData: any[];
@@ -28,12 +28,12 @@ interface ToeicPart3State {
   selectQuestion?: string;
 }
 const { Option } = Select;
-export default class ListToeicPart3 extends BaseComponent<
-  ToeicPart3Props,
-  ToeicPart3State
+export default class ListToeicPart4 extends BaseComponent<
+  ToeicPart4Props,
+  ToeicPart4State
 > {
-  private refModalToeicPart3 = React.createRef<ModalToeicPart3>();
-  constructor(props: ToeicPart3Props) {
+  private refModalToeicPart4 = React.createRef<ModalToeicPart4>();
+  constructor(props: ToeicPart4Props) {
     super(props);
     this.state = {
       searchText: "",
@@ -48,7 +48,7 @@ export default class ListToeicPart3 extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await toeicPart3Service.getAll("ToeicPart3");
+    let allData = await toeicPart4Service.getAll("ToeicPart4");
 
     this.setState({
       allData: allData,
@@ -295,7 +295,7 @@ export default class ListToeicPart3 extends BaseComponent<
         render: (Level: any, record) => (
           <a
             onClick={() => {
-              this.refModalToeicPart3.current!.openModal(record);
+              this.refModalToeicPart4.current!.openModal(record);
             }}
             style={{ color: this.handelLevelColor(Level).Color }}
           >
@@ -331,6 +331,7 @@ export default class ListToeicPart3 extends BaseComponent<
         render: (Question1: any, index) => this.renderPopover(Question1, index),
       },
       {
+        // ...this.getColumnSearchProps("Question"),
         title: "Câu 3",
         dataIndex: "Question3",
         key: "Question3",
@@ -352,7 +353,7 @@ export default class ListToeicPart3 extends BaseComponent<
         >
           <Button
             onClick={() => {
-              this.refModalToeicPart3.current!.openModal();
+              this.refModalToeicPart4.current!.openModal();
             }}
             type="primary"
             icon={<PlusCircleOutlined />}
@@ -398,8 +399,8 @@ export default class ListToeicPart3 extends BaseComponent<
               : []
           }
         />
-        <ModalToeicPart3
-          ref={this.refModalToeicPart3}
+        <ModalToeicPart4
+          ref={this.refModalToeicPart4}
           onSave={async () => {
             this.loadAllData();
           }}

@@ -8,6 +8,8 @@ export const LIST_COMPONET_ADMIN = {
   PART_3: "PART_3",
   PART_4: "PART_4",
   PART_5: "PART_5",
+  PART_6: "PART_6",
+  PART_7: "PART_7",
 };
 
 export const ANSWER_PART1 = {
@@ -45,8 +47,8 @@ export const ANSWER_PART2 = {
  
 };
 
-
-export const ANSWER_PART3 = {
+//áp dụng cho cả part 4,5 do cùng 1 fommat
+export const ANSWER_PART3_4_5 = {
   A: {
     key: "A",
     value: "1000",
@@ -64,3 +66,4 @@ export const ANSWER_PART3 = {
     value: "0001",
   },
 };
+
