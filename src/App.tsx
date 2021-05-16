@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import UpcomingBirthdays from "./01.module/UpcommingStudent/UpcomingBirthday";
 import NewEmployees from "./01.module/NewMember/NewEmployees";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import { Skeleton } from "antd";
+import { Select, Skeleton, Menu, Dropdown, Button } from "antd";
 import { BaseComponent } from "./00.common/00.components/BaseComponent";
 import { quickLinkService } from "./00.common/02.service/quickLinkService";
 import { orderBy } from "lodash";
@@ -17,6 +17,8 @@ import Words600Com from "./01.module/600WordsToeic/WordsToeics600";
 import GrammarCom from "./01.module/Grammar/Grammar";
 import MainPage from "./admin/MainPage";
 import { UploadFile } from "./00.common/00.components/UploadFile";
+import MenuItem from "antd/lib/menu/MenuItem";
+const { Option } = Select;
 interface propsApp {}
 interface stateApp {
   allTopMenu: any[];
@@ -53,6 +55,26 @@ export default class App extends BaseComponent<propsApp, stateApp> {
       allTopMenu,
     });
   }
+
+  getSubitems(arrSubitems: any[]) {
+    let itemsRender: JSX.Element;
+    if (arrSubitems && arrSubitems.length > 0) {
+      itemsRender = (
+        <Menu style={{ backgroundColor: "white", border: "solid 1px #F1F3F4" }}>
+          {arrSubitems.map((item) => (
+            <MenuItem>
+              <Link style={{ color: "#33ABE5" }} to={`/${item.Code}`}>
+                {item.Title}
+              </Link>
+            </MenuItem>
+          ))}
+        </Menu>
+      );
+    } else {
+      itemsRender = <div style={{ display: "none" }}></div>;
+    }
+    return itemsRender;
+  }
   render() {
     return (
       <div>
@@ -82,18 +104,21 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                         className={styles.HomePageApp__header__left__topMenu}
                       >
                         {this.state.allTopMenu.map((item) => (
-                          <div
+                          <Link
+                            to={`/${item.Code}`}
                             className={
                               styles.HomePageApp__header__left__topMenu__item
                             }
+                            style={{zIndex:1000}}
                           >
-                            <Link
-                              style={{ color: "white" }}
-                              to={`/${item.Code}`}
+                            <Dropdown
+                            
+                              trigger={["hover"]}
+                              overlay={this.getSubitems(item.SubItem)}
                             >
-                              {item.Title}
-                            </Link>
-                          </div>
+                              <div> {item.Title}</div>
+                            </Dropdown>
+                          </Link>
                         ))}
                       </div>
                     </div>
