@@ -18,11 +18,13 @@ import GrammarCom from "./01.module/Grammar/Grammar";
 import MainPage from "./admin/MainPage";
 import { UploadFile } from "./00.common/00.components/UploadFile";
 import MenuItem from "antd/lib/menu/MenuItem";
+import { ParParrt1 } from "./01.module/Practice/Part1/Part1";
 const { Option } = Select;
 interface propsApp {}
 interface stateApp {
   allTopMenu: any[];
   logo: string;
+  flatArrTopMenu: any[];
 }
 export default class App extends BaseComponent<propsApp, stateApp> {
   constructor(props: propsApp) {
@@ -30,6 +32,7 @@ export default class App extends BaseComponent<propsApp, stateApp> {
     this.state = {
       allTopMenu: [],
       logo: "",
+      flatArrTopMenu: [],
     };
     this.onMount(async () => {
       await Promise.all([this.getTopMenu(), this.getImgUrl()]);
@@ -45,6 +48,23 @@ export default class App extends BaseComponent<propsApp, stateApp> {
     });
   }
 
+  renderRouter(arrTopMenu: any[]) {
+    let flatArrTopMenu: { Title: string; Code: string }[] = [];
+
+    arrTopMenu.forEach((item) => {
+      flatArrTopMenu.push({ Title: item.Title, Code: item.Code });
+      if (item.SubItem && item.SubItem.length > 0) {
+        // lấy ra code và title của các phần tử trong subItem
+        let arrSubitem = item.SubItem.map((item) => {
+          return { Title: item.Title, Code: item.Code };
+        });
+        flatArrTopMenu = flatArrTopMenu.concat(arrSubitem);
+      }
+    });
+    this.setState({
+      flatArrTopMenu,
+    });
+  }
   async getTopMenu() {
     let allTopMenu = orderBy(
       await quickLinkService.getAll("TopMenu"),
@@ -109,10 +129,9 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                             className={
                               styles.HomePageApp__header__left__topMenu__item
                             }
-                            style={{zIndex:1000}}
+                            style={{ zIndex: 1000 }}
                           >
                             <Dropdown
-                            
                               trigger={["hover"]}
                               overlay={this.getSubitems(item.SubItem)}
                             >
@@ -188,6 +207,12 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                   </Route>
                   <Route path="/admin">
                     <MainPage />
+                  </Route>
+                  <Route path="/admin">
+                    <MainPage />
+                  </Route>
+                  <Route  path="/part1">
+                    <ParParrt1/>
                   </Route>
                 </Switch>
               </div>
