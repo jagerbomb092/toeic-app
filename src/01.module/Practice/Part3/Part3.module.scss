@@ -1,4 +1,4 @@
-.Part1Container {
+.Part3Container {
   width: 100%;
   background-color: #ebebeb;
   &__Content {
@@ -24,14 +24,27 @@
       }
     }
     &__tableOfContents {
-      background: #f2fcfe;
-      border: 1px solid #d0e1f2;
-      border-radius: 10px;
-      padding: 14px 21px;
-      width: 70%;
+      margin: 50px 20px;
       display: flex;
       flex-direction: column;
-      font-size: 18px;
+      &__row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &__item {
+          margin: 20;
+        }
+      }
+    }
+    &__table {
+      border: 2px solid #eeeef2;
+      border-collapse: collapse;
+    }
+    &__h4 {
+      font-family: inherit;
+      font-weight: 500;
+      line-height: 1.1;
+      color: inherit;
     }
     &__textGreen {
       margin-top: 30px;
@@ -48,6 +61,9 @@
       margin-top: 20px;
       margin-bottom: 18px;
       font-size: 24px;
+    }
+    &__li {
+      margin-top: 10px;
     }
     &__button {
       color: rgb(255, 255, 255);

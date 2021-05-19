@@ -4,7 +4,7 @@ interface part1State {}
 
 interface part1Props {}
 
-export class ParParrt1 extends BaseComponent<part1Props, part1State> {
+export class ParPart1 extends BaseComponent<part1Props, part1State> {
   constructor(props: part1Props) {
     super(props);
   }

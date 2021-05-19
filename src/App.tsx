@@ -18,7 +18,10 @@ import GrammarCom from "./01.module/Grammar/Grammar";
 import MainPage from "./admin/MainPage";
 import { UploadFile } from "./00.common/00.components/UploadFile";
 import MenuItem from "antd/lib/menu/MenuItem";
-import { ParParrt1 } from "./01.module/Practice/Part1/Part1";
+import { ParPart1 } from "./01.module/Practice/Part1/Part1";
+import { ParPart2 } from "./01.module/Practice/Part2/Part2";
+import { ParPart3 } from "./01.module/Practice/Part3/Part3";
+
 const { Option } = Select;
 interface propsApp {}
 interface stateApp {
@@ -211,8 +214,14 @@ export default class App extends BaseComponent<propsApp, stateApp> {
                   <Route path="/admin">
                     <MainPage />
                   </Route>
-                  <Route  path="/part1">
-                    <ParParrt1/>
+                  <Route path="/part1">
+                    <ParPart1 />
+                  </Route>
+                  <Route path="/part2">
+                    <ParPart2 />
+                  </Route>
+                  <Route path="/part3">
+                    <ParPart3 />
                   </Route>
                 </Switch>
               </div>

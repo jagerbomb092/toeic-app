@@ -1,4 +1,4 @@
-.Part1Container {
+.Part2Container {
   width: 100%;
   background-color: #ebebeb;
   &__Content {
@@ -48,6 +48,9 @@
       margin-top: 20px;
       margin-bottom: 18px;
       font-size: 24px;
+    }
+    &__li {
+      margin-top: 10px;
     }
     &__button {
       color: rgb(255, 255, 255);
