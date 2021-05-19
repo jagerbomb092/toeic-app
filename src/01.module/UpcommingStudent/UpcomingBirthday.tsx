@@ -21,7 +21,7 @@ interface UpcomingBirthdaysStates {
   dataSource: any[];
 }
 
-export default class UpcomingBirthdays extends BaseComponent<
+export  class UpcomingBirthdays extends BaseComponent<
   UpcomingBirthdaysProps,
   UpcomingBirthdaysStates
 > {

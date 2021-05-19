@@ -13,7 +13,7 @@ interface StoryStudentProps {}
 interface StoryStudentStates {
   allData: any[];
 }
-export default class StoryStudent extends BaseComponent<
+export  class StoryStudent extends BaseComponent<
   StoryStudentProps,
   StoryStudentStates
 > {

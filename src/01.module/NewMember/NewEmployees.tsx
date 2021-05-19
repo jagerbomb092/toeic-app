@@ -15,7 +15,7 @@ interface NewEmployeesStates {
   dataSource: any[];
 }
 
-export default class NewEmployees extends BaseComponent<
+export  class NewEmployees extends BaseComponent<
   NewEmployeesProps,
   NewEmployeesStates
 > {
