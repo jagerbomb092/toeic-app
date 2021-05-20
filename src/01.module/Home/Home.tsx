@@ -15,8 +15,11 @@ import { Select, Skeleton, Menu, Dropdown, Button } from "antd";
 import { orderBy } from "lodash";
 import {
   CaretUpOutlined,
-  UserOutlined,
+  SolutionOutlined,
   CaretDownOutlined,
+  EditOutlined,
+  BulbOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import MenuItem from "antd/lib/menu/MenuItem";
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
@@ -46,15 +49,51 @@ interface stateHome {
 }
 export default class Home extends BaseComponent<propsHome, stateHome> {
   public menu = (
-    <Menu>
-      <Menu.Item key="1" icon={<UserOutlined />}>
-        1st menu item
+    <Menu style={{ marginTop: 20, width: 230 }}>
+      <Menu.Item
+        style={{ borderBottom: "grey solid 1px", fontWeight: 400 }}
+        key="1"
+        icon={
+          <SolutionOutlined
+            style={{ fontSize: 22, marginRight: 40, color: "#777777" }}
+          />
+        }
+      >
+        Thiết lập tài khoản
       </Menu.Item>
-      <Menu.Item key="2" icon={<UserOutlined />}>
-        2nd menu item
+      <Menu.Item
+        style={{ borderBottom: "grey solid 1px", fontWeight: 400 }}
+        key="2"
+        icon={
+          <EditOutlined
+            style={{ fontSize: 22, marginRight: 40, color: "#777777" }}
+          />
+        }
+      >
+        Ghi chú của tôi
       </Menu.Item>
-      <Menu.Item key="3" icon={<UserOutlined />}>
-        3rd menu item
+      <Menu.Item
+        style={{ borderBottom: "grey solid 1px", fontWeight: 400 }}
+        key="3"
+        icon={
+          <BulbOutlined
+            style={{ fontSize: 22, marginRight: 40, color: "#777777" }}
+          />
+        }
+      >
+        Hướng dẫn cách học
+      </Menu.Item>
+      <Menu.Item
+       
+        onClick={this.props.signOut}
+        key="3"
+        icon={
+          <LogoutOutlined
+            style={{ fontSize: 22, marginRight: 40, color: "#777777" }}
+          />
+        }
+      >
+        Đăng xuất
       </Menu.Item>
     </Menu>
   );

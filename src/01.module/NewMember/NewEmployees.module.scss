@@ -29,7 +29,7 @@
       border-top: 1px solid #c4c4c4;
       border-left: 1px solid #c4c4c4;
       border-right: 1px solid #c4c4c4;
-      border-bottom: 4px solid #fa541c;
+      border-bottom: 4px solid#33abe5;
       border-radius: 8px;
       display: flex !important;
       align-items: center;
@@ -74,7 +74,7 @@
           margin-top: 16px;
           font-size: 14px;
           text-align: center;
-          color: #fa541c;
+          color:#33abe5;
         }
         &__empPhone {
           margin-top: 2px;
@@ -83,7 +83,7 @@
           height: fit-content;
           line-height: 22px;
           text-align: center;
-          color: #fa541c;
+          color:#33abe5;
         }
         &__msTeam {
           cursor: pointer;
