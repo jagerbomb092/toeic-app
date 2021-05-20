@@ -14,6 +14,7 @@ interface UploadFileProps {
   refDocLib: string;
   result: (value: any[]) => void;
   onLoading?: (loading: boolean) => void;
+  showImg?: boolean;
 }
 
 export class UploadFile extends BaseComponent<
@@ -39,8 +40,7 @@ export class UploadFile extends BaseComponent<
     this.setState({
       isUploading: true,
     });
-     this.props.onLoading!(true);
-   
+    this.props.onLoading!(true);
   };
 
   handleUploadError = (error) => {
@@ -95,7 +95,7 @@ export class UploadFile extends BaseComponent<
         </CustomUploadButton>
 
         <div style={{ marginTop: 30 }}>
-          {this.props.type == "img" ? (
+          {this.props.showImg !== false && this.props.type == "img" && (
             <div>
               {this.state.downloadURLs.map((downloadURL, i) => {
                 return (
@@ -103,7 +103,8 @@ export class UploadFile extends BaseComponent<
                 );
               })}
             </div>
-          ) : (
+          )}
+          {this.props.type == "audio" && (
             <div>
               {this.state.downloadURLs.length > 0 &&
                 this.state.downloadURLs.map((downloadURL, i) => {

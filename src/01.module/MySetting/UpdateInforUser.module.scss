@@ -1,0 +1,41 @@
+.modalUpdateUser {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  &__Avatar {
+    display: flex;
+    position: relative;
+    &__edit {
+      position: absolute;
+      display: flex;
+      right: -5px;
+      top: 70%;
+      color: #01a6f6;
+    }
+  }
+  &__fullName {
+    line-height: 28px;
+    font-weight: 600;
+    font-size: 20px;
+    font-style: normal;
+    color: #262626;
+  }
+  &__otherInfor {
+    display: flex;
+    width: 100%;
+    height: 30px;
+    justify-content: space-between;
+    align-items: center;
+    &__title {
+      font-weight: 600;
+      font-size: 14;
+      color: rgb(89, 89, 89);
+    }
+    &__value {
+      cursor: pointer;
+      color: rgb(89, 89, 89);
+      font-size: 14px;
+    }
+  }
+}

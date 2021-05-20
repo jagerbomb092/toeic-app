@@ -87,6 +87,8 @@ export default class App extends React.Component {
         inforUser={{
           loginName: firebase.auth().currentUser!.displayName as string,
           photoURL: firebase.auth().currentUser!.photoURL as string,
+          email:firebase.auth().currentUser!.email?firebase.auth().currentUser!.email as string:"",
+          phoneNumber:firebase.auth().currentUser!.email?firebase.auth().currentUser!.phoneNumber as string:"",
         }}
       />
     );

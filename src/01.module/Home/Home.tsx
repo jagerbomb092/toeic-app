@@ -32,11 +32,15 @@ import Words600Com from "../600WordsToeic/WordsToeics600";
 import MainPage from "../../admin/MainPage";
 import { ParPart1 } from "../Practice/Part1/Part1";
 import { ParPart3 } from "../Practice/Part3/Part3";
+import { ModalUpdateUser } from "../MySetting/UpdateInforUser";
+import firebase from "firebase";
 const { Option } = Select;
 interface propsHome {
   inforUser: {
     photoURL: string;
     loginName: string;
+    email?: string;
+    phoneNumber?: string;
   };
 
   signOut: () => void;
@@ -51,6 +55,9 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
   public menu = (
     <Menu style={{ marginTop: 20, width: 230 }}>
       <Menu.Item
+        onClick={() => {
+          this.refModalUpdateInfor.current!.openItem();
+        }}
         style={{ borderBottom: "grey solid 1px", fontWeight: 400 }}
         key="1"
         icon={
@@ -59,7 +66,7 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
           />
         }
       >
-        Thiết lập tài khoản
+        Cập nhật thông tin
       </Menu.Item>
       <Menu.Item
         style={{ borderBottom: "grey solid 1px", fontWeight: 400 }}
@@ -84,9 +91,8 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
         Hướng dẫn cách học
       </Menu.Item>
       <Menu.Item
-       
         onClick={this.props.signOut}
-        key="3"
+        key="4"
         icon={
           <LogoutOutlined
             style={{ fontSize: 22, marginRight: 40, color: "#777777" }}
@@ -97,6 +103,8 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
       </Menu.Item>
     </Menu>
   );
+
+  public refModalUpdateInfor = React.createRef<ModalUpdateUser>();
   constructor(props: propsHome) {
     super(props);
     this.state = {
@@ -109,6 +117,8 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
       await Promise.all([this.getTopMenu(), this.getImgUrl()]);
     });
   }
+
+
 
   async getImgUrl() {
     let [logo] = await Promise.all([
@@ -327,6 +337,12 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
                 </Switch>
               </div>
             </Router>
+
+            <ModalUpdateUser
+              onUpdate={() => {}}
+              inforUser={this.props.inforUser}
+              ref={this.refModalUpdateInfor}
+            />
           </div>
         ) : (
           <Skeleton avatar paragraph={{ rows: 10 }} />
