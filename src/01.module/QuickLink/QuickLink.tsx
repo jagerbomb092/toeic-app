@@ -5,17 +5,18 @@ import { BaseComponent } from "../../00.common/00.components/BaseComponent";
 import { quickLinkService } from "../../00.common/02.service/quickLinkService";
 import { storage } from "../../firebase.config";
 import { Link } from "react-router-dom";
+import { QuickLink } from "../../00.common/01.model/QuickLink";
 interface staeHomepage {
   logo: string;
   img1: string;
   img2: string;
   img3_viewImg: string;
-  allQuickLink: any[];
+  allQuickLink: QuickLink[];
 }
 
 interface propsHomePage {}
 
-export class QuickLink extends BaseComponent<propsHomePage, staeHomepage> {
+export class QuickLinkApp extends BaseComponent<propsHomePage, staeHomepage> {
   constructor(props: propsHomePage) {
     super(props);
     this.state = {
@@ -32,7 +33,7 @@ export class QuickLink extends BaseComponent<propsHomePage, staeHomepage> {
 
   async getListQuickLink() {
     let allQuickLink = orderBy(
-      await quickLinkService.getAll("QuickLink"),
+      await quickLinkService.getAll<QuickLink>("QuickLink"),
       "Order",
       "asc"
     );

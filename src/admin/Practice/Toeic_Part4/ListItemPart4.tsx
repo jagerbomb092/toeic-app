@@ -5,7 +5,7 @@ import {
   PlusCircleOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-
+import { ToeicPart4 } from "../../../00.common/01.model/ToeicPart4";
 import ReactAudioPlayer from "react-audio-player";
 import React from "react";
 
@@ -21,8 +21,8 @@ interface ToeicPart4Props {}
 interface ToeicPart4State {
   searchText: string;
   searchedColumn: string;
-  allData: any[];
-  dataSource: any[];
+  allData: ToeicPart4[];
+  dataSource: ToeicPart4[];
   visiblePopover: boolean;
   index?: number;
   selectQuestion?: string;
@@ -48,7 +48,7 @@ export default class ListToeicPart4 extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await toeicPart4Service.getAll("ToeicPart4");
+    let allData = await toeicPart4Service.getAll<ToeicPart4>("ToeicPart4");
 
     this.setState({
       allData: allData,

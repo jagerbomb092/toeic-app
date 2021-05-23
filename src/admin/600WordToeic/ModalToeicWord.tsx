@@ -236,7 +236,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 6 }}
                   label="Tên "
                   name="Title"
-                  rules={[{ required: true, message: "Please input title!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin title!" }]}
                 >
                   <Input style={{ width: 242 }} />
                 </Form.Item>
@@ -246,7 +246,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 6 }}
                   label="Phiên âm"
                   name="Spelling"
-                  rules={[{ required: true, message: "Please input title!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin title!" }]}
                 >
                   <Input style={{ width: 242 }} />
                 </Form.Item>
@@ -258,7 +258,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 3 }}
                   label="Giải thích"
                   name="Explain"
-                  rules={[{ required: true, message: "Please input title!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin title!" }]}
                 >
                   <Input.TextArea rows={2} />
                 </Form.Item>
@@ -270,7 +270,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 3 }}
                   label="Thể loại"
                   name="Category"
-                  rules={[{ required: true, message: "Please input title!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin title!" }]}
                 >
                   <Input.TextArea rows={2} />
                 </Form.Item>
@@ -282,7 +282,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 3 }}
                   label="Ví dụ"
                   name="Example"
-                  rules={[{ required: true, message: "Please input title!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin title!" }]}
                 >
                   <Input.TextArea rows={2} />
                 </Form.Item>
@@ -294,7 +294,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 3 }}
                   label="Dịch nghĩa"
                   name="Translate"
-                  rules={[{ required: true, message: "Please input title!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin title!" }]}
                 >
                   <Input.TextArea rows={2} />
                 </Form.Item>
@@ -306,7 +306,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 8 }}
                   label=" Ảnh biểu tượng"
                   name="ImgItem"
-                  rules={[{ message: "Please input title!" }]}
+                  rules={[{ message: "Thiếu thông tin title!" }]}
                 >
                   <UploadFile
                     onLoading={(loading) => {
@@ -330,7 +330,7 @@ export default class ModalWordToeic extends BaseComponent<
                   labelCol={{ span: 6 }}
                   label="Phát âm"
                   name="LinkAudio"
-                  rules={[{ message: "Please input title!" }]}
+                  rules={[{ message: "Thiếu thông tin title!" }]}
                 >
                   <UploadFile
                     onLoading={(loading) => {

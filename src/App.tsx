@@ -4,7 +4,7 @@ import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
 import styles from "./App.module.scss";
 import Home from "./01.module/Home/Home";
-var firebaseConfig = {
+let firebaseConfig = {
   apiKey: "AIzaSyBMN-fX4brLaxmbZ43d-WsyDOE26mYZUxY",
   authDomain: "toeic-project.firebaseapp.com",
   databaseURL: "https://toeic-project-default-rtdb.firebaseio.com",
@@ -35,6 +35,7 @@ export default class App extends React.Component {
     signInOptions: [
       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
       firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
     ],
     callbacks: {
       // Avoid redirects after sign-in.
@@ -85,10 +86,11 @@ export default class App extends React.Component {
           firebase.auth().signOut();
         }}
         inforUser={{
-          loginName: firebase.auth().currentUser!.displayName as string,
-          photoURL: firebase.auth().currentUser!.photoURL as string,
-          email:firebase.auth().currentUser!.email?firebase.auth().currentUser!.email as string:"",
-          phoneNumber:firebase.auth().currentUser!.email?firebase.auth().currentUser!.phoneNumber as string:"",
+          Uid:firebase.auth().currentUser!.uid as string,
+          LoginName: firebase.auth().currentUser!.displayName as string,
+          PhotoUrl: firebase.auth().currentUser!.photoURL as string,
+          Email:firebase.auth().currentUser!.email?firebase.auth().currentUser!.email as string:"",
+          PhoneNumber:firebase.auth().currentUser!.email?firebase.auth().currentUser!.phoneNumber as string:"",
         }}
       />
     );

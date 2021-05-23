@@ -14,14 +14,15 @@ import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 import { ANSWER_PART3_4_5 } from "../../../00.common/const";
 import { toeicPart7Service } from "../../../00.common/02.service/toeicPart7Service";
 import ModalToeicPart7 from "./ModalToeicPart7";
+import { ToeicPart7 } from "../../../00.common/01.model/ToeicPart7";
 
 interface ToeicPart7Props {}
 
 interface ToeicPart7State {
   searchText: string;
   searchedColumn: string;
-  allData: any[];
-  dataSource: any[];
+  allData: ToeicPart7[];
+  dataSource: ToeicPart7[];
   visiblePopover: boolean;
   index?: number;
   selectQuestion?: string;
@@ -47,7 +48,7 @@ export default class ListToeicPart7 extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await toeicPart7Service.getAll("ToeicPart7");
+    let allData = await toeicPart7Service.getAll<ToeicPart7>("ToeicPart7");
 
     this.setState({
       allData: allData,

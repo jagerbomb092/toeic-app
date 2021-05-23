@@ -18,16 +18,26 @@ import ModalWordToeic from "./ModalToeicWord";
 import _ from "lodash";
 import ModalTheme from "./ModalCreateTheme";
 import { ListCustom } from "../../00.common/00.components/ListCustom";
+import { WordsToeic } from "../../00.common/01.model/600WordsToeic";
 
 interface List600WordProps {}
 
 interface List600WordState {
   searchText: string;
   searchedColumn: string;
-  allData: any[];
+  allData: WordsToeic[];
   allCategories: { Title: string; value: string }[];
   selectedCa?: { Title: string; value: string };
-  dataSource: any[];
+  dataSource: {
+    Category: string;
+    Example: string;
+    Explain: string;
+    ImgItem: string;
+    LinkAudio: string;
+    Spelling: string;
+    Title: string;
+    Translate: string;
+}[];
   viewTable: boolean;
 }
 const { Option } = Select;
@@ -54,7 +64,7 @@ export default class List600WordsToeic extends BaseComponent<
 
   async loadAllData() {
     let allData = _.orderBy(
-      await words600Service.getAll("600WordsToeic"),
+      await words600Service.getAll<WordsToeic>("600WordsToeic"),
       "OrderBy",
       "asc"
     );
@@ -151,7 +161,7 @@ export default class List600WordsToeic extends BaseComponent<
     let allData: any[] = [];
     if (isRefresh) {
       allData = _.orderBy(
-        await words600Service.getAll("600WordsToeic"),
+        await words600Service.getAll<WordsToeic>("600WordsToeic"),
         "OrderBy",
         "asc"
       );

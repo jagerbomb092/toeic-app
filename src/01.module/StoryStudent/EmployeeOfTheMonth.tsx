@@ -9,11 +9,12 @@ import Slider from "react-slick";
 import { orderBy } from "lodash";
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
 import { storyStudentService } from "../../00.common/02.service/storyStudentService";
+import { StoryStudent } from "../../00.common/01.model/StoryStudent";
 interface StoryStudentProps {}
 interface StoryStudentStates {
-  allData: any[];
+  allData: StoryStudent[];
 }
-export  class StoryStudent extends BaseComponent<
+export  class StoryStudentToeic extends BaseComponent<
   StoryStudentProps,
   StoryStudentStates
 > {
@@ -31,7 +32,7 @@ export  class StoryStudent extends BaseComponent<
 
   async getDataStoryStudent() {
     let allData = orderBy(
-      await storyStudentService.getAll("StoryStudent"),
+      await storyStudentService.getAll<StoryStudent>("StoryStudent"),
       "Order",
       "asc"
     );
@@ -192,7 +193,7 @@ export  class StoryStudent extends BaseComponent<
   }
 
   public render(): React.ReactElement<StoryStudentProps> {
-    var settings = {
+    let settings = {
       infinite: true,
       speed: 1000,
       slidesToShow: 1,

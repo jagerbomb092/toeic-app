@@ -8,6 +8,8 @@ import {
   Form,
   FormInstance,
   Spin,
+  DatePicker,
+  Select,
 } from "antd";
 import styles from "./UpdateInforUser.module.scss";
 import {
@@ -21,13 +23,10 @@ import editImg from "./img/edit.png";
 import React from "react";
 import { UploadFile } from "../../00.common/00.components/UploadFile";
 import { userInforService } from "../../00.common/02.service/userInforService";
+import moment from "moment";
+import { firestore } from "../../firebase.config";
+import { MemberInfor } from "../../00.common/01.model/MemberInfor";
 interface UpdateInforProps {
-  inforUser: {
-    photoURL: string;
-    loginName: string;
-    email?: string;
-    phoneNumber?: string;
-  };
   onUpdate: () => void;
 }
 interface UpdateInforState {
@@ -36,7 +35,7 @@ interface UpdateInforState {
   loading: boolean;
   Avatar?: string;
   chageAvatar: boolean;
-  item?: any;
+  item: MemberInfor;
 }
 
 export class ModalUpdateUser extends BaseComponent<
@@ -58,11 +57,14 @@ export class ModalUpdateUser extends BaseComponent<
       edit: false,
       loading: false,
       chageAvatar: false,
+      item: {} as any,
     };
   }
 
-  openItem(item?: any) {
+  openItem(item: MemberInfor) {
     this.setState({
+      item,
+      Avatar: item.PhotoUrl,
       modalVisible: true,
     });
   }
@@ -81,17 +83,34 @@ export class ModalUpdateUser extends BaseComponent<
       });
       //lấy ra dư liệu từ form
       const value = this.formRef.current!.getFieldsValue();
-      value.ImgUrl = this.state.Avatar;
+      if (this.state.Avatar) {
+        value.Avatar = this.state.Avatar;
+      }
+      value.DateOfBirth = {
+        nanoseconds: 0,
+        seconds: (value.DateOfBirth as moment.Moment).format("x"),
+      };
 
-      //   if (this.state.item) {
-      //     await userInforService.update(
-      //       "ToeicPart1",
-      //       this.state.item.KeyDoc,
-      //       value
-      //     );
-      //   } else {
-      //     await userInforService.save("ToeicPart1", "", value);
-      //   }
+      if (this.state.item.KeyDoc) {
+        await userInforService.update(
+          "MemberDirectory",
+          this.state.item.KeyDoc,
+          value
+        );
+      } else {
+        let result = await userInforService.getItemByQuery<MemberInfor>(
+          "MemberDirectory",
+          "Uid",
+          "==",
+          this.state.item.Uid
+        );
+        await userInforService.update(
+          "MemberDirectory",
+          result[0].KeyDoc as string,
+          value
+        );
+      }
+
       this.setState(this.initialState as any);
 
       await this.setState(this.initialState as any);
@@ -142,251 +161,303 @@ export class ModalUpdateUser extends BaseComponent<
       <Modal
         width={450}
         visible={this.state.modalVisible}
-        onCancel={this.onclose}
+        onCancel={() => {
+          this.onclose();
+        }}
         title="Thông tin cá nhân"
         footer={footer}
       >
-        <Spin
-          spinning={this.state.loading}
-          tip={"Loading"}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <div className={styles.modalUpdateUser}>
-            <div className={styles.modalUpdateUser__Avatar}>
-              <Avatar
-                shape="circle"
-                icon={<UserOutlined />}
-                size={80}
-                src={
-                  this.state.Avatar
-                    ? this.state.Avatar
-                    : this.props.inforUser.photoURL
-                }
-              />
-              {this.state.edit && (
-                <img
-                  onClick={() => {
-                    this.setState({
-                      chageAvatar: !this.state.chageAvatar,
-                    });
-                  }}
-                  className={styles.modalUpdateUser__Avatar__edit}
-                  src={editImg}
-                />
-              )}
-            </div>
-            {this.state.edit ? (
-              <Form ref={this.formRef} style={{ width: "100%", marginTop: 20 }}>
-                <div style={{ marginBottom: 5 }}>
+        {this.state.modalVisible && (
+          <Spin
+            spinning={this.state.loading}
+            tip={"Loading"}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <div className={styles.modalUpdateUser}>
+              <div className={styles.modalUpdateUser__Avatar}>
+                {this.state.Avatar ? (
+                  <Avatar
+                    shape="circle"
+                    icon={<UserOutlined />}
+                    size={80}
+                    src={this.state.Avatar ? this.state.Avatar : ""}
+                  />
+                ) : (
+                  <Avatar shape="circle" icon={<UserOutlined />} size={80} />
+                )}
+                {this.state.edit && (
+                  <img
+                    onClick={() => {
+                      this.setState({
+                        chageAvatar: !this.state.chageAvatar,
+                      });
+                    }}
+                    className={styles.modalUpdateUser__Avatar__edit}
+                    src={editImg}
+                  />
+                )}
+              </div>
+              {this.state.edit ? (
+                <Form
+                  ref={this.formRef}
+                  style={{ width: "100%", marginTop: 20 }}
+                >
+                  <div style={{ marginBottom: 5 }}>
+                    <Form.Item
+                      className={styles.modalUpdateUser__otherInfor__title}
+                      labelCol={{ span: 5 }}
+                      label="Họ tên"
+                      name="FullName"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Thiếu thông tin loginName!",
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </div>
+
                   <Form.Item
                     className={styles.modalUpdateUser__otherInfor__title}
                     labelCol={{ span: 5 }}
-                    label="Họ tên"
-                    name="LoginName"
+                    label="Công việc"
+                    name="JobTitle"
                     rules={[
-                      { required: true, message: "Please input loginName!" },
+                      { required: true, message: "Thiếu thông tin JobTitle!" },
                     ]}
                   >
                     <Input />
                   </Form.Item>
-                </div>
 
-                <Form.Item
-                  className={styles.modalUpdateUser__otherInfor__title}
-                  labelCol={{ span: 5 }}
-                  label="Công việc"
-                  name="JobTitle"
-                  rules={[
-                    { required: true, message: "Please input JobTitle!" },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-
-                <Form.Item
-                  className={styles.modalUpdateUser__otherInfor__title}
-                  labelCol={{ span: 5 }}
-                  label="Địa chỉ"
-                  name="Adrress"
-                  rules={[{ required: true, message: "Please input Adrress!" }]}
-                >
-                  <Input />
-                </Form.Item>
-
-                <Divider
-                  type={"horizontal"}
-                  style={{ backgroundColor: "#BFBFBF", height: 1.5 }}
-                />
-                <div
-                  className={styles.modalUpdateUser__otherInfor}
-                  style={{ height: 50 }}
-                >
-                  <a
-                    href="https://teams.microsoft.com/l/chat/0/0?users=devteam@createsimpleapps.com"
+                  <Form.Item
                     className={styles.modalUpdateUser__otherInfor__title}
+                    labelCol={{ span: 5 }}
+                    label="Ngày sinh"
+                    name="DateOfBirth"
+                    initialValue={moment()}
+                    rules={[
+                      { required: true, message: "Thiếu thông tin Ngày sinh!" },
+                    ]}
                   >
-                    <WechatOutlined
-                      style={{ marginRight: 3, color: "#007ACC" }}
-                    />{" "}
-                    Chat cùng tôi
-                  </a>
-                  <Form.Item
-                    name="LinkChat"
-                    rules={[{ message: "Please input chat!" }]}
-                  >
-                    <Input style={{ width: 250 }} />
+                    <DatePicker style={{ width: "100%" }} />
                   </Form.Item>
-                </div>
-                <div
-                  className={styles.modalUpdateUser__otherInfor}
-                  style={{ height: 50 }}
-                >
-                  <div className={styles.modalUpdateUser__otherInfor__title}>
-                    <PhoneOutlined
-                      style={{ marginRight: 3, color: "#007ACC" }}
-                    />{" "}
-                    Số Giới tính:
-                  </div>
                   <Form.Item
-                    name="Gender"
-                    rules={[{ message: "Please input chat!" }]}
+                    className={styles.modalUpdateUser__otherInfor__title}
+                    labelCol={{ span: 5 }}
+                    label="Giới tính"
+                    name="Sex"
+                    rules={[
+                      { required: true, message: "Thiếu thông tin Ngày sinh!" },
+                    ]}
                   >
-                    <Input style={{ width: 250 }} />
+                    <Select
+                      placeholder={"Chọn giới tính"}
+                      style={{ width: 150 }}
+                    >
+                      <Select.Option
+                        style={{ backgroundColor: "#33ABE5", color: "white" }}
+                        value="Male"
+                      >
+                        Nam
+                      </Select.Option>
+                      <Select.Option
+                        style={{ backgroundColor: "pink", color: "white" }}
+                        value="Female"
+                      >
+                        Nữ
+                      </Select.Option>
+                    </Select>
                   </Form.Item>
-                </div>
-                <div
-                  className={styles.modalUpdateUser__otherInfor}
-                  style={{ height: 50 }}
-                >
-                  <div className={styles.modalUpdateUser__otherInfor__title}>
-                    <PhoneOutlined
-                      style={{ marginRight: 3, color: "#007ACC" }}
-                    />{" "}
-                    Số điện thoại:
-                  </div>
-
-                  <Form.Item
-                    name="Phone"
-                    rules={[{ message: "Please input chat!" }]}
-                  >
-                    <Input style={{ width: 250 }} />
-                  </Form.Item>
-                </div>
-                <div
-                  className={styles.modalUpdateUser__otherInfor}
-                  style={{ height: 50 }}
-                >
-                  <div className={styles.modalUpdateUser__otherInfor__title}>
-                    <MailOutlined
-                      style={{ marginRight: 5, color: "#007ACC" }}
-                    />
-                    Email:
-                  </div>
-
-                  <Form.Item
-                    name="Email"
-                    rules={[{ message: "Please input chat!" }]}
-                  >
-                    <Input style={{ width: 250 }} />
-                  </Form.Item>
-                </div>
-                {this.state.chageAvatar && (
+                  <Divider
+                    type={"horizontal"}
+                    style={{ backgroundColor: "#BFBFBF", height: 1.5 }}
+                  />
                   <div
                     className={styles.modalUpdateUser__otherInfor}
-                    style={{ height: 100 }}
+                    style={{ height: 50 }}
                   >
                     <div className={styles.modalUpdateUser__otherInfor__title}>
-                      <CameraOutlined
+                      <MailOutlined
                         style={{ marginRight: 5, color: "#007ACC" }}
                       />
-                      Chọn ảnh đại diện:
+                      Địa chỉ:
                     </div>
 
-                    <UploadFile
-                      showImg={false}
-                      onLoading={(loading) => {
-                        this.setState({
-                          loading: loading,
-                        });
-                      }}
-                      ref={this.refUploadImg}
-                      type={"img"}
-                      result={async (values) => {
-                        await this.setState({
-                          Avatar: values[0],
-                        });
-                      }}
-                      refDocLib={`UserInfor`}
-                    />
+                    <Form.Item name="Address">
+                      <Input style={{ width: 250 }} />
+                    </Form.Item>
                   </div>
-                )}
-              </Form>
-            ) : (
-              <>
-                <div className={styles.modalUpdateUser__fullName}>
-                  {this.props.inforUser.loginName}
-                </div>
-                <div style={{ marginBottom: 5 }}>Nhân viên văn phòng</div>
-                <div>Hoàng Mai -Hà Nội</div>
-                <Divider
-                  type={"horizontal"}
-                  style={{ backgroundColor: "#BFBFBF", height: 1.5 }}
-                />
-                <div className={styles.modalUpdateUser__otherInfor}>
-                  <a
-                    href="https://teams.microsoft.com/l/chat/0/0?users=devteam@createsimpleapps.com"
-                    className={styles.modalUpdateUser__otherInfor__title}
+                  <div
+                    className={styles.modalUpdateUser__otherInfor}
+                    style={{ height: 50 }}
                   >
-                    <WechatOutlined
-                      style={{ marginRight: 3, color: "#007ACC" }}
-                    />{" "}
-                    Chat cùng tôi
-                  </a>
-                </div>
-                <div className={styles.modalUpdateUser__otherInfor}>
-                  <div className={styles.modalUpdateUser__otherInfor__title}>
-                    <PhoneOutlined
-                      style={{ marginRight: 3, color: "#007ACC" }}
-                    />{" "}
-                    Số Giới tính:
-                  </div>
-                  <a className={styles.modalUpdateUser__otherInfor__value}>
-                    nam
-                  </a>
-                </div>
-                <div className={styles.modalUpdateUser__otherInfor}>
-                  <div className={styles.modalUpdateUser__otherInfor__title}>
-                    <PhoneOutlined
-                      style={{ marginRight: 3, color: "#007ACC" }}
-                    />{" "}
-                    Số điện thoại:
-                  </div>
-                  <a
-                    href="tel:123345"
-                    className={styles.modalUpdateUser__otherInfor__value}
-                  >
-                    0358007171
-                  </a>
-                </div>
-                <div className={styles.modalUpdateUser__otherInfor}>
-                  <div className={styles.modalUpdateUser__otherInfor__title}>
-                    <MailOutlined
-                      style={{ marginRight: 5, color: "#007ACC" }}
-                    />
-                    Email:
+                    <a className={styles.modalUpdateUser__otherInfor__title}>
+                      <WechatOutlined
+                        style={{ marginRight: 3, color: "#007ACC" }}
+                      />{" "}
+                      Bí danh
+                    </a>
+                    <Form.Item name="Alias">
+                      <Input style={{ width: 250 }} />
+                    </Form.Item>
                   </div>
 
-                  <a
-                    href="mailto:devteam@createsimpleapps.com"
-                    className={styles.modalUpdateUser__otherInfor__value}
+                  <div
+                    className={styles.modalUpdateUser__otherInfor}
+                    style={{ height: 50 }}
                   >
-                    hieunt.fxp@outlook.com
-                  </a>
-                </div>
-              </>
-            )}
-          </div>
-        </Spin>
+                    <div className={styles.modalUpdateUser__otherInfor__title}>
+                      <PhoneOutlined
+                        style={{ marginRight: 3, color: "#007ACC" }}
+                      />{" "}
+                      Số điện thoại:
+                    </div>
+
+                    <Form.Item
+                      name="PhoneNumber"
+                      rules={[{ message: "Thiếu thông tin số điện thoại!" }]}
+                    >
+                      <Input style={{ width: 250 }} />
+                    </Form.Item>
+                  </div>
+                  <div
+                    className={styles.modalUpdateUser__otherInfor}
+                    style={{ height: 50 }}
+                  >
+                    <div className={styles.modalUpdateUser__otherInfor__title}>
+                      <MailOutlined
+                        style={{ marginRight: 5, color: "#007ACC" }}
+                      />
+                      Email:
+                    </div>
+
+                    <Form.Item
+                      name="Email"
+                      rules={[{ message: "Thiếu thông tin chat!" }]}
+                    >
+                      <Input style={{ width: 250 }} />
+                    </Form.Item>
+                  </div>
+
+                  {this.state.chageAvatar && (
+                    <div
+                      className={styles.modalUpdateUser__otherInfor}
+                      style={{ height: 100 }}
+                    >
+                      <div
+                        className={styles.modalUpdateUser__otherInfor__title}
+                      >
+                        <CameraOutlined
+                          style={{ marginRight: 5, color: "#007ACC" }}
+                        />
+                        Chọn ảnh đại diện:
+                      </div>
+
+                      <UploadFile
+                        showImg={false}
+                        onLoading={(loading) => {
+                          this.setState({
+                            loading: loading,
+                          });
+                        }}
+                        ref={this.refUploadImg}
+                        type={"img"}
+                        result={async (values) => {
+                          await this.setState({
+                            Avatar: values[0],
+                          });
+                        }}
+                        refDocLib={`UserInfor`}
+                      />
+                    </div>
+                  )}
+                </Form>
+              ) : (
+                <>
+                  <div className={styles.modalUpdateUser__fullName}>
+                    {this.state.item.LoginName}
+                  </div>
+                  <div style={{ marginBottom: 5 }}>
+                    {this.state.item.JobTitle ? this.state.item.JobTitle : ""}
+                  </div>
+                  <div>
+                    {this.state.item.Address ? this.state.item.Address : ""}
+                  </div>
+                  <Divider
+                    type={"horizontal"}
+                    style={{ backgroundColor: "#BFBFBF", height: 1.5 }}
+                  />
+                  <div className={styles.modalUpdateUser__otherInfor}>
+                    <a
+                      href="https://teams.microsoft.com/l/chat/0/0?users=devteam@createsimpleapps.com"
+                      className={styles.modalUpdateUser__otherInfor__title}
+                    >
+                      <WechatOutlined
+                        style={{ marginRight: 3, color: "#007ACC" }}
+                      />{" "}
+                      Chat cùng tôi
+                    </a>
+                  </div>
+                  <div className={styles.modalUpdateUser__otherInfor}>
+                    <div className={styles.modalUpdateUser__otherInfor__title}>
+                      <PhoneOutlined
+                        style={{ marginRight: 3, color: "#007ACC" }}
+                      />{" "}
+                      Tên khác:
+                    </div>
+                    <a className={styles.modalUpdateUser__otherInfor__value}>
+                      {this.state.item.Alias ? this.state.item.Alias : ""}
+                    </a>
+                  </div>
+                  <div className={styles.modalUpdateUser__otherInfor}>
+                    <div className={styles.modalUpdateUser__otherInfor__title}>
+                      <PhoneOutlined
+                        style={{ marginRight: 3, color: "#007ACC" }}
+                      />{" "}
+                      Số Giới tính:
+                    </div>
+                    <a className={styles.modalUpdateUser__otherInfor__value}>
+                      {this.state.item.Sex ? this.state.item.Sex : ""}
+                    </a>
+                  </div>
+                  <div className={styles.modalUpdateUser__otherInfor}>
+                    <div className={styles.modalUpdateUser__otherInfor__title}>
+                      <PhoneOutlined
+                        style={{ marginRight: 3, color: "#007ACC" }}
+                      />{" "}
+                      Số điện thoại:
+                    </div>
+                    <a
+                      href="tel:123345"
+                      className={styles.modalUpdateUser__otherInfor__value}
+                    >
+                      {this.state.item.PhoneNumber
+                        ? this.state.item.PhoneNumber
+                        : ""}
+                    </a>
+                  </div>
+                  <div className={styles.modalUpdateUser__otherInfor}>
+                    <div className={styles.modalUpdateUser__otherInfor__title}>
+                      <MailOutlined
+                        style={{ marginRight: 5, color: "#007ACC" }}
+                      />
+                      Email:
+                    </div>
+
+                    <a
+                      href="mailto:devteam@createsimpleapps.com"
+                      className={styles.modalUpdateUser__otherInfor__value}
+                    >
+                      {this.state.item.Email ? this.state.item.Email : ""}
+                    </a>
+                  </div>
+                </>
+              )}
+            </div>
+          </Spin>
+        )}
       </Modal>
     );
   }

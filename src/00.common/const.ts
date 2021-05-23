@@ -1,4 +1,8 @@
-import { type } from "node:os";
+export const Permission = {
+  FullControl: "FullControl",
+  ReadOnly: "ReadOnly",
+  ReadAndWrite: "ReadAndWrite",
+};
 
 export const LIST_COMPONET_ADMIN = {
   LIST_600WORDS: "LIST_600WORDS",
@@ -44,7 +48,6 @@ export const ANSWER_PART2 = {
     key: "C",
     value: "001",
   },
- 
 };
 
 //áp dụng cho cả part 4,5 do cùng 1 fommat
@@ -66,4 +69,3 @@ export const ANSWER_PART3_4_5 = {
     value: "0001",
   },
 };
-

@@ -15,14 +15,15 @@ import { BaseComponent } from "../../../00.common/00.components/BaseComponent";
 import { toeicPart5Service } from "../../../00.common/02.service/toeicPart5Service";
 import ModalToeicPart5 from "./ModalToeicPart5";
 import { ANSWER_PART3_4_5 } from "../../../00.common/const";
+import { ToeicPart5 } from "../../../00.common/01.model/ToeicPart5";
 
 interface ToeicPart5Props {}
 
 interface ToeicPart5State {
   searchText: string;
   searchedColumn: string;
-  allData: any[];
-  dataSource: any[];
+  allData: ToeicPart5[];
+  dataSource: ToeicPart5[];
   visiblePopover: boolean;
 }
 const { Option } = Select;
@@ -46,7 +47,7 @@ export default class ListToeicPart5 extends BaseComponent<
   }
 
   async loadAllData() {
-    let allData = await toeicPart5Service.getAll("ToeicPart5");
+    let allData = await toeicPart5Service.getAll<ToeicPart5>("ToeicPart5");
 
     this.setState({
       allData: allData,

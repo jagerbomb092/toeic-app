@@ -7,13 +7,14 @@ import { words600Service } from "../../00.common/02.service/words600Service";
 import React from "react";
 import _ from "lodash";
 import ModalTheme from "./ModalCreateTheme";
+import { WordsToeic } from "../../00.common/01.model/600WordsToeic";
 
 interface ListThemeProps {}
 
 interface ListThemeState {
   searchText: string;
   searchedColumn: string;
-  allData: any[];
+  allData: WordsToeic[];
   allCategories: { Title: string; value: string }[];
   selectedCa?: { Title: string; value: string };
 }
@@ -39,7 +40,7 @@ export default class ListTheme extends BaseComponent<
 
   async loadAllData() {
     let allData = _.orderBy(
-      await words600Service.getAll("600WordsToeic"),
+      await words600Service.getAll<WordsToeic>("600WordsToeic"),
       "OrderBy",
       "asc"
     );

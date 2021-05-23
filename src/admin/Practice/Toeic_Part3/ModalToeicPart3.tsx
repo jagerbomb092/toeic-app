@@ -294,7 +294,7 @@ export default class ModalToeicPart3 extends BaseComponent<
                 labelCol={{ span: 5 }}
                 label="Cấp độ "
                 name="Level"
-                rules={[{ required: true, message: "Please input Level!" }]}
+                rules={[{ required: true, message: "Thiếu thông tin Level!" }]}
               >
                 <Select defaultValue={0} style={{ width: 120 }}>
                   <Option value={1}>
@@ -313,7 +313,7 @@ export default class ModalToeicPart3 extends BaseComponent<
               <Form.Item
                 labelCol={{ span: 5 }}
                 label="Câu hỏi"
-                rules={[{ message: "Please input title!" }]}
+                rules={[{ message: "Thiếu thông tin title!" }]}
               >
                 <UploadFile
                   ref={this.refUploadAudio}

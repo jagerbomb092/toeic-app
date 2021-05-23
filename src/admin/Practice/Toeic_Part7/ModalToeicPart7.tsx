@@ -289,7 +289,7 @@ export default class ModalToeicPart7 extends BaseComponent<
                 labelCol={{ span: 5 }}
                 label="Cấp độ "
                 name="Level"
-                rules={[{ required: true, message: "Please input Level!" }]}
+                rules={[{ required: true, message: "Thiếu thông tin Level!" }]}
               >
                 <Select defaultValue={0} style={{ width: 120 }}>
                   <Option value={1}>

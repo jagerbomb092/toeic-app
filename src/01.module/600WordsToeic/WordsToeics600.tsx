@@ -4,10 +4,11 @@ import styles from "./WordsToeic600.module.scss";
 import { Row, Col, Tooltip } from "antd";
 import React from "react";
 import ThemeDetailModalCom from "./ThemeDetail";
+import { WordsToeic } from "../../00.common/01.model/600WordsToeic";
 interface Worrds600Props {}
 
 interface Worrds600State {
-  allData: any[];
+  allData: WordsToeic[];
 }
 
 export default class Words600Com extends BaseComponent<
@@ -25,7 +26,7 @@ export default class Words600Com extends BaseComponent<
     });
   }
   async loadAllData() {
-    let allData = await words600Service.getAll("600WordsToeic");
+    let allData = await words600Service.getAll<WordsToeic>("600WordsToeic");
     this.setState({
       allData: allData,
     });

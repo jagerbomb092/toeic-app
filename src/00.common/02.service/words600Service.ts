@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { firestore } from "../../firebase.config";
-import { ContentItem } from "../01.model/WordToeic";
+import { ContentItem } from "../01.model/600WordsToeic";
 import ServiceBase from "./serviceBase";
 
 class Words600Service extends ServiceBase {
@@ -14,10 +14,10 @@ class Words600Service extends ServiceBase {
       await firestore.collection(collection).doc(docId).get()
     ).data();
     if (data) {
-      if (data.Content && (data.Content as any[]).length > 0) {
+      if (data.Content && (data.Content as ContentItem[]).length > 0) {
         if (IdItemUpdate) {
           //tim phần tử đã tôn tại và update nó
-          data.Content = (data.Content as any[]).map((item) => {
+          data.Content = (data.Content as ContentItem[]).map((item) => {
             if (item.Id == IdItemUpdate) {
               item = {
                 ...ContentItem,
@@ -29,7 +29,7 @@ class Words600Service extends ServiceBase {
             }
           });
         } else {
-          (data.Content as any[]).push({
+          (data.Content as ContentItem[]).push({
             ...ContentItem,
             Id: data.Content.length + 1,
           });
@@ -52,7 +52,7 @@ class Words600Service extends ServiceBase {
     let data = await (
       await firestore.collection(collection).doc(docId).get()
     ).data();
-    let newArrContent: any[] = [];
+    let newArrContent: ContentItem[] = [];
     (data!.Content as any[]).forEach((item) => {
       if (item.Id !== IdContentItem) {
         newArrContent.push(item);

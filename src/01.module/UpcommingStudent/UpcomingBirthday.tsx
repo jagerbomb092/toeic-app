@@ -5,6 +5,7 @@ import * as React from "react";
 import Slider from "react-slick";
 
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
+import { MemberInfor } from "../../00.common/01.model/MemberInfor";
 import { upCommingBirthdayService } from "../../00.common/02.service/upcommingBirthdayService";
 
 import styles from "./UpcomingBirthday.module.scss";
@@ -18,7 +19,7 @@ interface UpcomingBirthdaysStates {
   firstindex?: number;
   lastIndex: number;
   loading: boolean;
-  dataSource: any[];
+  dataSource: MemberInfor[];
 }
 
 export  class UpcomingBirthdays extends BaseComponent<
@@ -51,7 +52,7 @@ export  class UpcomingBirthdays extends BaseComponent<
   };
 
   async getData() {
-    const dataSource = await upCommingBirthdayService.getAll("MemberDirectory");
+    const dataSource = await upCommingBirthdayService.getAll<MemberInfor>("MemberDirectory");
     this.setState({
       dataSource,
     });
@@ -75,14 +76,14 @@ export  class UpcomingBirthdays extends BaseComponent<
               <div
                 className={styles.upcomingBirthdaysSlider__slider__itemHover}
               >
-                {item.Avatar ? (
+                {item.PhotoUrl ? (
                   <img
-                    src={`${item.Avatar}?width=48&height=48`}
+                    src={`${item.PhotoUrl}?width=48&height=48`}
                     className={
                       styles.upcomingBirthdaysSlider__slider__itemHover__avartar
                     }
                   />
-                ) : item.Gender === "M" ? (
+                ) : item.Sex === "Male" ? (
                   <img
                     className={
                       styles.upcomingBirthdaysSlider__slider__itemHover__avartar
@@ -102,7 +103,7 @@ export  class UpcomingBirthdays extends BaseComponent<
                     styles.upcomingBirthdaysSlider__slider__itemHover__name
                   }
                 >
-                  {item.FullName}
+                  {item.LoginName}
                 </div>
                 <div
                   className={
@@ -123,11 +124,11 @@ export  class UpcomingBirthdays extends BaseComponent<
                     styles.upcomingBirthdaysSlider__slider__itemHover__workPhone
                   }
                 >
-                  {item.WorkPhone}
+                  {item.PhoneNumber}
                 </div>
                 <div
                   onClick={() => {
-                    window.location.href = `MSTeams:/l/chat/0/0?users=${item?.FullName}`;
+                    window.location.href = `MSTeams:/l/chat/0/0?users=${item?.LoginName}`;
                   }}
                   className={
                     styles.upcomingBirthdaysSlider__slider__itemHover__msTeam
@@ -151,16 +152,16 @@ export  class UpcomingBirthdays extends BaseComponent<
                     styles.upcomingBirthdaysSlider__slider__item__inforUser
                   }
                 >
-                  {item.Avatar ? (
+                  {item.PhotoUrl ? (
                     <img
-                      src={item.Avatar}
+                      src={item.PhotoUrl}
                       height="48px"
                       width="48px"
                       className={
                         styles.upcomingBirthdaysSlider__slider__item__inforUser__avartar
                       }
                     />
-                  ) : item.Gender === "M" ? (
+                  ) : item.Sex === "Female" ? (
                     <img
                       height="48px"
                       width="48px"
@@ -189,7 +190,7 @@ export  class UpcomingBirthdays extends BaseComponent<
                         styles.upcomingBirthdaysSlider__slider__item__inforUser__title__content1
                       }
                     >
-                      {item.FullName}
+                      {item.LoginName}
                     </div>
                     <div
                       className={

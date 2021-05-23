@@ -6,13 +6,14 @@ import Slider from "react-slick";
 
 import { BaseComponent } from "../../00.common/00.components/BaseComponent";
 import { upCommingBirthdayService } from "../../00.common/02.service/upcommingBirthdayService";
+import { MemberInfor } from "../../00.common/01.model/MemberInfor";
 
 interface NewEmployeesProps {}
 interface NewEmployeesStates {
   firstindex?: number;
   lastIndex: number;
   loading: boolean;
-  dataSource: any[];
+  dataSource: MemberInfor[];
 }
 
 export  class NewEmployees extends BaseComponent<
@@ -36,7 +37,7 @@ export  class NewEmployees extends BaseComponent<
   }
 
   async getData() {
-    const dataSource = await upCommingBirthdayService.getAll("MemberDirectory");
+    const dataSource = await upCommingBirthdayService.getAll<MemberInfor>("MemberDirectory");
     this.setState({
       dataSource,
     });
@@ -52,12 +53,12 @@ export  class NewEmployees extends BaseComponent<
             <div
               className={styles.newEmployeesSlider__slider__item__ContentInfor}
             >
-              {item.Avatar ? (
+              {item.PhotoUrl ? (
                 <img
                   className={
                     styles.newEmployeesSlider__slider__item__ContentInfor__Avartar
                   }
-                  src={`${item.Avatar}?width=64&height=64`}
+                  src={`${item.PhotoUrl}?width=64&height=64`}
                 />
               ) : (
                 <img
@@ -72,7 +73,7 @@ export  class NewEmployees extends BaseComponent<
                   styles.newEmployeesSlider__slider__item__ContentInfor__employeeName
                 }
               >
-                {item.FullName}
+                {item.LoginName}
               </div>
               <div
                 className={
@@ -97,7 +98,7 @@ export  class NewEmployees extends BaseComponent<
               </div>
               <div
                 onClick={() => {
-                  window.location.href = `MSTeams:/l/chat/0/0?users=${item?.FullName}`;
+                  window.location.href = `MSTeams:/l/chat/0/0?users=${item?.LoginName}`;
                 }}
                 className={
                   styles.newEmployeesSlider__slider__item__ContentInfor__msTeam

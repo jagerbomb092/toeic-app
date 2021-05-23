@@ -198,7 +198,7 @@ export default class ModalTheme extends BaseComponent<
                   labelCol={{ span: 6 }}
                   label="Tên chủ đề "
                   name="Title"
-                  rules={[{ required: true, message: "Please input title!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin title!" }]}
                 >
                   <Input style={{ width: "100%" }} />
                 </Form.Item>
@@ -208,7 +208,7 @@ export default class ModalTheme extends BaseComponent<
                   labelCol={{ span: 6 }}
                   label="Thứ tự"
                   name="OrderBy"
-                  rules={[{ required: true, message: "Please input orderBy!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin orderBy!" }]}
                 >
                   <Input style={{ width: "100%" }} />
                 </Form.Item>
@@ -221,7 +221,7 @@ export default class ModalTheme extends BaseComponent<
                   labelCol={{ span: 6 }}
                   label="Dịch nghĩa"
                   name="Title_VN"
-                  rules={[{ required: true, message: "Please input content!" }]}
+                  rules={[{ required: true, message: "Thiếu thông tin content!" }]}
                 >
                   <Input style={{ width: "100%" }} />
                 </Form.Item>
@@ -231,7 +231,7 @@ export default class ModalTheme extends BaseComponent<
                   labelCol={{ span: 6 }}
                   label="Id Document"
                   rules={[
-                    { required: true, message: "Please input id document!" },
+                    { required: true, message: "Thiếu thông tin id document!" },
                   ]}
                 >
                   <Input
@@ -253,7 +253,7 @@ export default class ModalTheme extends BaseComponent<
                   labelCol={{ span: 8 }}
                   label=" Ảnh biểu tượng"
                   name="ImgBanner"
-                  rules={[{ message: "Please input title!" }]}
+                  rules={[{ message: "Thiếu thông tin title!" }]}
                 >
                   <UploadFile
                     ref={this.refUploadImg}
