@@ -93,13 +93,8 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
     );
     // nếu tài khoản vừa mới tạo thì lưu thông tin đăng nhập với các thông tin cớ bản vào 2 coloectin là MemberInfor và UserPermission
     if (result && result.length == 0) {
-      await userInforService.save(
-        "MemberDirectory",
-        "",
-        this.props.inforUser
-      );
+      await userInforService.save("MemberDirectory", "", this.props.inforUser);
       await this.setState({
- 
         MemberInfor: {
           Address: "",
           Alias: "",
@@ -122,7 +117,6 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
       });
     } else {
       await this.setState({
-      
         MemberInfor: result[0],
       });
     }
@@ -318,19 +312,23 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
                       />
 
                       <img
-                        src={this.state.MemberInfor&&this.state.MemberInfor!.PhotoUrl?this.state.MemberInfor!.PhotoUrl:""}
+                        src={
+                          this.state.MemberInfor &&
+                          this.state.MemberInfor!.PhotoUrl
+                            ? this.state.MemberInfor!.PhotoUrl
+                            : ""
+                        }
                         className={styles.HomePageApp__header__right__avatar}
                       ></img>
                       <div
-                      
                         style={{
                           marginRight: 10,
                           color: "white",
                           cursor: "pointer",
                         }}
                       >
-                       
-                        {this.state.MemberInfor&&this.state.MemberInfor.LoginName
+                        {this.state.MemberInfor &&
+                        this.state.MemberInfor.LoginName
                           ? this.state.MemberInfor.LoginName.toUpperCase()
                           : "User".toUpperCase()}
                       </div>
@@ -457,8 +455,9 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
             </Router>
 
             <ModalUpdateUser
-              onUpdate={() => {}}
-              
+              onUpdate={() => {
+                this.CheckExistUser();
+              }}
               ref={this.refModalUpdateInfor}
             />
           </div>

@@ -26,6 +26,7 @@ import { userInforService } from "../../00.common/02.service/userInforService";
 import moment from "moment";
 import { firestore } from "../../firebase.config";
 import { MemberInfor } from "../../00.common/01.model/MemberInfor";
+import { pick } from "lodash";
 interface UpdateInforProps {
   onUpdate: () => void;
 }
@@ -33,7 +34,7 @@ interface UpdateInforState {
   modalVisible: boolean;
   edit: boolean;
   loading: boolean;
-  Avatar?: string;
+  PhotoUrl?: string;
   chageAvatar: boolean;
   item: MemberInfor;
 }
@@ -61,10 +62,10 @@ export class ModalUpdateUser extends BaseComponent<
     };
   }
 
-  openItem(item: MemberInfor) {
-    this.setState({
+  async openItem(item: MemberInfor) {
+    await this.setState({
       item,
-      Avatar: item.PhotoUrl,
+      PhotoUrl: item.PhotoUrl,
       modalVisible: true,
     });
   }
@@ -83,8 +84,8 @@ export class ModalUpdateUser extends BaseComponent<
       });
       //lấy ra dư liệu từ form
       const value = this.formRef.current!.getFieldsValue();
-      if (this.state.Avatar) {
-        value.Avatar = this.state.Avatar;
+      if (this.state.PhotoUrl) {
+        value.PhotoUrl = this.state.PhotoUrl;
       }
       value.DateOfBirth = {
         nanoseconds: 0,
@@ -121,14 +122,32 @@ export class ModalUpdateUser extends BaseComponent<
       await this.setState(this.initialState as any);
     }
   }
+  async editItem() {
+    await this.setState({
+      edit: true,
+      modalVisible: true,
+    });
+    let formControlValues = pick(this.state.item, [
+      "Address",
+      "Alias",
+      "Email",
+      "JobTitle",
+      "PhoneNumber",
+      "LoginName",
+      "Sex",
+    ]);
+    let time = this.state.item.DateOfBirth;
 
+    const fireBaseTime = new Date(parseInt(time?.seconds as string) * 1000);
+
+    this.formRef.current!.setFieldsValue(formControlValues);
+    this.formRef.current?.setFieldsValue({ DateOfBirth: moment(fireBaseTime) });
+  }
   render() {
     let footer = [
       <Button
-        onClick={() => {
-          this.setState({
-            edit: true,
-          });
+        onClick={async () => {
+          this.editItem();
         }}
         key="submit"
         type="primary"
@@ -175,12 +194,12 @@ export class ModalUpdateUser extends BaseComponent<
           >
             <div className={styles.modalUpdateUser}>
               <div className={styles.modalUpdateUser__Avatar}>
-                {this.state.Avatar ? (
+                {this.state.PhotoUrl ? (
                   <Avatar
                     shape="circle"
                     icon={<UserOutlined />}
                     size={80}
-                    src={this.state.Avatar ? this.state.Avatar : ""}
+                    src={this.state.PhotoUrl ? this.state.PhotoUrl : ""}
                   />
                 ) : (
                   <Avatar shape="circle" icon={<UserOutlined />} size={80} />
@@ -207,7 +226,7 @@ export class ModalUpdateUser extends BaseComponent<
                       className={styles.modalUpdateUser__otherInfor__title}
                       labelCol={{ span: 5 }}
                       label="Họ tên"
-                      name="FullName"
+                      name="LoginName"
                       rules={[
                         {
                           required: true,
@@ -257,12 +276,14 @@ export class ModalUpdateUser extends BaseComponent<
                       style={{ width: 150 }}
                     >
                       <Select.Option
+                        key={1}
                         style={{ backgroundColor: "#33ABE5", color: "white" }}
                         value="Male"
                       >
-                        Nam
+                        Name
                       </Select.Option>
                       <Select.Option
+                        key={2}
                         style={{ backgroundColor: "pink", color: "white" }}
                         value="Female"
                       >
@@ -366,7 +387,7 @@ export class ModalUpdateUser extends BaseComponent<
                         type={"img"}
                         result={async (values) => {
                           await this.setState({
-                            Avatar: values[0],
+                            PhotoUrl: values[0],
                           });
                         }}
                         refDocLib={`UserInfor`}
@@ -376,7 +397,7 @@ export class ModalUpdateUser extends BaseComponent<
                 </Form>
               ) : (
                 <>
-                  <div className={styles.modalUpdateUser__fullName}>
+                  <div className={styles.modalUpdateUser__LoginName}>
                     {this.state.item.LoginName}
                   </div>
                   <div style={{ marginBottom: 5 }}>
