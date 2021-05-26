@@ -44,10 +44,10 @@ export class FavComponent extends BaseComponent<FavProps, FavState> {
           <Tooltip title="Lưu vào từ của tôi">
             <StarOutlined
               onClick={async () => {
-                this.setState({
+                await  this.setState({
                   isFav: true,
                 });
-                await this.props.onUnFav();
+                 this.props.onFav();
               }}
               style={{ color: "#33abe5", fontSize: 25 }}
             />
