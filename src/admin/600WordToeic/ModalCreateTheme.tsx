@@ -100,7 +100,7 @@ export default class ModalTheme extends BaseComponent<
           value as any
         );
       } else {
-        await words600Service.saveDocWithId(
+        await words600Service.save(
           "600WordsToeic",
           this.state.idDoc as string,
           value as any

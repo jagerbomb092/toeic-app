@@ -13,9 +13,18 @@ export default class ServiceBase {
     return allData as T[];
   }
 
+  public async getItemByDocId<T>(nameCollection: string, DocId: string) {
+    try {
+      let a = await firestore.collection(nameCollection).doc(DocId).get();
+      return a.data() as T;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   public async save<T>(collection: string, docId: string, value: T) {
     if (docId !== "") {
-   firestore.collection(collection).doc(docId).set(value);
+      firestore.collection(collection).doc(docId).set(value);
     } else {
       firestore.collection(collection).add(value);
     }
@@ -29,9 +38,7 @@ export default class ServiceBase {
     firestore.collection(collection).doc(docId).delete();
   }
 
-  public async saveDocWithId(collection: string, idCustom: string, value: any) {
-    firestore.collection(collection).doc(idCustom).set(value);
-  }
+  
 
   public async getItemByQuery<T>(
     colection: string,

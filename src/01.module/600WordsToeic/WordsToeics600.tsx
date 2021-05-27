@@ -5,10 +5,14 @@ import { Row, Col, Tooltip } from "antd";
 import React from "react";
 import ThemeDetailModalCom from "./ThemeDetail";
 import { WordsToeic } from "../../00.common/01.model/600WordsToeic";
+import { userInforService } from "../../00.common/02.service/userInforService";
+import { createNoSubstitutionTemplateLiteral } from "typescript";
+import { MemberInfor } from "../../00.common/01.model/MemberInfor";
 interface Worrds600Props {}
 
 interface Worrds600State {
   allData: WordsToeic[];
+  currentUser?: MemberInfor;
 }
 
 export default class Words600Com extends BaseComponent<
@@ -20,8 +24,13 @@ export default class Words600Com extends BaseComponent<
     super(props);
     this.state = {
       allData: [],
+      currentUser: undefined as any,
     };
     this.onMount(async () => {
+      let currentUser = await userInforService.getCurrentUser();
+      this.setState({
+        currentUser,
+      });
       await Promise.all([this.loadAllData()]);
     });
   }
@@ -101,7 +110,10 @@ export default class Words600Com extends BaseComponent<
             ))}
           </Row>
         </div>
-        <ThemeDetailModalCom ref={this.refModalNewsItem} />
+        <ThemeDetailModalCom
+          currentUser={this.state.currentUser as MemberInfor }
+          ref={this.refModalNewsItem}
+        />
       </div>
     );
   }
