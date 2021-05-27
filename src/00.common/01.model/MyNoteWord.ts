@@ -1,7 +1,7 @@
 import { ContentItem } from "./600WordsToeic";
 
 export interface MyNoteWord {
-  IdUser: string;
+  KeyDoc?: string;
   LoginName: string;
   Content: ContentItem[];
 }

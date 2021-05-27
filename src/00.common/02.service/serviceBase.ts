@@ -15,8 +15,10 @@ export default class ServiceBase {
 
   public async getItemByDocId<T>(nameCollection: string, DocId: string) {
     try {
-      let a = await firestore.collection(nameCollection).doc(DocId).get();
-      return a.data() as T;
+      let item = await firestore.collection(nameCollection).doc(DocId).get();
+      let result = item.data() as any;
+      _.set(result, "KeyDoc", item.id);
+      return result as T;
     } catch (error) {
       console.log(error);
     }
@@ -37,8 +39,6 @@ export default class ServiceBase {
   public async delete(collection: string, docId: string) {
     firestore.collection(collection).doc(docId).delete();
   }
-
-  
 
   public async getItemByQuery<T>(
     colection: string,
