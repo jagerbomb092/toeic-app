@@ -1,0 +1,30 @@
+.Comment {
+  width: 50%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 200px;
+
+  &__input {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    &__avatar {
+      margin-right: 20px;
+    }
+    &__input {
+      width: 100%;
+      margin-right: 50px;
+    }
+  }
+  &__timeLine {
+    margin-left: 20px;
+    margin-top: 50px;
+  }
+  :global {
+    .ant-input {
+      border-radius: 20px !important;
+    }
+  }
+}
