@@ -1,30 +1,147 @@
-.Comment {
-  width: 50%;
-  height: 500px;
+.comments {
+  width: 700px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  margin-left: 200px;
-
-  &__input {
-    width: 100%;
+  margin-top: 100px;
+  margin-left: 150px;
+  margin-bottom: 100px;
+  flex-direction: column;
+  &__action {
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    &__avatar {
-      margin-right: 20px;
-    }
-    &__input {
-      width: 100%;
-      margin-right: 50px;
+    padding: 10px;
+    border-top: solid 1.5px #d9d9d9;
+    border-bottom: solid 1.5px #d9d9d9;
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    height: 50px;
+    &__item {
+      cursor: pointer;
+      display: flex;
+      margin-right: 70px;
+      align-items: center;
     }
   }
-  &__timeLine {
-    margin-left: 20px;
-    margin-top: 50px;
+  &__container {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &__commentTitle {
+      height: 24px;
+      left: 0px;
+      font-weight: 400;
+      font-family: "SFProDisplay";
+      font-size: 16px;
+      line-height: 24px;
+      color: #595959;
+    }
+    &__inputComment {
+      margin-top: 35px;
+
+      display: flex;
+      align-items: center;
+      width: 100%;
+      &__avartar {
+        margin-right: 5px;
+        border-radius: 50%;
+      }
+      &__inputText {
+        background-color: white;
+        width: 100%;
+        display: flex;
+      }
+    }
+    &__wrapComment {
+      max-height: 500px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      &__contentComment {
+        margin-left: 11px;
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        &__inforUser {
+          display: flex;
+          width: 100%;
+          &__avatar {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            margin: auto;
+            margin-right: 15px;
+          }
+          &__userInfor {
+            margin-left: 8px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            &__name {
+              font-size: 14px;
+              font-family: "SFProDisplay";
+              font-weight: 600;
+              color: #595959;
+            }
+            &__title {
+              color: #8c8c8c;
+              font-size: 12px;
+              font-weight: normal;
+            }
+          }
+        }
+        &__contentCommentBackground {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-left: 56px;
+          margin-top: 5px;
+          background: #f5f6f8;
+          border-radius: 0px 20px 0px 20px;
+          &__content {
+            font-family: "SFProDisplay Regular";
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            color: #262626;
+            line-height: 22px;
+            margin: 13px 0px 13px 28px;
+          }
+          &__reply {
+            font-family: "SFProDisplay Regular";
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            margin-right: 15px;
+          }
+          &__Icon {
+            margin-right: 15px;
+            font-size: 21px;
+          }
+        }
+      }
+    }
   }
   :global {
+    .ant-popover-title {
+      display: none !important;
+    }
     .ant-input {
       border-radius: 20px !important;
     }
+  }
+}
+
+:global {
+  .ant-popover-title {
+    display: none !important;
   }
 }
