@@ -136,14 +136,17 @@ export class ModalUpdateUser extends BaseComponent<
       "PhoneNumber",
       "LoginName",
       "Sex",
-      
     ]);
-    let time = this.state.item.DateOfBirth;
 
-    const fireBaseTime = new Date(parseInt(time?.seconds as string) * 1000);
+    if (this.state.item.DateOfBirth) {
+      let time = this.state.item.DateOfBirth;
+      const fireBaseTime = new Date(parseInt(time?.seconds as string) * 1000);
+      this.formRef.current?.setFieldsValue({
+        DateOfBirth: moment(fireBaseTime),
+      });
+    }
 
     this.formRef.current!.setFieldsValue(formControlValues);
-    this.formRef.current?.setFieldsValue({ DateOfBirth: moment(fireBaseTime) });
   }
   render() {
     let footer = [
@@ -262,7 +265,10 @@ export class ModalUpdateUser extends BaseComponent<
                       { required: true, message: "Thiếu thông tin Ngày sinh!" },
                     ]}
                   >
-                    <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
+                    <DatePicker
+                      style={{ width: "100%" }}
+                      format={"DD/MM/YYYY"}
+                    />
                   </Form.Item>
                   <Form.Item
                     className={styles.modalUpdateUser__otherInfor__title}

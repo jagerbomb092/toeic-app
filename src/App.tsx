@@ -81,18 +81,24 @@ export default class App extends React.Component {
       );
     }
     return (
-      <Home
-        signOut={() => {
-          firebase.auth().signOut();
-        }}
-        inforUser={{
-          Uid:firebase.auth().currentUser!.uid as string,
-          LoginName: firebase.auth().currentUser!.displayName as string,
-          PhotoUrl: firebase.auth().currentUser!.photoURL as string,
-          Email:firebase.auth().currentUser!.email?firebase.auth().currentUser!.email as string:"",
-          PhoneNumber:firebase.auth().currentUser!.email?firebase.auth().currentUser!.phoneNumber as string:"",
-        }}
-      />
+      <div className={styles.home}>
+        <Home
+          signOut={() => {
+            firebase.auth().signOut();
+          }}
+          inforUser={{
+            Uid: firebase.auth().currentUser!.uid as string,
+            LoginName: firebase.auth().currentUser!.displayName as string,
+            PhotoUrl: firebase.auth().currentUser!.photoURL as string,
+            Email: firebase.auth().currentUser!.email
+              ? (firebase.auth().currentUser!.email as string)
+              : "",
+            PhoneNumber: firebase.auth().currentUser!.email
+              ? (firebase.auth().currentUser!.phoneNumber as string)
+              : "",
+          }}
+        />
+      </div>
     );
   }
 }
