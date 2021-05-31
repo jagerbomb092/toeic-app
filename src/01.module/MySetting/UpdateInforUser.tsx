@@ -24,9 +24,10 @@ import React from "react";
 import { UploadFile } from "../../00.common/00.components/UploadFile";
 import { userInforService } from "../../00.common/02.service/userInforService";
 import moment from "moment";
-import { firestore } from "../../firebase.config";
+import { firestore, storage } from "../../firebase.config";
 import { MemberInfor } from "../../00.common/01.model/MemberInfor";
 import { pick } from "lodash";
+import firebase from "firebase";
 interface UpdateInforProps {
   onUpdate: () => void;
 }
@@ -87,10 +88,10 @@ export class ModalUpdateUser extends BaseComponent<
       if (this.state.PhotoUrl) {
         value.PhotoUrl = this.state.PhotoUrl;
       }
-      value.DateOfBirth = {
-        nanoseconds: 0,
-        seconds: (value.DateOfBirth as moment.Moment).format("x"),
-      };
+
+      value.DateOfBirth = firebase.firestore.Timestamp.fromDate(
+        value.DateOfBirth.toDate()
+      );
 
       if (this.state.item.KeyDoc) {
         await userInforService.update(
@@ -135,6 +136,7 @@ export class ModalUpdateUser extends BaseComponent<
       "PhoneNumber",
       "LoginName",
       "Sex",
+      
     ]);
     let time = this.state.item.DateOfBirth;
 
@@ -260,7 +262,7 @@ export class ModalUpdateUser extends BaseComponent<
                       { required: true, message: "Thiếu thông tin Ngày sinh!" },
                     ]}
                   >
-                    <DatePicker style={{ width: "100%" }} />
+                    <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
                   </Form.Item>
                   <Form.Item
                     className={styles.modalUpdateUser__otherInfor__title}

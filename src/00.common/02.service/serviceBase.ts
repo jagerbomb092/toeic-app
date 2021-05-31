@@ -2,8 +2,14 @@ import _ from "lodash";
 import { firestore } from "../../firebase.config";
 
 export default class ServiceBase {
-  public async getAll<T>(nameCollection: string) {
-    const response = firestore.collection(nameCollection);
+  public async getAll<T>(nameCollection: string, sortField?: string) {
+    let response;
+    if (sortField) {
+      response = firestore.collection(nameCollection).orderBy(sortField, "desc");
+    } else {
+      response = firestore.collection(nameCollection);
+    }
+
     const data = await response.get();
     let allData = data.docs.map((item) => {
       let result = item.data();
@@ -15,8 +21,10 @@ export default class ServiceBase {
 
   public async getItemByDocId<T>(nameCollection: string, DocId: string) {
     try {
-      let a = await firestore.collection(nameCollection).doc(DocId).get();
-      return a.data() as T;
+      let item = await firestore.collection(nameCollection).doc(DocId).get();
+      let result = item.data() as any;
+      _.set(result, "KeyDoc", item.id);
+      return result as T;
     } catch (error) {
       console.log(error);
     }
@@ -37,8 +45,6 @@ export default class ServiceBase {
   public async delete(collection: string, docId: string) {
     firestore.collection(collection).doc(docId).delete();
   }
-
-  
 
   public async getItemByQuery<T>(
     colection: string,

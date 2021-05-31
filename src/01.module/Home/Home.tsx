@@ -41,7 +41,8 @@ import { MemberInfor } from "../../00.common/01.model/MemberInfor";
 import { TopMenu } from "../../00.common/01.model/TopMenu";
 import { PermissionUser } from "../../00.common/01.model/PermissionUser";
 import { Permission } from "../../00.common/const";
-import { createNoSubstitutionTemplateLiteral } from "typescript";
+
+import { CommentComp } from "../../00.common/00.components/Comment/CommentComp";
 const { Option } = Select;
 interface propsHome {
   inforUser: {
@@ -397,7 +398,7 @@ export default class Home extends BaseComponent<propsHome, stateHome> {
                     <Words600Com />
                   </Route>
                   <Route path="/de-thi">
-                    <div>Mẹo thi</div>
+                    <CommentComp />
                   </Route>
                   <Route path="/theme-detail">
                     <div>Mẹo thi</div>
