@@ -28,6 +28,7 @@ import { firestore } from "../../../firebase.config";
 import { facebookIcon } from "../../const";
 import { reactionService } from "../../02.service/ReactionService";
 import { Reaction } from "../../01.model/Reaction";
+import { sendMail } from "../../02.service/sendMailService";
 
 const { confirm } = Modal;
 
@@ -190,6 +191,12 @@ export class CommentComp extends BaseComponent<
       PhotoUrl: this.state.currentUser?.PhotoUrl,
       ParentId: ParentId ? ParentId : "",
     });
+    await sendMail.sendEmail({
+      toUser:"ngotrunghieu19061998@gmail.com",
+      fromUser:"hieukayo1906@gmail.com",
+      value:"ahihihi"
+
+    })
     await this.getComment();
     this.setState({
       loadingComment: false,
