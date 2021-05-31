@@ -7,10 +7,9 @@ import {
   Avatar,
   Popover,
   Button,
-  Empty,
+  Mentions,
 } from "antd";
 
-import TextArea from "antd/lib/input/TextArea";
 import { EllipsisOutlined } from "@ant-design/icons";
 
 import { FacebookCounter, FacebookSelector } from "@charkour/react-reactions";
@@ -53,13 +52,15 @@ interface CommentsStates {
   reaction?: string;
   listUserReaction?: string[];
   ReactionSelected?: Reaction;
+  allReaction: Reaction[];
+  allMember: MemberInfor[];
+  userSelected: MemberInfor[];
 }
 export class CommentComp extends BaseComponent<
   ICommentUpdateProps,
   CommentsStates
 > {
-  public inputRef: React.RefObject<HTMLSpanElement> = React.createRef();
-
+  private divWrapInputRef = React.createRef<HTMLSpanElement>();
   public constructor(props: ICommentUpdateProps) {
     super(props);
     this.state = {
@@ -68,10 +69,12 @@ export class CommentComp extends BaseComponent<
       input: "",
       isLoading: false,
       loadingComment: false,
-
+      allReaction: [],
       isHover: false,
       isReply: false,
       usersAdmin: [],
+      allMember: [],
+      userSelected: [],
     };
 
     this.onMount(async () => {
@@ -79,13 +82,37 @@ export class CommentComp extends BaseComponent<
       await this.setState({
         currentUser,
       });
-      await Promise.all([this.getComment(), this.getReaction()]);
+      await Promise.all([
+        this.getComment(),
+        this.getReaction(),
+        this.getAllMember(),
+      ]);
+    });
+  }
+  // lấy ra tất cả các user trong app
+  async getAllMember() {
+    let allMember = await userInforService.getAll<MemberInfor>(
+      "MemberDirectory"
+    );
+    this.setState({
+      allMember,
+    });
+  }
+
+  async onSearchMention(value: string) {
+    let userSelected = this.state.allMember.filter((item) => {
+      return item.LoginName.toLocaleLowerCase().includes(
+        value.toLocaleLowerCase()
+      );
+    });
+    this.setState({
+      userSelected,
     });
   }
 
   //lấy ra thông tin ng dùng đã bày tỏ vào bài viết và trạng thái
   async getReaction() {
-    let [checkUserReaction, allRFeaction] = await Promise.all([
+    let [checkUserReaction, allReaction] = await Promise.all([
       reactionService.getItemByQuery<Reaction>(
         "RCTest",
         "Uid",
@@ -100,12 +127,13 @@ export class CommentComp extends BaseComponent<
         reaction: checkUserReaction[0].Reaction,
       });
     }
-    if (allRFeaction && allRFeaction.length > 0) {
-      let listUserReaction = allRFeaction.map((item) => {
+    if (allReaction && allReaction.length > 0) {
+      let listUserReaction = allReaction.map((item) => {
         return item.LoginName;
       });
       await this.setState({
         listUserReaction,
+        allReaction,
       });
     }
   }
@@ -168,7 +196,17 @@ export class CommentComp extends BaseComponent<
   //     return true;
   //   }
   // }
-
+  renderListUser(listUser: string[]) {
+    return (
+      <Menu style={{ maxWidth: 150, backgroundColor: "rgba(0,0,0,.75)" }}>
+        {listUser.map((item) => (
+          <Menu.Item>
+            <a style={{ color: "white" }}>{item}</a>
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+  }
   getChidComment(CommentItem: CommentItem) {
     let childComment = this.state.allComments.filter((item) => {
       return item.ParentId == CommentItem.KeyDoc;
@@ -192,11 +230,10 @@ export class CommentComp extends BaseComponent<
       ParentId: ParentId ? ParentId : "",
     });
     await sendMail.sendEmail({
-      toUser:"ngotrunghieu19061998@gmail.com",
-      fromUser:"hieukayo1906@gmail.com",
-      value:"ahihihi"
-
-    })
+      toUser: "ngotrunghieu19061998@gmail.com",
+      fromUser: "hieukayo1906@gmail.com",
+      value: "ahihihi",
+    });
     await this.getComment();
     this.setState({
       loadingComment: false,
@@ -238,6 +275,7 @@ export class CommentComp extends BaseComponent<
       commentParent,
     });
   }
+
   public renderComment(comments: CommentItem[]): React.ReactNode {
     return comments.map((comment, index) => (
       <div
@@ -297,19 +335,54 @@ export class CommentComp extends BaseComponent<
               className={styles.comments__container__inputComment__inputText}
             >
               <div style={{ display: "flex" }}>
-                <TextArea
+                <Mentions
                   style={{
                     flex: 1,
                     minHeight: "50px",
                   }}
-                  allowClear={true}
                   placeholder="Aa"
                   value={this.state.inputEdit}
                   autoSize={{ minRows: 1, maxRows: 5 }}
                   onChange={(e) => {
-                    this.setState({ inputEdit: e.target.value });
+                    this.setState({ inputEdit: e });
                   }}
-                />
+                  onSearch={(value) => {
+                    if (value && value.length > 3) {
+                      this.onSearchMention(value);
+                    } else {
+                      this.setState({
+                        userSelected: [],
+                      });
+                    }
+                  }}
+                >
+                  {this.state.userSelected.length > 0 ? (
+                    <>
+                      {this.state.userSelected.map((item) => (
+                        <Mentions.Option
+                          value={item.LoginName}
+                          key={item.Uid}
+                          className="antd-demo-dynamic-option"
+                        >
+                          <img
+                            style={{
+                              height: 35,
+                              width: 35,
+                              borderRadius: "50%",
+                              marginRight: 10,
+                            }}
+                            src={item.PhotoUrl}
+                          />
+                          <span>{item.LoginName}</span>
+                        </Mentions.Option>
+                      ))}
+                    </>
+                  ) : (
+                    <Mentions.Option>
+                      <Spin spinning={true} />
+                    </Mentions.Option>
+                  )}
+                </Mentions>
                 <Button
                   onClick={async () => {
                     if (_.trim(this.state.inputEdit).length > 0) {
@@ -416,19 +489,54 @@ export class CommentComp extends BaseComponent<
               <span
                 className={styles.comments__container__inputComment__inputText}
               >
-                <TextArea
+                <Mentions
                   style={{
                     flex: 1,
                     minHeight: "50px",
                   }}
-                  allowClear={true}
-                  placeholder="Aa"
+                  autoFocus={true}
                   value={this.state.inputReply}
                   autoSize={{ minRows: 1, maxRows: 5 }}
                   onChange={(e) => {
-                    this.setState({ inputReply: e.target.value });
+                    this.setState({ inputReply: e });
                   }}
-                />
+                  onSearch={(value) => {
+                    if (value && value.length > 3) {
+                      this.onSearchMention(value);
+                    } else {
+                      this.setState({
+                        userSelected: [],
+                      });
+                    }
+                  }}
+                >
+                  {this.state.userSelected.length > 0 ? (
+                    <>
+                      {this.state.userSelected.map((item) => (
+                        <Mentions.Option
+                          value={item.LoginName}
+                          key={item.Uid}
+                          className="antd-demo-dynamic-option"
+                        >
+                          <img
+                            style={{
+                              height: 35,
+                              width: 35,
+                              borderRadius: "50%",
+                              marginRight: 10,
+                            }}
+                            src={item.PhotoUrl}
+                          />
+                          <span>{item.LoginName}</span>
+                        </Mentions.Option>
+                      ))}
+                    </>
+                  ) : (
+                    <Mentions.Option>
+                      <Spin spinning={true} />
+                    </Mentions.Option>
+                  )}
+                </Mentions>
                 <Button
                   onClick={() => {
                     if (_.trim(this.state.inputReply).length > 0) {
@@ -478,8 +586,6 @@ export class CommentComp extends BaseComponent<
                 this.setState({
                   isReply: true,
                   keyReply: comment.KeyDoc,
-                  inputReply: comment.LoginName.concat(" "),
-                  // IdParent: comment.ParentId ? comment.ParentId : comment.Id,
                 });
               }}
               className={
@@ -541,25 +647,60 @@ export class CommentComp extends BaseComponent<
             )}
 
             <span
+              ref={this.divWrapInputRef}
               className={styles.comments__container__inputComment__inputText}
-              ref={this.inputRef}
             >
-              <TextArea
+              <Mentions
+                key="Binh_Luan"
                 style={{
                   flex: 1,
                   minHeight: "50px",
                 }}
-                onFocus={(e) => {
-                  console.log(e);
-                }}
-                allowClear={true}
-                placeholder="Aa"
+                autoFocus={true}
+                placeholder="Thêm @ để nhắc đến ai "
                 value={this.state.input}
                 autoSize={{ minRows: 1, maxRows: 5 }}
                 onChange={(e) => {
-                  this.setState({ input: e.target.value });
+                  this.setState({ input: e });
                 }}
-              />
+                onSearch={(value) => {
+                  if (value && value.length >= 3) {
+                    this.onSearchMention(value);
+                  } else {
+                    this.setState({
+                      userSelected: [],
+                    });
+                  }
+                }}
+              >
+                {this.state.userSelected.length > 0 ? (
+                  <>
+                    {this.state.userSelected.map((item) => (
+                      <Mentions.Option
+                        value={item.LoginName}
+                        key={item.Uid}
+                        className="antd-demo-dynamic-option"
+                      >
+                        <img
+                          style={{
+                            height: 35,
+                            width: 35,
+                            borderRadius: "50%",
+                            marginRight: 10,
+                          }}
+                          src={item.PhotoUrl}
+                        />
+                        <span>{item.LoginName}</span>
+                      </Mentions.Option>
+                    ))}
+                  </>
+                ) : (
+                  <Mentions.Option>
+                    <Spin spinning={true} />
+                  </Mentions.Option>
+                )}
+              </Mentions>
+
               <Button
                 onClick={() => {
                   if (_.trim(this.state.input).length > 0) {
@@ -701,34 +842,44 @@ export class CommentComp extends BaseComponent<
               {this.getTextReaction(this.state.reaction as string)}
             </Popover>{" "}
           </div>
-          <div className={styles.comments__action__item}>
+          <div
+            onClick={() => {
+              this.divWrapInputRef.current!.scrollIntoView();
+            }}
+            className={styles.comments__action__item}
+          >
             Bình luận {iconComment}
           </div>
           <div className={styles.comments__action__item}>
             Chia sẻ {iconShare}
           </div>
         </div>
-        <Popover
-          content={
-            this.state.listUserReaction &&
-            this.state.listUserReaction.length > 0 ? (
-              <div style={{ backgroundColor: "rgba(0,0,0,.75)" }}>
-                {this.state.listUserReaction.map((item, key) => (
-                  <div style={{ color: "white" }} key={key}>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            ) : null
-          }
-          title="Title"
-        >
-          <FacebookCounter
-          alwaysShowOthers
-          
-          important={this.state.listUserReaction} />
-        </Popover>
 
+        {this.state.listUserReaction && this.state.listUserReaction.length > 0 && (
+          <Dropdown
+            overlay={this.renderListUser(
+              this.state.listUserReaction.length > 10
+                ? this.state.listUserReaction.slice(0, 10).concat("...")
+                : this.state.listUserReaction
+            )}
+          >
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              <FacebookCounter
+                counters={this.state.allReaction.map((item) => {
+                  return {
+                    emoji: item.Reaction, // String name of reaction
+                    by: item.Reaction, // String of persons name
+                  };
+                })}
+                alwaysShowOthers
+                important={this.state.listUserReaction}
+              />
+            </a>
+          </Dropdown>
+        )}
         {this.renderFormComments()}
       </div>
     );
