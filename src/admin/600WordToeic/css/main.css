@@ -1,0 +1,18 @@
+.flip-front, .flip-back {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: #fff;
+  padding: 50px 20px;
+  height: 100%;
+  transition: 0.3s all ease-in-out; }
+  .flip-front h1, .flip-back h1 {
+    color: #fff;
+    font-size: 30px; }
+.flip-back {
+  align-items: center;
+  color: #2e2c2c; }
+  .flip-back h1 {
+    color: #2e2c2c; }
+
+/*# sourceMappingURL=main.css.map */
